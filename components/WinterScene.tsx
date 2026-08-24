@@ -80,34 +80,58 @@ function CloudLayer({
 }
 
 /**
- * The motorcycle and its rider, drawn side-on facing right.
+ * A supersport motorcycle and its rider, drawn side-on facing right.
  *
  * Local space: x from about -42 (rear tyre) to +42 (front wheel), y=0 at the
  * ground, negative upward. Everything that spins or bounces is its own group
  * so the CSS can drive it independently.
+ *
+ * The shape that makes this read as a sportbike rather than a bicycle is the
+ * mass in the middle: a filled fairing running from the nose back to the
+ * engine, a high upswept tail, clip-on bars below the tank line, and the
+ * rider tucked down over the tank rather than sitting upright. Outline alone
+ * reads as a pushbike no matter how many spokes it has.
  */
 function Rider() {
-  const spokes = [0, 45, 90, 135];
+  const spokes = [0, 36, 72, 108, 144];
+
+  /** Both wheels are identical apart from position and phase. */
+  const wheel = (cx: number, delay: string) => (
+    <g className="scene-wheel" style={{ animationDelay: delay }}>
+      {/* tyre */}
+      <circle cx={cx} cy={-13} r="13" fill="none" stroke="var(--scene-rider)" strokeWidth="4.5" />
+      {/* rim */}
+      <circle cx={cx} cy={-13} r="9.5" fill="none" stroke="var(--scene-rim)" strokeWidth="1.6" />
+      {spokes.map((a) => (
+        <line
+          key={a}
+          x1={cx - 9 * Math.cos((a * Math.PI) / 180)}
+          y1={-13 - 9 * Math.sin((a * Math.PI) / 180)}
+          x2={cx + 9 * Math.cos((a * Math.PI) / 180)}
+          y2={-13 + 9 * Math.sin((a * Math.PI) / 180)}
+          stroke="var(--scene-rim)"
+          strokeWidth="1.8"
+        />
+      ))}
+      <circle cx={cx} cy={-13} r="2.4" fill="var(--scene-rim)" />
+    </g>
+  );
 
   return (
     <g className="scene-rider">
       <g transform={`scale(${BIKE_SCALE})`}>
         {/* Headlight beam, thrown forward onto the road. Dark mode only —
             a lit beam reads as nothing against a bright afternoon. */}
-        <path
-          d="M36 -34 L150 -14 L150 26 L34 -24 Z"
-          fill="url(#beam)"
-          className="scene-beam"
-        />
+        <path d="M38 -30 L152 -12 L152 24 L36 -20 Z" fill="url(#beam)" className="scene-beam" />
 
-        {/* Motion streaks off the rear wheel. */}
+        {/* Motion streaks off the back of the bike. */}
         <g stroke="var(--scene-rider)" strokeOpacity="0.4" strokeWidth="1.8" strokeLinecap="round">
-          {[-22, -14, -6].map((dy, i) => (
+          {[-30, -20, -10].map((dy, i) => (
             <line
               key={dy}
-              x1="-54"
+              x1="-58"
               y1={dy}
-              x2="-40"
+              x2="-42"
               y2={dy}
               className="scene-motion-line"
               style={{ animationDelay: `${i * 0.14}s` }}
@@ -115,95 +139,120 @@ function Rider() {
           ))}
         </g>
 
-        {/* Exhaust, drifting back and up. */}
-        <g transform="translate(-34 -12)">
+        {/* Exhaust, drifting back and up from the underslung can. */}
+        <g transform="translate(-30 -14)">
           {[0, 0.45, 0.9].map((d) => (
             <circle
               key={d}
               r="4"
               fill="var(--scene-rider)"
-              opacity="0.22"
+              opacity="0.2"
               className="scene-exhaust"
               style={{ animationDelay: `${d}s` }}
             />
           ))}
         </g>
 
-        <g stroke="var(--scene-rider)" fill="var(--scene-rider)">
-          {/* ---- Rear wheel ---- */}
-          <g className="scene-wheel">
-            <circle cx="-26" cy="-13" r="13" fill="none" strokeWidth="3.4" />
-            <circle cx="-26" cy="-13" r="7.5" fill="none" strokeWidth="1" strokeOpacity="0.5" />
-            {spokes.map((a) => (
-              <line
-                key={a}
-                x1={-26 - 11 * Math.cos((a * Math.PI) / 180)}
-                y1={-13 - 11 * Math.sin((a * Math.PI) / 180)}
-                x2={-26 + 11 * Math.cos((a * Math.PI) / 180)}
-                y2={-13 + 11 * Math.sin((a * Math.PI) / 180)}
-                strokeWidth="1.1"
-                strokeOpacity="0.55"
-              />
-            ))}
-            <circle cx="-26" cy="-13" r="2" stroke="none" />
-          </g>
+        {wheel(-26, '0s')}
 
-          {/* ---- Front wheel, on a fork that gives slightly ---- */}
-          <g className="scene-suspension">
-            <g className="scene-wheel" style={{ animationDelay: '-0.18s' }}>
-              <circle cx="26" cy="-13" r="13" fill="none" strokeWidth="3.4" />
-              <circle cx="26" cy="-13" r="7.5" fill="none" strokeWidth="1" strokeOpacity="0.5" />
-              {spokes.map((a) => (
-                <line
-                  key={a}
-                  x1={26 - 11 * Math.cos((a * Math.PI) / 180)}
-                  y1={-13 - 11 * Math.sin((a * Math.PI) / 180)}
-                  x2={26 + 11 * Math.cos((a * Math.PI) / 180)}
-                  y2={-13 + 11 * Math.sin((a * Math.PI) / 180)}
-                  strokeWidth="1.1"
-                  strokeOpacity="0.55"
-                />
-              ))}
-              <circle cx="26" cy="-13" r="2" stroke="none" />
-            </g>
-            {/* fork legs + headlight shell */}
-            <line x1="26" y1="-13" x2="33" y2="-34" strokeWidth="3.2" strokeLinecap="round" />
-            <line x1="21" y1="-14" x2="28" y2="-33" strokeWidth="2" strokeOpacity="0.6" strokeLinecap="round" />
-            <path d="M31 -38 q8 2 7 9 l-9 -2 z" stroke="none" />
-            <circle cx="35" cy="-33" r="3" fill="var(--scene-lamp)" stroke="none" className="scene-lamp" />
-            {/* handlebar */}
-            <line x1="30" y1="-38" x2="40" y2="-42" strokeWidth="2.6" strokeLinecap="round" />
-          </g>
-
-          {/* ---- Engine, frame, tank, seat ---- */}
-          <path d="M-26 -13 L-8 -18 L-4 -30 L14 -30 L26 -13" fill="none" strokeWidth="2.6" />
-          {/* engine block */}
-          <path d="M-10 -14 L-2 -26 L10 -26 L12 -14 Z" stroke="none" opacity="0.85" />
-          <line x1="-6" y1="-25" x2="-2" y2="-15" strokeWidth="1" strokeOpacity="0.45" />
-          <line x1="1" y1="-25" x2="4" y2="-15" strokeWidth="1" strokeOpacity="0.45" />
-          {/* exhaust pipe running back from the engine */}
-          <path d="M-8 -15 q-14 1 -24 -1" fill="none" strokeWidth="3" strokeLinecap="round" strokeOpacity="0.75" />
-          {/* tank */}
-          <path d="M-6 -31 q12 -8 22 -2 l-2 6 h-19 z" stroke="none" />
-          <path d="M-2 -33 q7 -3 12 -1" fill="none" strokeWidth="1.4" stroke="var(--scene-tank-hi)" strokeLinecap="round" />
-          {/* seat + tail */}
-          <path d="M-28 -32 q10 -4 22 -1 l-1 4 h-21 z" stroke="none" />
-          {/* swingarm */}
-          <line x1="-26" y1="-13" x2="-6" y2="-17" strokeWidth="2.4" strokeOpacity="0.8" />
+        <g className="scene-suspension">
+          {wheel(26, '-0.4s')}
+          {/* Upside-down forks, raked forward the way a sportbike's are. */}
+          <path
+            d="M24 -13 L34 -40"
+            stroke="var(--scene-rider)"
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+          <path
+            d="M19 -14 L29 -39"
+            stroke="var(--scene-rider)"
+            strokeOpacity="0.55"
+            strokeWidth="2.6"
+            strokeLinecap="round"
+          />
+          {/* Front mudguard, hugging the tyre. */}
+          <path
+            d="M14 -24 q12 -7 24 -1 l-2 4 q-10 -5 -20 1 z"
+            fill="var(--scene-rider)"
+          />
+          {/* Nose fairing + screen — the front mass. */}
+          <path d="M28 -44 q12 1 13 11 l-13 3 z" fill="var(--scene-fairing)" />
+          <path d="M28 -44 q7 -3 10 -1 l1 3 q-6 -1 -11 1 z" fill="var(--scene-visor)" opacity="0.6" />
+          <circle cx="38" cy="-31" r="3.4" fill="var(--scene-lamp)" className="scene-lamp" />
+          {/* Clip-on bar, low and forward. */}
+          <line x1="26" y1="-40" x2="34" y2="-42" stroke="var(--scene-rider)" strokeWidth="2.8" strokeLinecap="round" />
         </g>
 
-        {/* ---- Rider ---- */}
+        {/* ---- The body: one filled silhouette from tail to nose ----
+            Drawn as a single path so the bike has real mass in the middle,
+            which is the whole difference between this and a bicycle. */}
+        <path
+          d="M-34 -34
+             q10 -5 20 -3
+             l10 2
+             q10 1 16 6
+             l6 6
+             q3 4 1 8
+             l-10 3
+             q-6 2 -12 1
+             l-14 -2
+             q-8 -1 -12 -6
+             q-4 -6 -5 -15 z"
+          fill="var(--scene-fairing)"
+        />
+        {/* Tank crease — one highlight following the body, not floating. */}
+        <path
+          d="M-18 -35 q12 -3 24 2"
+          fill="none"
+          stroke="var(--scene-tank-hi)"
+          strokeWidth="1.6"
+          strokeOpacity="0.55"
+          strokeLinecap="round"
+        />
+        {/* Upswept tail unit. */}
+        <path d="M-40 -40 q8 -3 14 0 l2 7 q-9 2 -17 -1 z" fill="var(--scene-fairing)" />
+        <path d="M-41 -40 q4 -2 8 -1 l1 3 q-5 0 -8 1 z" fill="var(--scene-lamp)" opacity="0.5" />
+
+        {/* Engine block, filling the gap between the wheels. */}
+        <path d="M-14 -22 l6 -10 h16 l6 10 q-4 6 -14 6 q-10 0 -14 -6 z" fill="var(--scene-engine)" />
+        <g stroke="var(--scene-rider)" strokeOpacity="0.35" strokeWidth="1.1">
+          <line x1="-8" y1="-30" x2="-8" y2="-19" />
+          <line x1="-2" y1="-31" x2="-2" y2="-18" />
+          <line x1="4" y1="-31" x2="4" y2="-18" />
+        </g>
+        {/* Exhaust can, tucked under the tail. */}
+        <path
+          d="M-6 -18 q-12 2 -22 -1"
+          fill="none"
+          stroke="var(--scene-rider)"
+          strokeWidth="4.5"
+          strokeLinecap="round"
+        />
+        {/* Swingarm to the rear axle. */}
+        <path
+          d="M-26 -13 L-6 -20"
+          stroke="var(--scene-rider)"
+          strokeWidth="4"
+          strokeLinecap="round"
+        />
+
+        {/* ---- Rider, tucked over the tank ---- */}
         <g stroke="var(--scene-rider)" fill="var(--scene-rider)" strokeLinecap="round">
-          {/* leg: hip to knee to footpeg */}
-          <path d="M-14 -33 L-2 -22 L-6 -12" fill="none" strokeWidth="4.6" />
-          {/* torso, leaning into the ride */}
-          <path d="M-14 -34 q6 -14 18 -20" fill="none" strokeWidth="7" />
-          {/* arm reaching for the bar */}
-          <path d="M2 -52 L26 -43" fill="none" strokeWidth="4" />
-          {/* helmet with a visor */}
-          <g transform="translate(8 -56)">
-            <circle r="7" stroke="none" />
-            <path d="M2 -3 q6 0 6.5 5 l-7 0 z" fill="var(--scene-visor)" stroke="none" />
+          {/* Thigh, then shin folded back to the high rearset peg — the
+              tight knee bend is characteristic of this riding position. */}
+          <path d="M-16 -40 L-4 -32" fill="none" strokeWidth="7" />
+          <path d="M-4 -32 L-12 -22" fill="none" strokeWidth="5.5" />
+          <path d="M-13 -21 l-4 2" fill="none" strokeWidth="3" />
+          {/* Torso, folded down over the tank. */}
+          <path d="M-18 -42 q10 -8 22 -14" fill="none" strokeWidth="9" />
+          {/* Upper arm and forearm reaching down to the clip-on. */}
+          <path d="M2 -57 L14 -50" fill="none" strokeWidth="5" />
+          <path d="M14 -50 L27 -42" fill="none" strokeWidth="4.2" />
+          {/* Helmet, chin down and forward. */}
+          <g transform="translate(9 -60) rotate(14)">
+            <path d="M-7 -1 q0 -7 7 -7 q8 0 8 8 q0 5 -4 6 l-9 1 q-2 -3 -2 -8 z" />
+            <path d="M0 -5 q7 -2 8 3 l-9 2 z" fill="var(--scene-visor)" />
           </g>
         </g>
       </g>

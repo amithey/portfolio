@@ -4,6 +4,7 @@ import { SITE, embeddableCount } from '@/lib/site';
 import { ProjectCard } from '@/components/ProjectCard';
 import { Reveal } from '@/components/Reveal';
 import { WinterScene } from '@/components/WinterScene';
+import { CodeCard } from '@/components/CodeCard';
 
 export default function Home() {
   const featuredSlugs = new Set(FEATURED.map((p) => p.slug));
@@ -29,6 +30,10 @@ export default function Home() {
         <div className="mt-10 sm:mt-12">
           <WinterScene />
         </div>
+
+        <Reveal delay={120} className="mt-6 block">
+          <CodeCard />
+        </Reveal>
       </section>
 
       {/* Selected work. */}

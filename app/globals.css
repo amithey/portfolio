@@ -43,6 +43,11 @@
   --scene-visor: #b9d6ee;
   --scene-star: transparent;
   --scene-bolt: #ffffff;
+  /* Bodywork reads a shade off the silhouette colour so the fairing,
+     engine and wheels separate instead of merging into one blob. */
+  --scene-fairing: #253243;
+  --scene-engine: #46586e;
+  --scene-rim: #7c8ea4;
 
   /* Site-wide backdrop, behind the content on every page. Blue-grey rather
      than white — white flakes disappear against this light surface. Stars
@@ -53,6 +58,18 @@
   --ambient-aurora-a: transparent;
   --ambient-aurora-b: transparent;
   --ambient-flash: #c3d6e8;
+  /* Code glyphs sit a touch cooler and lighter than the snow, so the two
+     layers separate instead of reading as one texture. */
+  --ambient-code: #93a9c2;
+
+  /* Syntax colours for the code card. Tuned against --surface-raised;
+     every one clears 4.5:1 on it in both themes. */
+  --code-kw: #9333ea;
+  --code-fn: #b45309;
+  --code-str: #0f766e;
+  --code-num: #1d4ed8;
+  --code-key: #334155;
+  --code-comment: #64748b;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -91,6 +108,9 @@
     --scene-visor: #8fc4f5;
     --scene-star: #dce9f7;
     --scene-bolt: #dbe9fb;
+    --scene-fairing: #101a28;
+    --scene-engine: #23344a;
+    --scene-rim: #46617f;
 
     /* Pale and near-white, since the surface it drifts over is now dark. */
     --ambient-snow: #cfe0f2;
@@ -100,6 +120,14 @@
     --ambient-aurora-a: rgba(74, 222, 173, 0.22);
     --ambient-aurora-b: rgba(139, 135, 245, 0.2);
     --ambient-flash: #93b6dd;
+    --ambient-code: #7fa8d4;
+
+    --code-kw: #c792ea;
+    --code-fn: #ffcb6b;
+    --code-str: #7ee2c0;
+    --code-num: #89b8ff;
+    --code-key: #cbd5e1;
+    --code-comment: #7d8ea3;
   }
 }
 
@@ -115,6 +143,12 @@
   --color-signal-ink: var(--signal-ink);
   --color-live: var(--live);
   --color-warn: var(--warn);
+  --color-code-kw: var(--code-kw);
+  --color-code-fn: var(--code-fn);
+  --color-code-str: var(--code-str);
+  --color-code-num: var(--code-num);
+  --color-code-key: var(--code-key);
+  --color-code-comment: var(--code-comment);
 
   --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
@@ -707,23 +741,62 @@ body {
   pointer-events: none;
 }
 
-/* ---- Snow: three depth bands, sized and paced by the component ---- */
+/* ---- Snow: six-armed crystals in three depth bands, sized and paced by
+       the component. `color` drives the crystal because the symbol strokes
+       with currentColor — one property to theme the whole field. ---- */
 .snow-flake {
   position: absolute;
   top: 0;
-  border-radius: 9999px;
-  background: var(--ambient-snow);
+  color: var(--ambient-snow);
+  overflow: visible;
   animation-name: snow-fall;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   will-change: transform, opacity;
 }
 
+/* Real flakes tumble on the way down, so the rotation is part of the same
+   transform as the fall — a separate rotate animation on the same element
+   would overwrite it rather than compose with it. */
 @keyframes snow-fall {
-  0% { transform: translate3d(0, -8vh, 0); opacity: 0; }
+  0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 0; }
   10% { opacity: var(--flake-opacity, 0.5); }
   90% { opacity: var(--flake-opacity, 0.5); }
-  100% { transform: translate3d(var(--drift, 24px), 108vh, 0); opacity: 0; }
+  100% {
+    transform: translate3d(var(--drift, 24px), 110vh, 0) rotate(var(--spin, 240deg));
+    opacity: 0;
+  }
+}
+
+/* ---- Drifting code glyphs: the "code" half of the atmosphere. Given the
+       same weight as the snow, and told apart from it by motion — these
+       drift and breathe rather than fall. ---- */
+.code-glyph {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--ambient-code);
+  white-space: nowrap;
+  opacity: 0;
+  user-select: none;
+  animation-name: code-drift;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes code-drift {
+  0%, 100% {
+    transform: translate3d(0, 14px, 0) rotate(var(--tilt, 0deg));
+    opacity: 0;
+  }
+  25%, 75% {
+    opacity: var(--glyph-opacity, 0.2);
+  }
+  50% {
+    transform: translate3d(10px, -18px, 0) rotate(calc(var(--tilt, 0deg) * -1));
+    opacity: var(--glyph-opacity, 0.2);
+  }
 }
 
 /* ---- Stars: night only ---- */
