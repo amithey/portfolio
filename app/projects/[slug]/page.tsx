@@ -132,7 +132,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <a
           href={project.repo}
           rel="noreferrer noopener"
-          className="font-semibold text-signal hover:underline"
+          className="link-signal font-semibold"
         >
           Read the source on GitHub →
         </a>

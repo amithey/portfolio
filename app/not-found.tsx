@@ -9,7 +9,7 @@ export default function NotFound() {
       </h1>
       <p className="mt-3 text-muted">The projects are, though.</p>
       <p className="mt-6">
-        <Link href="/projects" className="font-semibold text-signal hover:underline">
+        <Link href="/projects" className="link-signal font-semibold">
           Browse all projects →
         </Link>
       </p>

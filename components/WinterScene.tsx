@@ -1,40 +1,52 @@
-import { SNOWFLAKES, NEURONS, SYNAPSES, CLOUDS_FAR, CLOUDS_NEAR } from './scene-data';
+import {
+  SNOWFLAKES,
+  NEURONS,
+  SYNAPSES,
+  STARS,
+  CLOUDS_FAR,
+  CLOUDS_NEAR,
+  LIGHTNING_BOLT,
+  type Cloud as CloudShape,
+} from './scene-data';
 
 /**
- * The hero scene: a rider crossing a winter landscape at dusk, under a sky
- * wired like a neural net and drifting with real clouds.
+ * The hero scene: a rider crossing a winter landscape, under a sky that is a
+ * neural network and a constellation at the same time.
  *
  * Every motif here is something Amit named — motorcycles, AI, code, winter —
  * so this is a portrait rather than decoration. It is a server component: all
  * motion is CSS, which keeps it out of the JS bundle and lets the single
  * global prefers-reduced-motion rule switch the whole thing off at once.
  *
- * A few things earn a second look if you're editing this:
- *  - Clouds are one cluster of puffs (CLOUD_PUFFS) placed at different points
- *    and scales from CLOUDS_FAR/CLOUDS_NEAR, each rendered twice — at x and
- *    x+800 — inside a group that drifts a full tile width and loops. That's
- *    what makes the drift seamless instead of visibly resetting.
- *  - The far ridge gets a soft blur and the near one doesn't — aerial
- *    perspective (distance reads as haze) rather than a uniform "soft" look.
- *  - The grain and vignette rects are the last two shapes for a reason: they
- *    have to sit on top of everything to read as a texture over the whole
- *    image, not a layer within it.
+ * Things worth knowing before editing:
+ *  - Light mode is an overcast winter afternoon, dark mode is night. The
+ *    difference is entirely in the CSS custom properties plus a few
+ *    dark-only layers (stars, headlight glow) — there is one scene here,
+ *    not two.
+ *  - NEURONS/SYNAPSES do double duty: stars joined into constellations at
+ *    night, a neural net over daylight. Same geometry, two readings.
+ *  - The bike is drawn in its own local coordinate space (~78 units long,
+ *    origin at the ground line between the wheels) and then placed with a
+ *    single transform. That's what makes it resizable without redrawing —
+ *    change BIKE_SCALE and nothing else moves.
+ *  - Grain and vignette are the last two shapes on purpose: they have to sit
+ *    over everything to read as a finish on the whole image.
  */
 
-/** One puff cluster, reused at every cloud position and scale. */
-const CLOUD_PUFFS: { dx: number; dy: number; r: number }[] = [
-  { dx: -30, dy: 8, r: 14 },
-  { dx: -10, dy: -8, r: 18 },
-  { dx: 16, dy: -3, r: 16 },
-  { dx: 36, dy: 8, r: 12 },
-  { dx: 4, dy: 12, r: 13 },
-];
+/**
+ * The bike is 78 units axle-to-axle in its own space; this puts it at ~105
+ * units in the 800-wide scene, a little over twice the size of the version
+ * this replaced. Changing it here moves nothing else — but the wheel-spin
+ * period in globals.css is derived from it, so the two have to change
+ * together or the wheels start slipping.
+ */
+const BIKE_SCALE = 1.35;
 
-function Cloud({ x, y, scale }: { x: number; y: number; scale: number }) {
+function Cloud({ cloud, tint }: { cloud: CloudShape; tint: string }) {
   return (
-    <g transform={`translate(${x} ${y}) scale(${scale})`}>
-      {CLOUD_PUFFS.map((p) => (
-        <circle key={`${p.dx}-${p.dy}`} cx={p.dx} cy={p.dy} r={p.r} />
+    <g transform={`translate(${cloud.x} ${cloud.y}) scale(${cloud.scale})`}>
+      {cloud.puffs.map((p, i) => (
+        <ellipse key={i} cx={p.dx} cy={p.dy} rx={p.rx} ry={p.ry} fill={tint} />
       ))}
     </g>
   );
@@ -43,26 +55,158 @@ function Cloud({ x, y, scale }: { x: number; y: number; scale: number }) {
 /** Both tiles of a cloud layer, positioned for a seamless horizontal loop. */
 function CloudLayer({
   clouds,
-  color,
+  tint,
   opacity,
   blur,
   animationClass,
 }: {
-  clouds: { x: number; y: number; scale: number }[];
-  color: string;
+  clouds: CloudShape[];
+  tint: string;
   opacity: number;
   blur: string;
   animationClass: string;
 }) {
   return (
-    <g fill={color} opacity={opacity} filter={blur} className={animationClass}>
+    <g opacity={opacity} filter={blur} className={animationClass}>
       {[0, 800].map((offset) => (
         <g key={offset} transform={`translate(${offset} 0)`}>
           {clouds.map((c) => (
-            <Cloud key={c.x} x={c.x} y={c.y} scale={c.scale} />
+            <Cloud key={c.x} cloud={c} tint={tint} />
           ))}
         </g>
       ))}
+    </g>
+  );
+}
+
+/**
+ * The motorcycle and its rider, drawn side-on facing right.
+ *
+ * Local space: x from about -42 (rear tyre) to +42 (front wheel), y=0 at the
+ * ground, negative upward. Everything that spins or bounces is its own group
+ * so the CSS can drive it independently.
+ */
+function Rider() {
+  const spokes = [0, 45, 90, 135];
+
+  return (
+    <g className="scene-rider">
+      <g transform={`scale(${BIKE_SCALE})`}>
+        {/* Headlight beam, thrown forward onto the road. Dark mode only —
+            a lit beam reads as nothing against a bright afternoon. */}
+        <path
+          d="M36 -34 L150 -14 L150 26 L34 -24 Z"
+          fill="url(#beam)"
+          className="scene-beam"
+        />
+
+        {/* Motion streaks off the rear wheel. */}
+        <g stroke="var(--scene-rider)" strokeOpacity="0.4" strokeWidth="1.8" strokeLinecap="round">
+          {[-22, -14, -6].map((dy, i) => (
+            <line
+              key={dy}
+              x1="-54"
+              y1={dy}
+              x2="-40"
+              y2={dy}
+              className="scene-motion-line"
+              style={{ animationDelay: `${i * 0.14}s` }}
+            />
+          ))}
+        </g>
+
+        {/* Exhaust, drifting back and up. */}
+        <g transform="translate(-34 -12)">
+          {[0, 0.45, 0.9].map((d) => (
+            <circle
+              key={d}
+              r="4"
+              fill="var(--scene-rider)"
+              opacity="0.22"
+              className="scene-exhaust"
+              style={{ animationDelay: `${d}s` }}
+            />
+          ))}
+        </g>
+
+        <g stroke="var(--scene-rider)" fill="var(--scene-rider)">
+          {/* ---- Rear wheel ---- */}
+          <g className="scene-wheel">
+            <circle cx="-26" cy="-13" r="13" fill="none" strokeWidth="3.4" />
+            <circle cx="-26" cy="-13" r="7.5" fill="none" strokeWidth="1" strokeOpacity="0.5" />
+            {spokes.map((a) => (
+              <line
+                key={a}
+                x1={-26 - 11 * Math.cos((a * Math.PI) / 180)}
+                y1={-13 - 11 * Math.sin((a * Math.PI) / 180)}
+                x2={-26 + 11 * Math.cos((a * Math.PI) / 180)}
+                y2={-13 + 11 * Math.sin((a * Math.PI) / 180)}
+                strokeWidth="1.1"
+                strokeOpacity="0.55"
+              />
+            ))}
+            <circle cx="-26" cy="-13" r="2" stroke="none" />
+          </g>
+
+          {/* ---- Front wheel, on a fork that gives slightly ---- */}
+          <g className="scene-suspension">
+            <g className="scene-wheel" style={{ animationDelay: '-0.18s' }}>
+              <circle cx="26" cy="-13" r="13" fill="none" strokeWidth="3.4" />
+              <circle cx="26" cy="-13" r="7.5" fill="none" strokeWidth="1" strokeOpacity="0.5" />
+              {spokes.map((a) => (
+                <line
+                  key={a}
+                  x1={26 - 11 * Math.cos((a * Math.PI) / 180)}
+                  y1={-13 - 11 * Math.sin((a * Math.PI) / 180)}
+                  x2={26 + 11 * Math.cos((a * Math.PI) / 180)}
+                  y2={-13 + 11 * Math.sin((a * Math.PI) / 180)}
+                  strokeWidth="1.1"
+                  strokeOpacity="0.55"
+                />
+              ))}
+              <circle cx="26" cy="-13" r="2" stroke="none" />
+            </g>
+            {/* fork legs + headlight shell */}
+            <line x1="26" y1="-13" x2="33" y2="-34" strokeWidth="3.2" strokeLinecap="round" />
+            <line x1="21" y1="-14" x2="28" y2="-33" strokeWidth="2" strokeOpacity="0.6" strokeLinecap="round" />
+            <path d="M31 -38 q8 2 7 9 l-9 -2 z" stroke="none" />
+            <circle cx="35" cy="-33" r="3" fill="var(--scene-lamp)" stroke="none" className="scene-lamp" />
+            {/* handlebar */}
+            <line x1="30" y1="-38" x2="40" y2="-42" strokeWidth="2.6" strokeLinecap="round" />
+          </g>
+
+          {/* ---- Engine, frame, tank, seat ---- */}
+          <path d="M-26 -13 L-8 -18 L-4 -30 L14 -30 L26 -13" fill="none" strokeWidth="2.6" />
+          {/* engine block */}
+          <path d="M-10 -14 L-2 -26 L10 -26 L12 -14 Z" stroke="none" opacity="0.85" />
+          <line x1="-6" y1="-25" x2="-2" y2="-15" strokeWidth="1" strokeOpacity="0.45" />
+          <line x1="1" y1="-25" x2="4" y2="-15" strokeWidth="1" strokeOpacity="0.45" />
+          {/* exhaust pipe running back from the engine */}
+          <path d="M-8 -15 q-14 1 -24 -1" fill="none" strokeWidth="3" strokeLinecap="round" strokeOpacity="0.75" />
+          {/* tank */}
+          <path d="M-6 -31 q12 -8 22 -2 l-2 6 h-19 z" stroke="none" />
+          <path d="M-2 -33 q7 -3 12 -1" fill="none" strokeWidth="1.4" stroke="var(--scene-tank-hi)" strokeLinecap="round" />
+          {/* seat + tail */}
+          <path d="M-28 -32 q10 -4 22 -1 l-1 4 h-21 z" stroke="none" />
+          {/* swingarm */}
+          <line x1="-26" y1="-13" x2="-6" y2="-17" strokeWidth="2.4" strokeOpacity="0.8" />
+        </g>
+
+        {/* ---- Rider ---- */}
+        <g stroke="var(--scene-rider)" fill="var(--scene-rider)" strokeLinecap="round">
+          {/* leg: hip to knee to footpeg */}
+          <path d="M-14 -33 L-2 -22 L-6 -12" fill="none" strokeWidth="4.6" />
+          {/* torso, leaning into the ride */}
+          <path d="M-14 -34 q6 -14 18 -20" fill="none" strokeWidth="7" />
+          {/* arm reaching for the bar */}
+          <path d="M2 -52 L26 -43" fill="none" strokeWidth="4" />
+          {/* helmet with a visor */}
+          <g transform="translate(8 -56)">
+            <circle r="7" stroke="none" />
+            <path d="M2 -3 q6 0 6.5 5 l-7 0 z" fill="var(--scene-visor)" stroke="none" />
+          </g>
+        </g>
+      </g>
     </g>
   );
 }
@@ -74,7 +218,7 @@ export function WinterScene() {
         viewBox="0 0 800 420"
         preserveAspectRatio="xMidYMid slice"
         role="img"
-        aria-label="A motorcyclist riding through a snowy landscape at dusk, beneath a sky drawn as a neural network with drifting clouds."
+        aria-label="A motorcyclist riding through a snowy landscape beneath a sky drawn as both a constellation and a neural network."
         className="block h-full w-full"
       >
         <defs>
@@ -87,26 +231,30 @@ export function WinterScene() {
             <stop offset="0%" stopColor="var(--scene-snow-hi)" />
             <stop offset="100%" stopColor="var(--scene-snow-lo)" />
           </linearGradient>
-          <radialGradient id="headlamp" cx="0%" cy="50%" r="100%">
-            <stop offset="0%" stopColor="var(--scene-lamp)" stopOpacity="0.55" />
+          {/* The beam fades out along its length rather than ending on a hard
+              edge, which is what sells it as light instead of a shape. */}
+          <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="var(--scene-lamp)" stopOpacity="0.5" />
+            <stop offset="55%" stopColor="var(--scene-lamp)" stopOpacity="0.14" />
             <stop offset="100%" stopColor="var(--scene-lamp)" stopOpacity="0" />
-          </radialGradient>
+          </linearGradient>
           <radialGradient id="vignette" cx="50%" cy="42%" r="75%">
             <stop offset="55%" stopColor="black" stopOpacity="0" />
-            <stop offset="100%" stopColor="black" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="black" stopOpacity="0.22" />
           </radialGradient>
           {/* Distance reads as haze: only the far ridge gets this. */}
           <filter id="soften" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="1.6" />
           </filter>
           <filter id="cloud-blur-far" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur stdDeviation="7" />
+            <feGaussianBlur stdDeviation="5" />
           </filter>
           <filter id="cloud-blur-near" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur stdDeviation="3.2" />
+            <feGaussianBlur stdDeviation="2.6" />
           </filter>
-          {/* A canvas-grain wash, blended over the finished scene at low
-              opacity — see the rect using it near the end of the file. */}
+          <filter id="star-glow" x="-300%" y="-300%" width="700%" height="700%">
+            <feGaussianBlur stdDeviation="2" />
+          </filter>
           <filter id="grain">
             <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" />
           </filter>
@@ -114,17 +262,36 @@ export function WinterScene() {
 
         <rect width="800" height="420" fill="url(#sky)" />
 
+        {/* Background stars — dark mode only, see .scene-star. */}
+        <g fill="var(--scene-star)" className="scene-stars">
+          {STARS.map((s, i) => (
+            <circle
+              key={i}
+              cx={s.x}
+              cy={s.y}
+              r={s.r}
+              className="scene-star"
+              style={{ animationDelay: `${s.delay}s`, animationDuration: `${s.dur}s` }}
+            />
+          ))}
+        </g>
+
         <CloudLayer
           clouds={CLOUDS_FAR}
-          color="var(--scene-cloud-far)"
-          opacity={0.55}
+          tint="var(--scene-cloud-far)"
+          opacity={0.6}
           blur="url(#cloud-blur-far)"
           animationClass="scene-cloud-far"
         />
 
-        {/* Sky as a neural network — the AI half of the portrait, layered
-            over the clouds like an overlay rather than a physical thing. */}
-        <g className="scene-neurons" stroke="var(--scene-wire)" strokeWidth="0.7" fill="none">
+        {/* Rare lightning: a drawn bolt, plus a full-sky wash that fires with
+            it. Both idle for most of a long cycle — see .scene-bolt. */}
+        <path d={LIGHTNING_BOLT} fill="var(--scene-bolt)" className="scene-bolt" />
+        <rect width="800" height="420" fill="var(--scene-bolt)" className="scene-bolt-flash" />
+
+        {/* The constellation: stars joined by lines at night, a neural net by
+            day. One geometry, two readings. */}
+        <g stroke="var(--scene-wire)" strokeWidth="0.7" fill="none">
           {SYNAPSES.map(([a, b], i) => (
             <line
               key={i}
@@ -138,6 +305,13 @@ export function WinterScene() {
           ))}
         </g>
         <g fill="var(--scene-node)">
+          {/* A soft halo under each node — only visible at night, where it
+              turns a flat dot into something with light coming off it. */}
+          <g filter="url(#star-glow)" className="scene-node-glow">
+            {NEURONS.map((n, i) => (
+              <circle key={i} cx={n.x} cy={n.y} r={n.r * 1.6} />
+            ))}
+          </g>
           {NEURONS.map((n, i) => (
             <circle
               key={i}
@@ -159,7 +333,7 @@ export function WinterScene() {
 
         <CloudLayer
           clouds={CLOUDS_NEAR}
-          color="var(--scene-cloud-near)"
+          tint="var(--scene-cloud-near)"
           opacity={0.7}
           blur="url(#cloud-blur-near)"
           animationClass="scene-cloud-near"
@@ -186,7 +360,7 @@ export function WinterScene() {
         <path
           d="M0 372 Q400 356 800 378"
           stroke="var(--scene-road)"
-          strokeWidth="16"
+          strokeWidth="18"
           fill="none"
           strokeLinecap="round"
         />
@@ -196,63 +370,13 @@ export function WinterScene() {
           strokeWidth="1.5"
           strokeDasharray="16 22"
           fill="none"
+          opacity="0.5"
           className="scene-roadline"
         />
 
-        {/* The rider. Travels the full width, then loops. */}
-        <g className="scene-rider">
-          <ellipse cx="34" cy="0" rx="66" ry="17" fill="url(#headlamp)" />
+        <Rider />
 
-          {/* Motion streaks trailing the rear wheel — the clearest signal
-              that this is riding, not sliding. */}
-          <g stroke="var(--scene-rider)" strokeOpacity="0.45" strokeWidth="1.6" strokeLinecap="round">
-            {[-1.5, 2, 5.5].map((dy, i) => (
-              <line
-                key={dy}
-                x1="-30"
-                y1={dy}
-                x2="-20"
-                y2={dy}
-                className="scene-motion-line"
-                style={{ animationDelay: `${i * 0.15}s` }}
-              />
-            ))}
-          </g>
-
-          <g fill="var(--scene-rider)">
-            {/* wheels, actually turning */}
-            <g className="scene-wheel">
-              <circle cx="-16" cy="4" r="8.5" fill="none" stroke="var(--scene-rider)" strokeWidth="2.4" />
-              <line x1="-16" y1="-4.5" x2="-16" y2="12.5" stroke="var(--scene-rider)" strokeWidth="1" />
-              <line x1="-24" y1="4" x2="-8" y2="4" stroke="var(--scene-rider)" strokeWidth="1" />
-            </g>
-            <path d="M-25 4 a9 3 0 0 1 18 0" fill="none" stroke="var(--scene-rider)" strokeWidth="1.8" />
-
-            <g className="scene-suspension">
-              <g className="scene-wheel" style={{ animationDelay: '-0.2s' }}>
-                <circle cx="14" cy="4" r="8.5" fill="none" stroke="var(--scene-rider)" strokeWidth="2.4" />
-                <line x1="14" y1="-4.5" x2="14" y2="12.5" stroke="var(--scene-rider)" strokeWidth="1" />
-                <line x1="6" y1="4" x2="22" y2="4" stroke="var(--scene-rider)" strokeWidth="1" />
-              </g>
-              <path d="M5 4 a9 3 0 0 1 18 0" fill="none" stroke="var(--scene-rider)" strokeWidth="1.8" />
-            </g>
-
-            {/* frame and tank */}
-            <path d="M-16 4 L-4 -6 L10 -6 L14 4" stroke="var(--scene-rider)" strokeWidth="2.4" fill="none" />
-            <path d="M-6 -7 q7 -5 14 -1 l-2 4 h-11 z" />
-            {/* rider leaning forward */}
-            <path
-              d="M-1 -8 q2 -9 7 -11 q4 -2 6 1"
-              stroke="var(--scene-rider)"
-              strokeWidth="2.6"
-              fill="none"
-              strokeLinecap="round"
-            />
-            <circle cx="6" cy="-21" r="4.2" />
-          </g>
-        </g>
-
-        {/* Snow, in front of everything but the texture and framing below. */}
+        {/* Snow, in front of everything but the finish below. */}
         <g fill="var(--scene-flake)">
           {SNOWFLAKES.map((f, i) => (
             <circle
@@ -266,10 +390,9 @@ export function WinterScene() {
           ))}
         </g>
 
-        {/* Canvas grain, blended over the whole image for a painted rather
-            than vector-flat finish. */}
-        <rect width="800" height="420" filter="url(#grain)" opacity="0.045" style={{ mixBlendMode: 'overlay' }} />
-        {/* Vignette, framing the scene the way a lens would. */}
+        {/* Canvas grain and a vignette, blended over the finished image for a
+            painted rather than vector-flat result. */}
+        <rect width="800" height="420" filter="url(#grain)" opacity="0.05" style={{ mixBlendMode: 'overlay' }} />
         <rect width="800" height="420" fill="url(#vignette)" />
       </svg>
     </div>

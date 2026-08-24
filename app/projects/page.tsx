@@ -121,7 +121,7 @@ export default async function ProjectsPage({
         {activeFilters > 0 && (
           <>
             {' · '}
-            <Link href="/projects" className="text-signal hover:underline">
+            <Link href="/projects" className="link-signal">
               clear filters
             </Link>
           </>
@@ -138,7 +138,7 @@ export default async function ProjectsPage({
         <div className="mt-5 rounded-lg border border-line bg-surface-raised p-8 text-center">
           <p>No projects match those filters.</p>
           <p className="mt-2">
-            <Link href="/projects" className="text-signal hover:underline">
+            <Link href="/projects" className="link-signal">
               Clear them?
             </Link>
           </p>

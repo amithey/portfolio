@@ -16,7 +16,9 @@
   --line: #dce3ea;
   --signal: #0d63e8;
   --signal-ink: #0a4fb8;
-  --live: #12805c;
+  /* Darkened from #12805c, which came to 4.46:1 on --surface-sunken — just
+     under AA. This clears it on every surface the token is used against. */
+  --live: #117a57;
   --warn: #8a5a00;
 
   /* Hero scene — an overcast winter afternoon. */
@@ -35,12 +37,22 @@
   --scene-rider: #1b2430;
   --scene-lamp: #ffd98a;
   --scene-flake: #ffffff;
-  --scene-cloud-far: #d7e4ef;
+  --scene-cloud-far: #ccdcea;
   --scene-cloud-near: #eef4f9;
+  --scene-tank-hi: #ffffff;
+  --scene-visor: #b9d6ee;
+  --scene-star: transparent;
+  --scene-bolt: #ffffff;
 
-  /* Site-wide snowfall, behind the content on every page. Blue-grey rather
-     than white — white flakes disappear against this light surface. */
-  --ambient-snow: #a9c0d6;
+  /* Site-wide backdrop, behind the content on every page. Blue-grey rather
+     than white — white flakes disappear against this light surface. Stars
+     and aurora are night-only, so they're transparent here as a backstop on
+     top of the CSS that already gates them. */
+  --ambient-snow: #9fb9d1;
+  --ambient-star: transparent;
+  --ambient-aurora-a: transparent;
+  --ambient-aurora-b: transparent;
+  --ambient-flash: #c3d6e8;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -73,11 +85,21 @@
     --scene-rider: #05080d;
     --scene-lamp: #ffcf6b;
     --scene-flake: #d8e8f8;
-    --scene-cloud-far: #223850;
-    --scene-cloud-near: #2e4a68;
+    --scene-cloud-far: #1b2d43;
+    --scene-cloud-near: #26405c;
+    --scene-tank-hi: #7fb6ff;
+    --scene-visor: #8fc4f5;
+    --scene-star: #dce9f7;
+    --scene-bolt: #dbe9fb;
 
     /* Pale and near-white, since the surface it drifts over is now dark. */
     --ambient-snow: #cfe0f2;
+    --ambient-star: #e4eefb;
+    /* Aurora greens and violets, kept low-saturation so they read as a
+       glow on the horizon rather than a neon gradient. */
+    --ambient-aurora-a: rgba(74, 222, 173, 0.22);
+    --ambient-aurora-b: rgba(139, 135, 245, 0.2);
+    --ambient-flash: #93b6dd;
   }
 }
 
@@ -128,6 +150,64 @@ body {
   font-size: 0.6875rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+/*
+ * Anchors sit under a sticky header, so anything jumped to needs to clear
+ * it — otherwise the target lands behind the bar.
+ */
+:target {
+  scroll-margin-top: 5.5rem;
+}
+
+/* ------------------------------------------------------------------
+ * Link and button primitives.
+ *
+ * The site had these as ad-hoc class strings repeated at each call site,
+ * which is how the underline offset and hover behaviour had already begun
+ * to drift between pages.
+ * ------------------------------------------------------------------ */
+.link-signal {
+  color: var(--signal);
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease-out, text-decoration-color 0.15s ease-out;
+}
+.link-signal:hover {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  color: var(--signal-ink);
+}
+
+.btn-signal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--signal);
+  padding: 0.65rem 1.15rem;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08), 0 8px 20px -12px color-mix(in oklch, var(--signal) 70%, transparent);
+  transition: background-color 0.18s ease-out, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.18s ease-out;
+}
+.btn-signal:hover {
+  background: var(--signal-ink);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1), 0 14px 28px -14px color-mix(in oklch, var(--signal) 75%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  /* --signal-ink is *lighter* than --signal in dark mode, so the filled
+     button needs dark text on hover to stay legible. */
+  .btn-signal {
+    color: var(--surface-sunken);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-signal:hover { transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -384,25 +464,35 @@ body {
 .scene-roadline { animation: scene-roadline 2.2s linear infinite; }
 
 /*
- * The rider crosses the full width and loops. The vertical keyframes
- * trace the road's curve, which dips toward the middle of the scene.
+ * The rider crosses the full width and loops. The bike is drawn with its
+ * origin on the ground line between the wheels, so these Y values are the
+ * road surface itself — they trace the road's quadratic curve, which sits
+ * near y=372 at the edges and dips to about y=366 mid-scene.
  */
 @keyframes scene-rider {
-  0%   { transform: translate(-90px, 372px); }
-  50%  { transform: translate(400px, 358px); }
-  100% { transform: translate(890px, 378px); }
+  0%   { transform: translate(-110px, 372px); }
+  50%  { transform: translate(400px, 366px); }
+  100% { transform: translate(910px, 378px); }
 }
-.scene-rider { animation: scene-rider 14s linear infinite; }
+.scene-rider { animation: scene-rider 15s linear infinite; }
 
-/* The bike's own wheels turning, independent of the rider's cross-scene
-   travel — without this the rider reads as sliding rather than riding. */
+/*
+ * The bike's own wheels turning, independent of the rider's cross-scene
+ * travel — without this the rider reads as sliding rather than riding.
+ *
+ * The period is derived, not eyeballed: the bike covers ~1020 units in 15s
+ * (68 u/s) and a wheel is r13 scaled by BIKE_SCALE 1.35, so its
+ * circumference is 2*pi*17.55 ~= 110 units — one rotation per ~1.62s.
+ * Getting this wrong is exactly what makes CG vehicles look like they're
+ * gliding on ice, so it has to be kept in step with BIKE_SCALE.
+ */
 @keyframes scene-wheel {
   to { transform: rotate(360deg); }
 }
 .scene-wheel {
   transform-box: fill-box;
   transform-origin: center;
-  animation: scene-wheel 0.5s linear infinite;
+  animation: scene-wheel 1.62s linear infinite;
 }
 
 /* A little suspension give on the front wheel, out of sync with the wheel
@@ -423,6 +513,76 @@ body {
   100% { transform: translateX(-14px); opacity: 0; }
 }
 .scene-motion-line { animation: scene-motion-line 0.45s ease-in infinite; }
+
+/* Exhaust puffs drifting back and up from the pipe. */
+@keyframes scene-exhaust {
+  0%   { transform: translate(0, 0) scale(0.4); opacity: 0.3; }
+  100% { transform: translate(-26px, -12px) scale(1.7); opacity: 0; }
+}
+.scene-exhaust { animation: scene-exhaust 1.4s ease-out infinite; }
+
+/*
+ * Night-only layers.
+ *
+ * Stars, the headlight beam and the glow behind each node are all wrong over
+ * a bright overcast afternoon, so they stay switched off entirely in light
+ * mode and are enabled only under prefers-color-scheme: dark. Anything with
+ * a `transparent` light-mode token (--scene-star) is belt-and-braces on top
+ * of this.
+ */
+.scene-stars,
+.scene-beam,
+.scene-node-glow {
+  opacity: 0;
+}
+
+.scene-lamp { opacity: 0.5; }
+
+@keyframes scene-star-twinkle {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 1; }
+}
+
+@keyframes scene-beam-flicker {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1; }
+}
+
+@media (prefers-color-scheme: dark) {
+  .scene-stars { opacity: 1; }
+  .scene-node-glow { opacity: 0.5; }
+  .scene-star { animation: scene-star-twinkle ease-in-out infinite; }
+  .scene-beam {
+    opacity: 1;
+    animation: scene-beam-flicker 3.7s ease-in-out infinite;
+  }
+  .scene-lamp { opacity: 1; }
+}
+
+/*
+ * Lightning: a drawn bolt plus a full-sky wash, both firing together and
+ * both idle for the overwhelming majority of a deliberately long cycle.
+ * The percentages look fussy because they are — a strike is two fast
+ * flashes a fraction of a second apart, and evenly spaced keyframes read as
+ * a blink instead.
+ */
+@keyframes scene-bolt {
+  0%, 92.4%, 100% { opacity: 0; }
+  92.6%           { opacity: 0.9; }
+  92.9%           { opacity: 0.1; }
+  93.2%           { opacity: 0.75; }
+  93.6%           { opacity: 0; }
+}
+.scene-bolt { animation: scene-bolt 47s linear infinite; }
+
+@keyframes scene-bolt-flash {
+  0%, 92.4%, 100% { opacity: 0; }
+  92.6%           { opacity: 0.3; }
+  92.9%           { opacity: 0.04; }
+  93.2%           { opacity: 0.22; }
+  94%             { opacity: 0; }
+}
+.scene-bolt-flash { animation: scene-bolt-flash 47s linear infinite; }
 
 /* Falling snow, drifting sideways as it goes. */
 @keyframes scene-flake {
@@ -466,22 +626,80 @@ body {
   box-shadow: 0 14px 28px -18px color-mix(in oklch, var(--signal) 45%, transparent);
 }
 
+/* ------------------------------------------------------------------
+ * Project cards.
+ *
+ * Resting state carries a real (if quiet) shadow so a card sits on the
+ * page rather than being a rectangle drawn on it; hovering deepens that,
+ * warms the border to signal, pushes the cover art in slightly, and slides
+ * the arrow. Four small moves in concert read as one deliberate response.
+ * ------------------------------------------------------------------ */
+.card {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 6px 16px -12px rgb(0 0 0 / 0.16);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease-out,
+    box-shadow 0.3s ease-out;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--signal);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.05), 0 20px 40px -20px color-mix(in oklch, var(--signal) 55%, transparent);
+}
+
+/* Scoped to the group so the art only reacts to its own card. */
+.card-cover {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card:hover .card-cover {
+  transform: scale(1.04);
+}
+
+.card-cover-fade {
+  background: linear-gradient(to top, var(--surface-raised), transparent);
+}
+
+.card-arrow {
+  display: inline-block;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card:hover .card-arrow {
+  transform: translateX(4px);
+}
+
+/* The stretched link covers the card, so its focus ring has to be drawn on
+   the card itself — otherwise keyboard focus outlines the whole rectangle
+   at the page edge and reads as nothing. */
+.card-link:focus-visible {
+  outline: none;
+}
+.card:has(.card-link:focus-visible) {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+  border-color: var(--signal);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; }
   .lift:hover { transform: none; box-shadow: none; }
   .icon-caret { opacity: 1; }
+  .card:hover { transform: none; }
+  .card:hover .card-cover { transform: none; }
+  .card:hover .card-arrow { transform: none; }
 }
 
 /* ------------------------------------------------------------------
- * Ambient snowfall (components/SnowOverlay.tsx) — a light, site-wide
- * winter atmosphere behind the content on every page, not just the hero.
+ * The ambient backdrop (components/AmbientBackdrop.tsx) — the living
+ * winter background behind the content on every page.
  *
- * Fixed, pointer-events: none, and rendered once in the root layout. Flake
- * positions are generated by a pure function of index (see the component),
- * not Math.random(), so the server and client markup match exactly.
+ * One fixed, pointer-events: none layer at z-index 1; page content sits at
+ * z-index 10 (see the root layout) because unpositioned elements would
+ * otherwise paint *behind* this.
+ *
+ * Night-only layers — stars and the aurora — are switched on solely under
+ * prefers-color-scheme: dark. Snow and lightning stay in both themes.
  * ------------------------------------------------------------------ */
 
-.snow-overlay {
+.backdrop {
   position: fixed;
   inset: 0;
   z-index: 1;
@@ -489,6 +707,7 @@ body {
   pointer-events: none;
 }
 
+/* ---- Snow: three depth bands, sized and paced by the component ---- */
 .snow-flake {
   position: absolute;
   top: 0;
@@ -507,15 +726,73 @@ body {
   100% { transform: translate3d(var(--drift, 24px), 108vh, 0); opacity: 0; }
 }
 
-/* Three rare touches in the same layer — each on its own long, non-matching
-   cycle so they never fall into visible sync with one another. All three
-   are near-invisible for almost the whole loop; --offset staggers each
-   instance's starting point around that loop (see the component). */
+/* ---- Stars: night only ---- */
+.backdrop-star {
+  position: absolute;
+  border-radius: 9999px;
+  background: var(--ambient-star);
+  box-shadow: 0 0 4px var(--ambient-star);
+  opacity: 0;
+}
+
+@keyframes backdrop-star-twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.85); }
+  50%      { opacity: 0.95; transform: scale(1); }
+}
+
+/* ---- Aurora: night only. Two broad, heavily blurred bands on long,
+       deliberately mismatched cycles, so the sky never visibly repeats. ---- */
+.aurora {
+  position: absolute;
+  inset: -10% -20% auto -20%;
+  height: 70%;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.aurora-band {
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  height: 42%;
+  filter: blur(60px);
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.aurora-band-a {
+  top: 4%;
+  background: linear-gradient(100deg, transparent, var(--ambient-aurora-a), transparent 78%);
+  animation: aurora-drift-a 44s ease-in-out infinite alternate;
+}
+
+.aurora-band-b {
+  top: 26%;
+  background: linear-gradient(80deg, transparent 20%, var(--ambient-aurora-b), transparent);
+  animation: aurora-drift-b 61s ease-in-out infinite alternate;
+}
+
+@keyframes aurora-drift-a {
+  from { transform: translate3d(-6%, 0, 0) skewY(-3deg) scaleY(1); }
+  to   { transform: translate3d(8%, 6%, 0) skewY(2deg) scaleY(1.3); }
+}
+
+@keyframes aurora-drift-b {
+  from { transform: translate3d(6%, 4%, 0) skewY(2deg) scaleY(1.2); }
+  to   { transform: translate3d(-8%, -2%, 0) skewY(-3deg) scaleY(0.9); }
+}
+
+@media (prefers-color-scheme: dark) {
+  .backdrop-star { animation: backdrop-star-twinkle ease-in-out infinite; }
+  .aurora { opacity: 1; }
+}
+
+/* ---- Rare touches. Each sits idle for almost its entire cycle, and the
+       cycles are mutually non-matching so they never fire together. ---- */
 
 /* A glint catching the light — a quick double-blink, then quiet again. */
 .snow-sparkle {
   position: absolute;
-  top: 0;
   border-radius: 9999px;
   background: radial-gradient(circle, var(--ambient-snow) 0%, transparent 72%);
   animation-name: snow-sparkle;
@@ -529,46 +806,51 @@ body {
   99.2%         { opacity: 0.6; transform: scale(0.95); }
 }
 
-/* Distant lightning — a soft double-flash from the top of the screen, then
-   nothing for the rest of a long cycle. Never fully white: this is snow
-   weather, not a storm. */
-.snow-lightning {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(to bottom, color-mix(in oklch, var(--ambient-snow) 70%, white), transparent 65%);
-  animation: snow-lightning 58s linear infinite;
-}
-@keyframes snow-lightning {
-  0%, 98.3%, 100% { opacity: 0; }
-  98.5%           { opacity: 0.24; }
-  98.7%           { opacity: 0.05; }
-  99%             { opacity: 0.16; }
-  99.2%           { opacity: 0; }
-}
-
-/* A single shooting star, crossing once per (long) cycle. The gradient bar
-   itself is the trail — brightest at the leading edge, fading behind it. */
+/* A single shooting star, crossing once per long cycle. The gradient bar is
+   itself the trail — brightest at the leading edge, fading out behind. */
 .snow-shooting-star {
   position: absolute;
   top: 14%;
   left: 55%;
-  width: 90px;
+  width: 110px;
   height: 2px;
   border-radius: 2px;
   background: linear-gradient(90deg, transparent, var(--ambient-snow) 65%, #fff);
+  opacity: 0;
   animation-name: snow-shooting-star;
   animation-timing-function: ease-in;
   animation-iteration-count: infinite;
+  animation-duration: 26s;
 }
 @keyframes snow-shooting-star {
   0%, 90%, 100% { opacity: 0; transform: rotate(28deg) translateX(0); }
   91%           { opacity: 1; }
-  94%           { opacity: 0; transform: rotate(28deg) translateX(-230px); }
+  94%           { opacity: 0; transform: rotate(28deg) translateX(-260px); }
+}
+
+/* Distant lightning — a soft double-flash washing down from the top, then
+   nothing for the rest of a long cycle. Never fully white: this is snow
+   weather, not a thunderstorm. */
+.backdrop-lightning {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(to bottom, var(--ambient-flash), transparent 62%);
+  opacity: 0;
+  animation: backdrop-lightning 39s linear infinite;
+}
+@keyframes backdrop-lightning {
+  0%, 96.2%, 100% { opacity: 0; }
+  96.4%           { opacity: 0.5; }
+  96.7%           { opacity: 0.08; }
+  97%             { opacity: 0.34; }
+  97.6%           { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .snow-overlay { display: none; }
-  .snow-lightning { display: none; }
+  .backdrop,
+  .backdrop-lightning {
+    display: none;
+  }
 }

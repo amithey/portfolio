@@ -3,7 +3,7 @@ import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { SITE } from '@/lib/site';
 import { Header } from '@/components/Header';
-import { SnowOverlay } from '@/components/SnowOverlay';
+import { AmbientBackdrop } from '@/components/AmbientBackdrop';
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
@@ -44,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${spaceGrotesk.variable} ${plexSans.variable} ${plexMono.variable}`}>
-        <SnowOverlay />
+        <AmbientBackdrop />
 
         <a
           href="#main"

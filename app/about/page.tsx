@@ -21,9 +21,9 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border-t border-line py-10">
-      <h2 className="font-display text-xl font-bold tracking-tight">{title}</h2>
-      <div className="mt-5">{children}</div>
+    <section className="border-t border-line py-12">
+      <h2 className="font-display text-2xl font-bold tracking-tight">{title}</h2>
+      <div className="mt-6">{children}</div>
     </section>
   );
 }
@@ -94,23 +94,23 @@ export default function AboutPage() {
           </p>
           <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm">
             <li>
-              <a href={`mailto:${SITE.email}`} className="text-signal hover:underline">
+              <a href={`mailto:${SITE.email}`} className="link-signal">
                 {SITE.email}
               </a>
             </li>
             <li>
-              <a href={SITE.linkedin} className="text-signal hover:underline" rel="noreferrer noopener">
+              <a href={SITE.linkedin} className="link-signal" rel="noreferrer noopener">
                 LinkedIn
               </a>
             </li>
             <li>
-              <a href={SITE.github} className="text-signal hover:underline" rel="noreferrer noopener">
+              <a href={SITE.github} className="link-signal" rel="noreferrer noopener">
                 GitHub
               </a>
             </li>
             {hasCv && (
               <li>
-                <a href={ABOUT.cvFile} className="text-signal hover:underline" download>
+                <a href={ABOUT.cvFile} className="link-signal" download>
                   Download CV
                 </a>
               </li>
@@ -128,7 +128,7 @@ export default function AboutPage() {
             I build things and put them where people can actually use them.{' '}
             {PROJECTS.length} projects are listed on this site — {embeddableCount} of them
             start in the browser, and every one links to its source.{' '}
-            <Link href="/projects" className="text-signal hover:underline">
+            <Link href="/projects" className="link-signal">
               See the work →
             </Link>
           </p>
@@ -202,11 +202,11 @@ export default function AboutPage() {
       )}
 
       <Section title="Get in touch">
-        <p className="text-muted">
+        <p className="max-w-prose leading-relaxed text-muted">
           I&rsquo;m looking for a junior developer role. Email is the fastest way to reach me.
         </p>
-        <p className="mt-4">
-          <a href={`mailto:${SITE.email}`} className="font-semibold text-signal hover:underline">
+        <p className="mt-5">
+          <a href={`mailto:${SITE.email}`} className="btn-signal">
             {SITE.email}
           </a>
         </p>
