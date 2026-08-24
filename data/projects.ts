@@ -68,32 +68,6 @@ export const CATEGORIES: { id: Category; label: string; blurb: string }[] = [
 
 export const PROJECTS: Project[] = [
   {
-    slug: 'web-games',
-    title: 'WebGames',
-    tagline: 'A community platform for uploading, sharing, and playing browser games.',
-    description:
-      'A full platform where anyone can upload a browser game and anyone else can play it. Games are uploaded as a single HTML file or a multi-file ZIP, stored on Supabase, and served back into a sandboxed iframe. Around that sits everything a community needs: ratings, likes, comments, creator profiles, a leaderboard, and an admin dashboard for moderation.',
-    category: 'games-and-interactive',
-    tags: ['react', 'nodejs', 'supabase', 'express', 'tailwindcss', 'vite'],
-    status: 'archived',
-    featured: false,
-    built: '2026-03',
-    repo: 'https://github.com/amithey/web-games',
-    demo: {
-      kind: 'none',
-      embeddable: false,
-      note: 'No live demo, and the honest reason: this ran on a free-tier database that pauses after a week of inactivity. It paused, and restoring it now costs $25 a month — which is not worth it so one card on this page can be clicked. Paying once would only buy another week, since a portfolio gets almost no traffic. The code is all here, along with a RESTORE.md documenting exactly how to bring it back.',
-    },
-    cover: '/images/projects/web-games.webp',
-    highlights: [
-      'Uploads go directly to Supabase through signed URLs, so a 200 MB ZIP never passes through the application server.',
-      'Uploaded games run in a sandboxed iframe with keyboard events isolated, so a game capturing arrow keys can’t hijack the surrounding page.',
-      'The admin dashboard is JWT-authenticated and handles moderation, featuring, and platform analytics.',
-      'Ships a strict Content-Security-Policy rather than the framework default.',
-    ],
-    learned: '',
-  },
-  {
     slug: 'bot-trade',
     title: 'BotTrade',
     tagline: 'An AI trading assistant with a RAG knowledge base, backtesting, and risk controls.',

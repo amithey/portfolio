@@ -1,75 +1,203 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
+import { ABOUT, SKILLS, type TimelineEntry } from '@/data/about';
 import { PROJECTS } from '@/data/projects';
 import { SITE, embeddableCount } from '@/lib/site';
+import { publicFileExists } from '@/lib/covers';
+import { Reveal } from '@/components/Reveal';
 
 export const metadata: Metadata = {
   title: 'About',
-  description: `About ${SITE.name}.`,
+  description: `${SITE.name} — developer. Background, skills and contact details.`,
 };
 
-/** Counted from the data so these numbers can never go stale. */
-const languages = ['TypeScript', 'Python', 'JavaScript', 'Java'];
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="border-t border-line py-10">
+      <h2 className="font-display text-xl font-bold tracking-tight">{title}</h2>
+      <div className="mt-5">{children}</div>
+    </section>
+  );
+}
+
+function Timeline({ entries }: { entries: readonly TimelineEntry[] }) {
+  return (
+    <ol className="space-y-5">
+      {entries.map((e, i) => (
+        <Reveal key={`${e.title}-${i}`} delay={i * 60}>
+          <li className="border-l-2 border-line pl-4">
+            <p className="font-display font-bold">{e.title}</p>
+            {(e.org || e.period) && (
+              <p className="readout mt-1 text-muted">
+                {[e.org, e.period].filter(Boolean).join(' · ')}
+              </p>
+            )}
+            {e.detail && <p className="mt-2 text-sm leading-relaxed text-muted">{e.detail}</p>}
+          </li>
+        </Reveal>
+      ))}
+    </ol>
+  );
+}
 
 export default function AboutPage() {
-  const tested = PROJECTS.find((p) => p.slug === 'capital-gains-tax-report-generator');
+  const hasPhoto = publicFileExists(ABOUT.photo);
+  const hasCv = publicFileExists(ABOUT.cvFile);
+  const initials = SITE.name
+    .split(' ')
+    .map((w) => w[0])
+    .join('');
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-14">
-      <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">About</h1>
+      {/* Identity block: photo, name, where, how to reach. */}
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+        <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-full border border-line bg-surface-sunken">
+          {hasPhoto ? (
+            <Image
+              src={ABOUT.photo}
+              alt={ABOUT.photoAlt}
+              fill
+              sizes="112px"
+              priority
+              className="object-cover"
+            />
+          ) : (
+            <span
+              aria-hidden="true"
+              className="flex h-full w-full items-center justify-center font-display text-3xl font-bold text-muted"
+            >
+              {initials}
+            </span>
+          )}
+        </div>
 
-      <div className="mt-6 space-y-5 leading-relaxed text-muted">
-        <p>
-          I&rsquo;m {SITE.name}, a developer looking for a junior role. This site is the
-          honest version of what I&rsquo;ve built: {PROJECTS.length} projects, {embeddableCount}{' '}
-          of which you can start without leaving the page.
-        </p>
-        <p>
-          The work spans further than I expected it to when I laid it out.{' '}
-          {languages.slice(0, -1).join(', ')} and {languages.at(-1)} — from a Pong clone that
-          fits in one HTML file to a Python trading system of roughly 21,000 lines with a
-          retrieval-augmented decision engine behind it. In between there&rsquo;s a 3D strategy
-          game running on Three.js, a working shop with real orders going through it, and a tax
-          tool that parses Israeli broker exports.
-        </p>
-        <p>
-          They are not all equally polished, and the site says so. Each project carries a status,
-          and where something isn&rsquo;t running the reason is written down rather than hidden —
-          including one project whose database was on a free tier that paused and now wants
-          $25 a month to come back.
-        </p>
-        {tested && (
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            {SITE.name}
+          </h1>
+          <p className="readout mt-2 text-muted">
+            {ABOUT.role} · {ABOUT.location}
+          </p>
+          <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+            <li>
+              <a href={`mailto:${SITE.email}`} className="text-signal hover:underline">
+                {SITE.email}
+              </a>
+            </li>
+            <li>
+              <a href={SITE.linkedin} className="text-signal hover:underline" rel="noreferrer noopener">
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href={SITE.github} className="text-signal hover:underline" rel="noreferrer noopener">
+                GitHub
+              </a>
+            </li>
+            {hasCv && (
+              <li>
+                <a href={ABOUT.cvFile} className="text-signal hover:underline" download>
+                  Download CV
+                </a>
+              </li>
+            )}
+          </ul>
+        </div>
+      </div>
+
+      {/* Written bio if there is one; otherwise a factual summary of the work. */}
+      <div className="mt-8 space-y-4 leading-relaxed text-muted">
+        {ABOUT.bio ? (
+          ABOUT.bio.split('\n\n').map((para) => <p key={para.slice(0, 24)}>{para}</p>)
+        ) : (
           <p>
-            The one I&rsquo;d point at first is{' '}
-            <Link href={`/projects/${tested.slug}`} className="text-signal hover:underline">
-              {tested.title}
+            I build things and put them where people can actually use them.{' '}
+            {PROJECTS.length} projects are listed on this site — {embeddableCount} of them
+            start in the browser, and every one links to its source.{' '}
+            <Link href="/projects" className="text-signal hover:underline">
+              See the work →
             </Link>
-            . It solves a problem I actually had, it runs entirely in the browser so no financial
-            data leaves your machine, and it has 103 tests behind it.
           </p>
         )}
       </div>
 
-      <section className="mt-12 border-t border-line pt-8">
-        <h2 className="font-display text-xl font-bold tracking-tight">Contact</h2>
-        <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
-          <li>
-            <a href={`mailto:${SITE.email}`} className="text-signal hover:underline">
-              {SITE.email}
-            </a>
-          </li>
-          <li>
-            <a href={SITE.linkedin} className="text-signal hover:underline" rel="noreferrer noopener">
-              LinkedIn
-            </a>
-          </li>
-          <li>
-            <a href={SITE.github} className="text-signal hover:underline" rel="noreferrer noopener">
-              GitHub
-            </a>
-          </li>
-        </ul>
-      </section>
+      {ABOUT.interests.length > 0 && (
+        <Section title="Outside of work">
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {ABOUT.interests.map((item, i) => (
+              <Reveal key={item.label} delay={i * 60}>
+                <li className="lift list-none rounded-lg border border-line bg-surface-raised p-4 hover:border-signal">
+                  <p className="font-display font-bold">{item.label}</p>
+                  {item.note && <p className="mt-1.5 text-sm text-muted">{item.note}</p>}
+                </li>
+              </Reveal>
+            ))}
+          </ul>
+        </Section>
+      )}
+
+      <Section title="Skills">
+        <dl className="space-y-4">
+          {SKILLS.map((group) => (
+            <div key={group.group} className="sm:flex sm:gap-6">
+              <dt className="readout w-40 shrink-0 pt-1 text-muted">{group.group}</dt>
+              <dd className="mt-1.5 flex flex-wrap gap-1.5 sm:mt-0">
+                {group.items.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded border border-line px-2 py-0.5 text-sm text-muted"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </Section>
+
+      {ABOUT.experience.length > 0 && (
+        <Section title="Experience">
+          <Timeline entries={ABOUT.experience} />
+        </Section>
+      )}
+
+      {ABOUT.education.length > 0 && (
+        <Section title="Education">
+          <Timeline entries={ABOUT.education} />
+        </Section>
+      )}
+
+      {ABOUT.languages.length > 0 && (
+        <Section title="Languages">
+          <ul className="flex flex-wrap gap-x-6 gap-y-1 text-muted">
+            {ABOUT.languages.map((l) => (
+              <li key={l.name}>
+                {l.name} <span className="readout">{l.level}</span>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
+
+      <Section title="Get in touch">
+        <p className="text-muted">
+          I&rsquo;m looking for a junior developer role. Email is the fastest way to reach me.
+        </p>
+        <p className="mt-4">
+          <a href={`mailto:${SITE.email}`} className="font-semibold text-signal hover:underline">
+            {SITE.email}
+          </a>
+        </p>
+      </Section>
     </div>
   );
 }

@@ -32,3 +32,20 @@ export function coverExists(cover: string): boolean {
   if (!file) return false;
   return (cached ?? readCovers()).has(file);
 }
+
+/**
+ * Whether an arbitrary file exists under public/.
+ *
+ * Same idea as coverExists, generalised: the photo and the CV are optional, and
+ * deciding on the server means the page renders the fallback directly instead of
+ * shipping a broken <img> or a download link to a 404.
+ */
+export function publicFileExists(publicPath: string): boolean {
+  const rel = publicPath.replace(/^\//, '');
+  if (!rel) return false;
+  try {
+    return fs.existsSync(path.join(process.cwd(), 'public', rel));
+  } catch {
+    return false;
+  }
+}
