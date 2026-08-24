@@ -30,6 +30,25 @@ export const SYNAPSES: [number, number][] = [
   [2, 5], [6, 9],
 ];
 
+/**
+ * Cloud positions, one 800-wide tile each. Rendered twice — at x and x+800 —
+ * inside a group that drifts from translateX(0) to translateX(-800) and
+ * loops, so the tile boundary never shows: instance N's right edge is
+ * instance N+1's left edge, by construction rather than by accident.
+ */
+export const CLOUDS_FAR: { x: number; y: number; scale: number }[] = [
+  { x: 70, y: 58, scale: 0.9 },
+  { x: 300, y: 40, scale: 0.68 },
+  { x: 520, y: 74, scale: 1.05 },
+  { x: 700, y: 46, scale: 0.6 },
+];
+
+export const CLOUDS_NEAR: { x: number; y: number; scale: number }[] = [
+  { x: 150, y: 118, scale: 1.2 },
+  { x: 430, y: 100, scale: 0.95 },
+  { x: 650, y: 128, scale: 1.1 },
+];
+
 export const SNOWFLAKES: { x: number; r: number; delay: number; dur: number }[] = [
   { x: 24, r: 1.6, delay: 0, dur: 11 },
   { x: 88, r: 1.1, delay: 2.4, dur: 14 },

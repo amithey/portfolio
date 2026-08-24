@@ -6,6 +6,7 @@ import { PROJECTS } from '@/data/projects';
 import { SITE, embeddableCount } from '@/lib/site';
 import { publicFileExists } from '@/lib/covers';
 import { Reveal } from '@/components/Reveal';
+import { InterestArt } from '@/components/art/InterestArt';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -29,10 +30,15 @@ function Section({
 
 function Timeline({ entries }: { entries: readonly TimelineEntry[] }) {
   return (
-    <ol className="space-y-5">
+    <ol className="space-y-6 border-l-2 border-line">
       {entries.map((e, i) => (
-        <Reveal key={`${e.title}-${i}`} delay={i * 60}>
-          <li className="border-l-2 border-line pl-4">
+        <Reveal key={`${e.title}-${i}`} delay={i * 70} dir="left">
+          <li className="group relative -ml-[2px] border-l-2 border-transparent pl-6">
+            {/* A dot on the timeline, so the sequence reads before the text does. */}
+            <span
+              aria-hidden
+              className="absolute -left-[7px] top-1.5 size-3 rounded-full border-2 border-signal bg-surface transition-transform duration-200 group-hover:scale-125"
+            />
             <p className="font-display font-bold">{e.title}</p>
             {(e.org || e.period) && (
               <p className="readout mt-1 text-muted">
@@ -131,12 +137,19 @@ export default function AboutPage() {
 
       {ABOUT.interests.length > 0 && (
         <Section title="Outside of work">
-          <ul className="grid gap-3 sm:grid-cols-2">
+          <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {ABOUT.interests.map((item, i) => (
-              <Reveal key={item.label} delay={i * 60}>
-                <li className="lift list-none rounded-lg border border-line bg-surface-raised p-4 hover:border-signal">
-                  <p className="font-display font-bold">{item.label}</p>
-                  {item.note && <p className="mt-1.5 text-sm text-muted">{item.note}</p>}
+              <Reveal key={item.label} delay={i * 90} dir={i % 2 === 0 ? 'left' : 'right'}>
+                <li className="lift group list-none overflow-hidden rounded-xl border border-line bg-surface-raised hover:border-signal">
+                  <div className="aspect-square w-full text-ink/80">
+                    <InterestArt label={item.label} />
+                  </div>
+                  <div className="border-t border-line p-3 text-center">
+                    <p className="font-display text-sm font-bold">{item.label}</p>
+                    {item.note && (
+                      <p className="mt-1 text-xs leading-relaxed text-muted">{item.note}</p>
+                    )}
+                  </div>
                 </li>
               </Reveal>
             ))}

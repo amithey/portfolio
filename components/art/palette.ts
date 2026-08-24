@@ -13,10 +13,25 @@ export const PROJECT_HUE: Record<string, number> = {
   'train-game': 8,
 };
 
-export function hueFor(slug: string): number {
-  if (slug in PROJECT_HUE) return PROJECT_HUE[slug];
-  // Deterministic fallback so a project added to the data file still gets art.
+/** Same idea, keyed by the interest label instead of a project slug. */
+export const INTEREST_HUE: Record<string, number> = {
+  Motorcycles: 14,
+  AI: 210,
+  Code: 152,
+  Stocks: 42,
+};
+
+function fallbackHue(key: string): number {
+  // Deterministic, so anything added later still gets a stable colour.
   let h = 0;
-  for (const ch of slug) h = (h * 31 + ch.charCodeAt(0)) % 360;
+  for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) % 360;
   return h;
+}
+
+export function hueFor(slug: string): number {
+  return slug in PROJECT_HUE ? PROJECT_HUE[slug] : fallbackHue(slug);
+}
+
+export function hueForInterest(label: string): number {
+  return label in INTEREST_HUE ? INTEREST_HUE[label] : fallbackHue(label);
 }

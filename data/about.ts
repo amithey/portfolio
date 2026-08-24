@@ -36,11 +36,14 @@ export const ABOUT = {
   bio: '' as string,
 
   /** Labels Amit named. `note` is optional and only shown when present. */
+  // Winter isn't listed here — it's not a hobby with its own moment, it's the
+  // site's ambient atmosphere (see the site-wide snowfall in every page's
+  // layout), so it doesn't get a card of its own.
   interests: [
     { label: 'Motorcycles', note: '' },
     { label: 'AI', note: '' },
     { label: 'Code', note: '' },
-    { label: 'Winter', note: '' },
+    { label: 'Stocks', note: '' },
   ] as { label: string; note?: string }[],
 
   education: [] as TimelineEntry[],

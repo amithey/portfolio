@@ -13,10 +13,13 @@ import { useEffect, useRef, useState } from 'react';
 export function Reveal({
   children,
   delay = 0,
+  dir = 'up',
   className = '',
 }: {
   children: React.ReactNode;
   delay?: number;
+  /** Which side the content arrives from. Defaults to a plain fade-up. */
+  dir?: 'up' | 'left' | 'right';
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -48,6 +51,7 @@ export function Reveal({
       ref={ref}
       className={`reveal ${className}`}
       data-shown={shown}
+      data-dir={dir === 'up' ? undefined : dir}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}

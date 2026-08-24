@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
-import Link from 'next/link';
 import './globals.css';
 import { SITE } from '@/lib/site';
+import { Header } from '@/components/Header';
+import { SnowOverlay } from '@/components/SnowOverlay';
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
@@ -39,15 +40,12 @@ export const metadata: Metadata = {
   },
 };
 
-const NAV = [
-  { href: '/projects', label: 'Projects' },
-  { href: '/about', label: 'About' },
-];
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${spaceGrotesk.variable} ${plexSans.variable} ${plexMono.variable}`}>
+        <SnowOverlay />
+
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-signal focus:px-4 focus:py-2 focus:text-white"
@@ -55,55 +53,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
 
-        <header className="border-b border-line">
-          <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-4">
-            <Link
-              href="/"
-              className="font-display text-[0.95rem] font-bold tracking-tight hover:text-signal"
-            >
-              {SITE.name}
-            </Link>
-            <nav aria-label="Main">
-              <ul className="flex items-center gap-5 text-sm">
-                {NAV.map((item) => (
-                  <li key={item.href}>
-                    <Link href={item.href} className="text-muted hover:text-signal">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-                <li>
-                  <a
-                    href={SITE.github}
-                    className="text-muted hover:text-signal"
-                    rel="noreferrer noopener"
-                  >
-                    GitHub
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </header>
+        <Header />
 
-        <main id="main">{children}</main>
+        {/* relative z-10: without an explicit stacking order, unpositioned
+            content paints behind the fixed, positive-z-index snow layer. */}
+        <main id="main" className="relative z-10">
+          {children}
+        </main>
 
-        <footer className="mt-24 border-t border-line">
-          <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-            <p className="readout">{SITE.name}</p>
-            <ul className="flex flex-wrap gap-4">
+        <footer className="relative z-10 mt-24 border-t border-line bg-surface-sunken">
+          <div className="mx-auto flex max-w-5xl flex-col gap-4 px-5 py-10 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="readout text-ink">{SITE.name}</p>
+              <p className="readout mt-1">
+                built with next.js · deployed on vercel
+              </p>
+            </div>
+            <ul className="flex flex-wrap gap-x-5 gap-y-2">
               <li>
-                <a href={`mailto:${SITE.email}`} className="hover:text-signal">
+                <a href={`mailto:${SITE.email}`} className="transition-colors hover:text-signal">
                   {SITE.email}
                 </a>
               </li>
               <li>
-                <a href={SITE.github} className="hover:text-signal" rel="noreferrer noopener">
+                <a href={SITE.github} className="transition-colors hover:text-signal" rel="noreferrer noopener">
                   GitHub
                 </a>
               </li>
               <li>
-                <a href={SITE.linkedin} className="hover:text-signal" rel="noreferrer noopener">
+                <a href={SITE.linkedin} className="transition-colors hover:text-signal" rel="noreferrer noopener">
                   LinkedIn
                 </a>
               </li>

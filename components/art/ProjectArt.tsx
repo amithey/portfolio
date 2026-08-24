@@ -1,3 +1,4 @@
+import { Frame, ink } from './Frame';
 import { hueFor } from './palette';
 
 /**
@@ -12,49 +13,6 @@ import { hueFor } from './palette';
  * switch all of it off at once.
  */
 
-function Frame({ slug, children }: { slug: string; children: React.ReactNode }) {
-  const hue = hueFor(slug);
-  const id = `art-${slug}`;
-
-  return (
-    <svg
-      viewBox="0 0 320 200"
-      role="img"
-      aria-hidden
-      preserveAspectRatio="xMidYMid slice"
-      className="h-full w-full"
-      style={{ '--h': hue } as React.CSSProperties}
-    >
-      <defs>
-        <linearGradient id={`${id}-bg`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor={`hsl(${hue} 70% 55% / 0.30)`} />
-          <stop offset="55%" stopColor={`hsl(${(hue + 40) % 360} 70% 50% / 0.13)`} />
-          <stop offset="100%" stopColor={`hsl(${(hue + 80) % 360} 70% 45% / 0.05)`} />
-        </linearGradient>
-        <radialGradient id={`${id}-glow`} cx="50%" cy="45%" r="60%">
-          <stop offset="0%" stopColor={`hsl(${hue} 90% 65% / 0.35)`} />
-          <stop offset="100%" stopColor="transparent" />
-        </radialGradient>
-      </defs>
-
-      <rect width="320" height="200" fill={`url(#${id}-bg)`} />
-      <ellipse
-        cx="160"
-        cy="95"
-        rx="150"
-        ry="90"
-        fill={`url(#${id}-glow)`}
-        className="art-breathe"
-        style={{ transformOrigin: '160px 95px' }}
-      />
-      {children}
-    </svg>
-  );
-}
-
-/** Strokes follow the tile's text colour, so every scene works in both themes. */
-const ink = 'currentColor';
-
 /* ------------------------------------------------------------------ */
 
 function WebGamesArt() {
@@ -68,7 +26,7 @@ function WebGamesArt() {
   ];
 
   return (
-    <Frame slug="web-games">
+    <Frame id="web-games" hue={hueFor('web-games')}>
       {cards.map((c) => (
         <g key={`${c.x}-${c.y}`} className="art-float" style={{ animationDelay: c.d }}>
           <rect
@@ -123,7 +81,7 @@ function BotTradeArt() {
   ];
 
   return (
-    <Frame slug="bot-trade">
+    <Frame id="bot-trade" hue={hueFor('bot-trade')}>
       {candles.map((c, i) => (
         <g key={c.x} className="art-grow" style={{ animationDelay: `${i * 0.09}s`, transformOrigin: 'center bottom' }}>
           <line
@@ -169,7 +127,7 @@ function BotTradeArt() {
 function BagStoreArt() {
   // A knitted bag, stitches and all.
   return (
-    <Frame slug="bag-store">
+    <Frame id="bag-store" hue={hueFor('bag-store')}>
       <g className="art-sway" style={{ transformOrigin: 'center top' }}>
         <path
           d="M126 78 v-14 a34 34 0 0 1 68 0 v14"
@@ -217,7 +175,7 @@ function DominionArt() {
   const hex = (cx: number, cy: number) => `M${cx - 16} ${cy} l8 -12 h16 l8 12 l-8 12 h-16 z`;
 
   return (
-    <Frame slug="dominion">
+    <Frame id="dominion" hue={hueFor('dominion')}>
       {[0, 1].map((i) => (
         <ellipse
           key={i}
@@ -260,7 +218,7 @@ function DominionArt() {
 function TaxArt() {
   // A form resolving into a number.
   return (
-    <Frame slug="capital-gains-tax-report-generator">
+    <Frame id="capital-gains-tax-report-generator" hue={hueFor('capital-gains-tax-report-generator')}>
       <g className="art-lift">
         <rect
           x="58"
@@ -311,7 +269,7 @@ function TaxArt() {
 function PongArt() {
   // The table, mid-rally.
   return (
-    <Frame slug="pong-game">
+    <Frame id="pong-game" hue={hueFor('pong-game')}>
       <rect
         x="20"
         y="22"
@@ -344,7 +302,7 @@ function PongArt() {
 function TrainArt() {
   // Endless runner: the track scrolls, the train holds its lane.
   return (
-    <Frame slug="train-game">
+    <Frame id="train-game" hue={hueFor('train-game')}>
       <g className="art-scroll">
         {/* Two identical sleeper runs, so the loop has no seam. */}
         {[0, 320].map((offset) => (
@@ -402,7 +360,7 @@ function DefaultArt({ slug, title }: { slug: string; title: string }) {
     .join('');
 
   return (
-    <Frame slug={slug}>
+    <Frame id={slug} hue={hueFor(slug)}>
       <text
         x="160"
         y="118"
