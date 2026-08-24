@@ -1,26 +1,207 @@
 @import "tailwindcss";
 
+/*
+ * Two hues, each with one job:
+ *   --signal  is interaction. Nothing decorative is ever this colour.
+ *   --live    is verified-running state. If something is green here, it runs.
+ * Everything else is ink on a cool surface.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --surface: #fbfcfd;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f1f4f7;
+  --surface-muted: #e8edf2;
+  --ink: #1b2430;
+  --muted: #5c6b7a;
+  --line: #dce3ea;
+  --signal: #0d63e8;
+  --signal-ink: #0a4fb8;
+  --live: #12805c;
+  --warn: #8a5a00;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --surface: #10151b;
+    --surface-raised: #161d26;
+    --surface-sunken: #0b0f14;
+    --surface-muted: #1a222c;
+    --ink: #e6edf5;
+    --muted: #93a3b4;
+    --line: #26313d;
+    --signal: #5ba2ff;
+    --signal-ink: #8cc0ff;
+    --live: #3fbc8d;
+    --warn: #e0a94a;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-surface-muted: var(--surface-muted);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-signal: var(--signal);
+  --color-signal-ink: var(--signal-ink);
+  --color-live: var(--live);
+  --color-warn: var(--warn);
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
 }
+
+* {
+  min-width: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Visible, high-contrast focus. Never removed, only shaped. */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* The status readout that runs through the whole site. */
+.readout {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Cover art motion.
+ *
+ * Each class is shaped to the thing it moves — paddles slide, bars grow
+ * from their base, trees pivot at the trunk. Relative transform origins
+ * need transform-box: fill-box to mean anything inside an SVG; the ones
+ * given absolute viewBox coordinates deliberately keep the default.
+ *
+ * The global prefers-reduced-motion rule above switches all of it off.
+ * ------------------------------------------------------------------ */
+
+.art-grow,
+.art-sway,
+.art-wave,
+.art-fill {
+  transform-box: fill-box;
+}
+
+@keyframes art-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50%      { transform: scale(1.06); opacity: 1; }
+}
+.art-breathe { animation: art-breathe 7s ease-in-out infinite; }
+
+@keyframes art-ball {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(96px, 34px); }
+  50%      { transform: translate(196px, -8px); }
+  75%      { transform: translate(96px, 40px); }
+}
+.art-ball { animation: art-ball 6s ease-in-out infinite; }
+
+@keyframes art-paddle-l {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(26px); }
+}
+.art-paddle-l { animation: art-paddle-l 6s ease-in-out infinite; }
+
+@keyframes art-paddle-r {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-24px); }
+}
+.art-paddle-r { animation: art-paddle-r 6s ease-in-out infinite; }
+
+@keyframes art-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+.art-bob { animation: art-bob 4.5s ease-in-out infinite; }
+
+@keyframes art-float {
+  0%, 100% { transform: translate(0, 0); opacity: 0.75; }
+  50%      { transform: translate(5px, -7px); opacity: 1; }
+}
+.art-float { animation: art-float 8s ease-in-out infinite; }
+
+@keyframes art-lift {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.art-lift { animation: art-lift 6.5s ease-in-out infinite; }
+
+/* Bars rising from their baseline — origin is set inline to center bottom. */
+@keyframes art-grow {
+  0%       { transform: scaleY(0.35); opacity: 0.5; }
+  55%,100% { transform: scaleY(1); opacity: 1; }
+}
+.art-grow { animation: art-grow 3.6s ease-in-out infinite alternate; }
+
+/* A bar filling left to right. */
+@keyframes art-fill {
+  0%       { transform: scaleX(0.15); opacity: 0.45; }
+  60%,100% { transform: scaleX(1); opacity: 1; }
+}
+.art-fill { transform-origin: left center; animation: art-fill 4s ease-in-out infinite alternate; }
+
+@keyframes art-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+.art-pulse { animation: art-pulse 2.4s ease-in-out infinite; }
+
+/* Concentric rings spreading outward and fading. */
+@keyframes art-ripple {
+  0%   { transform: scale(0.35); opacity: 0.9; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.art-ripple { transform-origin: center; animation: art-ripple 4.8s ease-out infinite; }
+
+@keyframes art-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-64px); }
+}
+.art-scroll { animation: art-scroll 3.2s linear infinite; }
+
+/* Pivoting at the trunk, not the middle. */
+@keyframes art-sway {
+  0%, 100% { transform: rotate(-2.2deg); }
+  50%      { transform: rotate(2.2deg); }
+}
+.art-sway { animation: art-sway 5.5s ease-in-out infinite; }
+
+@keyframes art-wave {
+  0%, 100% { transform: rotate(-6deg) scaleX(0.96); }
+  50%      { transform: rotate(6deg) scaleX(1.04); }
+}
+.art-wave { animation: art-wave 5s ease-in-out infinite; }
