@@ -18,6 +18,23 @@
   --signal-ink: #0a4fb8;
   --live: #12805c;
   --warn: #8a5a00;
+
+  /* Hero scene — an overcast winter afternoon. */
+  --scene-sky-top: #cfe0f0;
+  --scene-sky-mid: #e2ecf6;
+  --scene-sky-low: #f2f7fb;
+  --scene-wire: #7d9dbd;
+  --scene-node: #4d7fae;
+  --scene-ridge-far: #b9cdde;
+  --scene-ridge-near: #93aec6;
+  --scene-tree: #5f7f96;
+  --scene-snow-hi: #ffffff;
+  --scene-snow-lo: #e6eef5;
+  --scene-road: #9fb2c2;
+  --scene-road-line: #f4f8fb;
+  --scene-rider: #1b2430;
+  --scene-lamp: #ffd98a;
+  --scene-flake: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -33,6 +50,23 @@
     --signal-ink: #8cc0ff;
     --live: #3fbc8d;
     --warn: #e0a94a;
+
+    /* Same scene at dusk. */
+    --scene-sky-top: #0b1220;
+    --scene-sky-mid: #142033;
+    --scene-sky-low: #1d2c42;
+    --scene-wire: #3d5f8a;
+    --scene-node: #7fb6ff;
+    --scene-ridge-far: #16253a;
+    --scene-ridge-near: #1e3149;
+    --scene-tree: #16283d;
+    --scene-snow-hi: #35506e;
+    --scene-snow-lo: #22364f;
+    --scene-road: #2b4160;
+    --scene-road-line: #7f9dc2;
+    --scene-rider: #05080d;
+    --scene-lamp: #ffcf6b;
+    --scene-flake: #d8e8f8;
   }
 }
 
@@ -205,3 +239,95 @@ body {
   50%      { transform: rotate(6deg) scaleX(1.04); }
 }
 .art-wave { animation: art-wave 5s ease-in-out infinite; }
+
+/* ------------------------------------------------------------------
+ * Hero scene motion.
+ *
+ * Transforms and opacity only — nothing here causes layout or paint of
+ * the surrounding page. The global prefers-reduced-motion rule freezes
+ * all of it, leaving a still winter illustration that still reads.
+ * ------------------------------------------------------------------ */
+
+.scene {
+  aspect-ratio: 20 / 11;
+}
+@media (max-width: 640px) {
+  .scene { aspect-ratio: 4 / 3; }
+}
+
+/* Signal travelling along a connection. */
+@keyframes scene-synapse {
+  0%, 100% { opacity: 0.18; }
+  50%      { opacity: 0.7; }
+}
+.scene-synapse { animation: scene-synapse 6s ease-in-out infinite; }
+
+@keyframes scene-node {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.35); }
+}
+.scene-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: scene-node 4.5s ease-in-out infinite;
+}
+
+@keyframes scene-tree {
+  0%, 100% { transform: rotate(-1.1deg); }
+  50%      { transform: rotate(1.1deg); }
+}
+.scene-tree {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: scene-tree 7s ease-in-out infinite;
+}
+
+/* Road markings streaming past the rider. */
+@keyframes scene-roadline {
+  to { stroke-dashoffset: -76; }
+}
+.scene-roadline { animation: scene-roadline 2.2s linear infinite; }
+
+/*
+ * The rider crosses the full width and loops. The vertical keyframes
+ * trace the road's curve, which dips toward the middle of the scene.
+ */
+@keyframes scene-rider {
+  0%   { transform: translate(-90px, 372px); }
+  50%  { transform: translate(400px, 358px); }
+  100% { transform: translate(890px, 378px); }
+}
+.scene-rider { animation: scene-rider 14s linear infinite; }
+
+/* Falling snow, drifting sideways as it goes. */
+@keyframes scene-flake {
+  0%   { transform: translate(0, 0); opacity: 0; }
+  10%  { opacity: 0.9; }
+  90%  { opacity: 0.9; }
+  100% { transform: translate(26px, 440px); opacity: 0; }
+}
+.scene-flake { animation: scene-flake linear infinite; }
+
+/* Cards arriving as they scroll into view. */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+}
+.reveal[data-shown='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Lift on hover — the only motion tied to the pointer. */
+.lift {
+  transition: transform 0.2s ease-out, border-color 0.2s ease-out;
+}
+.lift:hover {
+  transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+  .lift:hover { transform: none; }
+}
