@@ -81,7 +81,7 @@ export const PROJECTS: Project[] = [
     demo: {
       kind: 'video',
       embeddable: false,
-      note: 'Shown as a recording rather than a live demo: running it burns paid Anthropic API credits on every request, so a public instance would be open season on my API key.',
+      note: 'A live version is on the way: a free COMMITTEE-only mode that makes no API calls at all, plus bring-your-own-key for the LLM modes. Shown as a recording until sign-in and hosting are finished, then this becomes a real demo you can run.',
     },
     cover: '/images/projects/bot-trade.webp',
     highlights: [
@@ -89,7 +89,8 @@ export const PROJECTS: Project[] = [
       'Model output never reaches an order directly — it passes through a separate risk layer with position sizing, a daily loss limit, and a hard halt.',
       'Per-ticker anomaly and market-regime models are trained and persisted alongside the rule engine.',
       'Backtesting runs the same decision path against historical data, so strategy changes are measurable rather than guessed at.',
-      'Ships with a Dockerfile and compose file, and a dashboard with password authentication.',
+      'Being rebuilt for multiple simultaneous users: a shared decision cache so concurrent visitors on the same bar cost one upstream call, per-account sign-in, and a live-trading engine that survives a page refresh instead of orphaning its thread.',
+      'The portfolio it trades is entirely simulated — no live brokerage connection exists anywhere in the code.',
     ],
     learned: '',
   },
