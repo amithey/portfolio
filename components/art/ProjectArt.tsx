@@ -84,6 +84,16 @@ function BotTradeArt() {
     return { cx: c.x + 6, cy: c.y - 26, candleTop: c.y - 9 };
   });
 
+  /**
+   * The price line traces every candle's own top, not just the four read
+   * nodes. Connecting only the nodes used to skip candle index 6 — shorter
+   * than its neighbours — so that stretch of line floated in empty space
+   * above it rather than sitting on any bar. A price line has to hug the
+   * bars underneath it the whole way across; only the glowing markers are
+   * selective about which candles they call out.
+   */
+  const priceLine = candles.map((c) => ({ x: c.x + 6, y: c.y - 9 }));
+
   return (
     <Frame id="bot-trade" hue={hueFor('bot-trade')}>
       {candles.map((c, i) => (
@@ -119,10 +129,10 @@ function BotTradeArt() {
         ))}
       </g>
 
-      {/* The graph itself, now following the shape of the data below it. */}
+      {/* The price line, hugging every candle's top all the way across. */}
       <g stroke={ink} strokeOpacity="0.4" strokeWidth="1.2">
-        {reads.slice(0, -1).map((r, i) => (
-          <line key={r.cx} x1={r.cx} y1={r.cy} x2={reads[i + 1].cx} y2={reads[i + 1].cy} />
+        {priceLine.slice(0, -1).map((p, i) => (
+          <line key={p.x} x1={p.x} y1={p.y} x2={priceLine[i + 1].x} y2={priceLine[i + 1].y} />
         ))}
       </g>
 
