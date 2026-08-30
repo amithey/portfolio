@@ -151,6 +151,10 @@ function BotTradeArt() {
   );
 }
 
+// The bag body, shared by the fill and by the clip that keeps the stitch rows
+// inside the silhouette.
+const bagBody = 'M104 78 h112 q-4 44 -12 66 q-4 12 -16 14 h-56 q-12 -2 -16 -14 q-8 -22 -12 -66 z';
+
 function BagStoreArt() {
   // A knitted bag: soft body, visible stitch rows, and a price tag.
   return (
@@ -167,8 +171,14 @@ function BagStoreArt() {
         />
         {/* Body — curved sides and a rounded base, so it hangs like fabric
             rather than sitting there as a hard trapezium. */}
+        <defs>
+          {/* Namespaced like every other id in this file — these cards share a document. */}
+          <clipPath id="bag-store-body">
+            <path d={bagBody} />
+          </clipPath>
+        </defs>
         <path
-          d="M104 78 h112 q-4 44 -12 66 q-4 12 -16 14 h-56 q-12 -2 -16 -14 q-8 -22 -12 -66 z"
+          d={bagBody}
           fill="hsl(var(--h) 65% 55% / 0.45)"
           stroke={ink}
           strokeOpacity="0.4"
@@ -176,22 +186,31 @@ function BagStoreArt() {
         />
         {/* Cuff along the top opening. */}
         <path d="M104 78 h112 l-2 12 h-108 z" fill={ink} fillOpacity="0.14" />
-        {/* Stitch rows, narrowing with the body as it falls. */}
-        {[98, 114, 130, 146].map((y, i) => {
-          const inset = 8 + i * 3;
-          const step = (200 - inset * 2) / 5;
-          const d = Array.from({ length: 5 }, () => `q${step / 2} -7 ${step} 0`).join(' ');
-          return (
-            <path
-              key={y}
-              d={`M${108 + inset} ${y} ${d}`}
-              fill="none"
-              stroke={ink}
-              strokeOpacity="0.22"
-              strokeWidth="1.6"
-            />
-          );
-        })}
+        {/* Stitch rows, narrowing with the body as it falls. Each row spans the
+            body's real width at its own height; the span used to be derived from
+            a flat 200, which ran every row well past the right edge. The clip is
+            the guarantee — nothing here can escape the silhouette. */}
+        <g clipPath="url(#bag-store-body)">
+          {[
+            { y: 98, left: 112, right: 208 },
+            { y: 114, left: 115, right: 205 },
+            { y: 130, left: 118, right: 202 },
+            { y: 146, left: 123, right: 197 },
+          ].map(({ y, left, right }) => {
+            const step = (right - left) / 5;
+            const d = Array.from({ length: 5 }, () => `q${step / 2} -7 ${step} 0`).join(' ');
+            return (
+              <path
+                key={y}
+                d={`M${left} ${y} ${d}`}
+                fill="none"
+                stroke={ink}
+                strokeOpacity="0.22"
+                strokeWidth="1.6"
+              />
+            );
+          })}
+        </g>
       </g>
       {/* Price tag on a string — says "shop", not just "bag". */}
       <g className="art-float">
