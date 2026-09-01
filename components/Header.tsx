@@ -59,6 +59,19 @@ export function Header() {
 
     const update = () => {
       frame = 0;
+
+      // The final section can sit below the line forever, because the page
+      // runs out of scroll before its top ever gets there: everything under
+      // it (the section itself, the footer and the gap above the footer)
+      // adds up to less than a viewport. Contact never lit up for exactly
+      // that reason. Hitting the bottom of the page means you are in the
+      // last section, whatever its top says.
+      const scrollBottom = window.scrollY + window.innerHeight;
+      if (scrollBottom >= document.documentElement.scrollHeight - 2) {
+        setActive(sections[sections.length - 1].id);
+        return;
+      }
+
       let current: string | null = null;
       for (const el of sections) {
         if (el.getBoundingClientRect().top <= LINE) current = el.id;

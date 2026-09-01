@@ -133,8 +133,18 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Contact. */}
-      <section id="contact" className="border-t border-line py-16 sm:py-20">
+      {/*
+        Contact. The min-height is load-bearing, not styling: as the last
+        section, everything below its top (itself, the footer, and the gap
+        above the footer) has to add up to more than a viewport, or the page
+        runs out of scroll before the section can reach the top and clicking
+        the Contact tab lands you short of it. Content is centred so the
+        extra room reads as a deliberate closing panel rather than dead air.
+      */}
+      <section
+        id="contact"
+        className="flex min-h-[calc(100svh-19rem)] flex-col justify-center border-t border-line py-16 sm:py-20"
+      >
         <h2 className="font-display text-3xl font-bold tracking-tight">Get in touch</h2>
         <p className="mt-4 max-w-prose leading-relaxed text-muted">
           I&rsquo;m looking for a junior developer role. Email is the fastest way to reach me.
