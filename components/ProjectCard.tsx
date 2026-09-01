@@ -2,10 +2,10 @@ import Link from 'next/link';
 import type { Project } from '@/data/projects';
 import { Cover } from './Cover';
 
-const STATUS: Record<Project['status'], { label: string; className: string }> = {
-  live: { label: 'live', className: 'text-live' },
-  wip: { label: 'in progress', className: 'text-warn' },
-  archived: { label: 'archived', className: 'text-muted' },
+const STATUS: Record<Project['status'], { label: string; className: string; dot: string }> = {
+  live: { label: 'live', className: 'text-live', dot: 'dot-live' },
+  wip: { label: 'in progress', className: 'text-warn', dot: '' },
+  archived: { label: 'archived', className: 'text-muted', dot: '' },
 };
 
 function demoLabel(project: Project): string {
@@ -58,7 +58,10 @@ export function ProjectCard({ project, large = false }: { project: Project; larg
       <div className={`flex flex-1 flex-col border-t border-line ${large ? 'p-6' : 'p-5'}`}>
         <div className="flex items-center justify-between gap-3">
           <p className={`readout ${status.className}`}>
-            <span aria-hidden="true">●</span> {status.label}
+            <span aria-hidden="true" className={status.dot}>
+              ●
+            </span>{' '}
+            {status.label}
           </p>
           {built && <p className="readout text-muted">{built}</p>}
         </div>

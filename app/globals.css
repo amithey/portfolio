@@ -117,8 +117,8 @@
     --ambient-star: #e4eefb;
     /* Aurora greens and violets, kept low-saturation so they read as a
        glow on the horizon rather than a neon gradient. */
-    --ambient-aurora-a: rgba(74, 222, 173, 0.22);
-    --ambient-aurora-b: rgba(139, 135, 245, 0.2);
+    --ambient-aurora-a: rgba(74, 222, 173, 0.34);
+    --ambient-aurora-b: rgba(139, 135, 245, 0.32);
     --ambient-flash: #93b6dd;
     --ambient-code: #7fa8d4;
 
@@ -450,6 +450,27 @@ body {
   .scene { aspect-ratio: 4 / 3; }
 }
 
+/*
+ * At night the scene is the brightest thing on the page, so it should spill
+ * a little light onto the surface around it. Light mode gets a plain shadow
+ * instead — an overcast afternoon has nothing to glow with.
+ */
+.scene {
+  box-shadow: 0 10px 30px -18px rgb(0 0 0 / 0.3);
+}
+@media (prefers-color-scheme: dark) {
+  .scene {
+    box-shadow:
+      0 0 0 1px color-mix(in oklch, var(--signal) 16%, transparent),
+      0 18px 60px -24px color-mix(in oklch, var(--signal) 45%, transparent);
+  }
+}
+
+/* Status dots that mean "this is running" glow; the other states don't. */
+.dot-live {
+  filter: drop-shadow(0 0 4px color-mix(in oklch, var(--live) 75%, transparent));
+}
+
 /* Signal travelling along a connection. */
 @keyframes scene-synapse {
   0%, 100% { opacity: 0.18; }
@@ -491,11 +512,16 @@ body {
 }
 .scene-cloud-near { animation: scene-cloud-near 85s linear infinite; }
 
-/* Road markings streaming past the rider. */
-@keyframes scene-roadline {
-  to { stroke-dashoffset: -76; }
-}
-.scene-roadline { animation: scene-roadline 2.2s linear infinite; }
+/*
+ * Road markings are deliberately NOT animated.
+ *
+ * The camera in this scene is fixed — the bike visibly travels across the
+ * frame rather than being tracked — so paint on the road cannot move. It
+ * used to scroll left at about half the bike's speed, which read as the
+ * ground sliding backwards underneath a bike going forwards. The speed cues
+ * that belong here are the ones attached to the bike itself: spinning
+ * wheels, exhaust and motion streaks.
+ */
 
 /*
  * The rider crosses the full width and loops. The bike is drawn with its
@@ -529,15 +555,31 @@ body {
   animation: scene-wheel 1.62s linear infinite;
 }
 
-/* A little suspension give on the front wheel, out of sync with the wheel
-   spin and the road's curve alike. */
+/*
+ * Suspension travel over road texture.
+ *
+ * Deliberately not a clean sine: a fork reacting to a real surface compresses
+ * sharply and rebounds more slowly, and it does not hit the same bump twice.
+ * The four uneven steps here, on a period that shares no common factor with
+ * the wheel rotation (1.62s) or the exhaust (1.4s), keep the whole bike from
+ * settling into one visible pulse.
+ */
 @keyframes scene-suspension {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(1px); }
+  18%      { transform: translateY(2.4px); }
+  34%      { transform: translateY(0.3px); }
+  61%      { transform: translateY(1.7px); }
+  80%      { transform: translateY(0.2px); }
 }
 .scene-suspension {
   transform-box: fill-box;
-  animation: scene-suspension 0.4s ease-in-out infinite;
+  animation: scene-suspension 1.1s ease-in-out infinite;
+}
+
+/* The headlight's bloom, blurred and pulsing under the lamp itself. */
+.scene-lamp-glow {
+  opacity: 0;
+  filter: blur(4px);
 }
 
 /* Faint motion streaks trailing the rear wheel. */
@@ -582,15 +624,23 @@ body {
   50%      { opacity: 1; }
 }
 
+@keyframes scene-lamp-bloom {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 0.9; }
+}
+
 @media (prefers-color-scheme: dark) {
   .scene-stars { opacity: 1; }
-  .scene-node-glow { opacity: 0.5; }
+  .scene-node-glow { opacity: 0.7; }
   .scene-star { animation: scene-star-twinkle ease-in-out infinite; }
   .scene-beam {
     opacity: 1;
     animation: scene-beam-flicker 3.7s ease-in-out infinite;
   }
   .scene-lamp { opacity: 1; }
+  /* Shares the beam's period, so the bloom and the beam brighten together
+     rather than beating against each other. */
+  .scene-lamp-glow { animation: scene-lamp-bloom 3.7s ease-in-out infinite; }
 }
 
 /*
@@ -677,7 +727,12 @@ body {
 .card:hover {
   transform: translateY(-4px);
   border-color: var(--signal);
-  box-shadow: 0 2px 4px rgb(0 0 0 / 0.05), 0 20px 40px -20px color-mix(in oklch, var(--signal) 55%, transparent);
+  /* Three layers: contact shadow, cast shadow, and an inset rim of signal
+     that makes the edge read as catching light rather than just lifting. */
+  box-shadow:
+    0 2px 4px rgb(0 0 0 / 0.05),
+    0 20px 40px -20px color-mix(in oklch, var(--signal) 60%, transparent),
+    inset 0 0 0 1px color-mix(in oklch, var(--signal) 30%, transparent);
 }
 
 /* Scoped to the group so the art only reacts to its own card. */
@@ -800,17 +855,22 @@ body {
 }
 
 /* ---- Stars: night only ---- */
+/* Two shadow rings rather than one: a tight core and a wide halo. A single
+   blur radius gives a flat dot, while the pair reads as something actually
+   emitting light. */
 .backdrop-star {
   position: absolute;
   border-radius: 9999px;
   background: var(--ambient-star);
-  box-shadow: 0 0 4px var(--ambient-star);
+  box-shadow:
+    0 0 4px var(--ambient-star),
+    0 0 11px color-mix(in oklch, var(--ambient-star) 55%, transparent);
   opacity: 0;
 }
 
 @keyframes backdrop-star-twinkle {
-  0%, 100% { opacity: 0.2; transform: scale(0.85); }
-  50%      { opacity: 0.95; transform: scale(1); }
+  0%, 100% { opacity: 0.22; transform: scale(0.8); }
+  50%      { opacity: 1; transform: scale(1.12); }
 }
 
 /* ---- Aurora: night only. Two broad, heavily blurred bands on long,
@@ -881,14 +941,28 @@ body {
 
 /* A single shooting star, crossing once per long cycle. The gradient bar is
    itself the trail — brightest at the leading edge, fading out behind. */
+/*
+ * A shooting star, falling down and to the right.
+ *
+ * Two things here are easy to get backwards, and both were:
+ *
+ *  - `rotate(28deg)` tilts the local X axis to point down-right, so the
+ *    travel must be translateX(+n). A negative value sends it up-left, which
+ *    is what made these read as "falling upwards".
+ *  - The gradient's bright end sits at the element's right edge, so +X also
+ *    happens to be the direction that keeps the glowing head in front and
+ *    the faded trail behind it. Reversing one without the other gives a star
+ *    flying tail-first.
+ */
 .snow-shooting-star {
   position: absolute;
-  top: 14%;
-  left: 55%;
+  top: 9%;
+  left: 24%;
   width: 110px;
   height: 2px;
   border-radius: 2px;
   background: linear-gradient(90deg, transparent, var(--ambient-snow) 65%, #fff);
+  box-shadow: 0 0 8px var(--ambient-star);
   opacity: 0;
   animation-name: snow-shooting-star;
   animation-timing-function: ease-in;
@@ -898,7 +972,7 @@ body {
 @keyframes snow-shooting-star {
   0%, 90%, 100% { opacity: 0; transform: rotate(28deg) translateX(0); }
   91%           { opacity: 1; }
-  94%           { opacity: 0; transform: rotate(28deg) translateX(-260px); }
+  94%           { opacity: 0; transform: rotate(28deg) translateX(260px); }
 }
 
 /* Distant lightning — a soft double-flash washing down from the top, then

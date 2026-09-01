@@ -93,13 +93,31 @@ function CloudLayer({
  * reads as a pushbike no matter how many spokes it has.
  */
 function Rider() {
-  const spokes = [0, 36, 72, 108, 144];
+  /**
+   * Three spokes, drawn as full chords through the hub, give six arms 60
+   * degrees apart. Five chords (the previous count) put the arms 36 degrees
+   * apart, and at this rotation speed that repeat is fast enough to shimmer
+   * rather than read as turning. The off-centre brake disc is what actually
+   * sells the rotation: a radially symmetric wheel gives the eye nothing to
+   * track.
+   */
+  const spokes = [0, 60, 120];
 
   /** Both wheels are identical apart from position and phase. */
   const wheel = (cx: number, delay: string) => (
     <g className="scene-wheel" style={{ animationDelay: delay }}>
       {/* tyre */}
       <circle cx={cx} cy={-13} r="13" fill="none" stroke="var(--scene-rider)" strokeWidth="4.5" />
+      {/* brake disc */}
+      <circle
+        cx={cx}
+        cy={-13}
+        r="6.5"
+        fill="none"
+        stroke="var(--scene-rim)"
+        strokeWidth="2.6"
+        strokeOpacity="0.45"
+      />
       {/* rim */}
       <circle cx={cx} cy={-13} r="9.5" fill="none" stroke="var(--scene-rim)" strokeWidth="1.6" />
       {spokes.map((a) => (
@@ -113,6 +131,8 @@ function Rider() {
           strokeWidth="1.8"
         />
       ))}
+      {/* Valve stem — one asymmetric mark, so a full turn is countable. */}
+      <circle cx={cx + 7.5} cy={-13} r="1.3" fill="var(--scene-lamp)" opacity="0.7" />
       <circle cx={cx} cy={-13} r="2.4" fill="var(--scene-rim)" />
     </g>
   );
@@ -155,6 +175,13 @@ function Rider() {
 
         {wheel(-26, '0s')}
 
+        {/*
+          Only what is actually bolted to the fork moves with the fork: the
+          wheel, the lower legs and the mudguard. The nose fairing, screen,
+          headlight and clip-on are frame-mounted on a sportbike, and while
+          they were inside this group the whole nose twitched against the
+          body every 0.4s, opening and closing a seam where the two meet.
+        */}
         <g className="scene-suspension">
           {wheel(26, '-0.4s')}
           {/* Upside-down forks, raked forward the way a sportbike's are. */}
@@ -176,13 +203,15 @@ function Rider() {
             d="M14 -24 q12 -7 24 -1 l-2 4 q-10 -5 -20 1 z"
             fill="var(--scene-rider)"
           />
-          {/* Nose fairing + screen — the front mass. */}
-          <path d="M28 -44 q12 1 13 11 l-13 3 z" fill="var(--scene-fairing)" />
-          <path d="M28 -44 q7 -3 10 -1 l1 3 q-6 -1 -11 1 z" fill="var(--scene-visor)" opacity="0.6" />
-          <circle cx="38" cy="-31" r="3.4" fill="var(--scene-lamp)" className="scene-lamp" />
-          {/* Clip-on bar, low and forward. */}
-          <line x1="26" y1="-40" x2="34" y2="-42" stroke="var(--scene-rider)" strokeWidth="2.8" strokeLinecap="round" />
         </g>
+
+        {/* Nose fairing + screen — frame-mounted, so it holds still. */}
+        <path d="M28 -44 q12 1 13 11 l-13 3 z" fill="var(--scene-fairing)" />
+        <path d="M28 -44 q7 -3 10 -1 l1 3 q-6 -1 -11 1 z" fill="var(--scene-visor)" opacity="0.6" />
+        <circle cx="38" cy="-31" r="7" fill="var(--scene-lamp)" className="scene-lamp-glow" />
+        <circle cx="38" cy="-31" r="3.4" fill="var(--scene-lamp)" className="scene-lamp" />
+        {/* Clip-on bar, low and forward. */}
+        <line x1="26" y1="-40" x2="34" y2="-42" stroke="var(--scene-rider)" strokeWidth="2.8" strokeLinecap="round" />
 
         {/* ---- The body: one filled silhouette from tail to nose ----
             Drawn as a single path so the bike has real mass in the middle,
@@ -413,6 +442,8 @@ export function WinterScene() {
           fill="none"
           strokeLinecap="round"
         />
+        {/* Static: see the note on .scene-roadline in globals.css — the
+            camera is fixed, so paint on the road cannot move. */}
         <path
           d="M0 372 Q400 356 800 378"
           stroke="var(--scene-road-line)"
@@ -420,7 +451,6 @@ export function WinterScene() {
           strokeDasharray="16 22"
           fill="none"
           opacity="0.5"
-          className="scene-roadline"
         />
 
         <Rider />
