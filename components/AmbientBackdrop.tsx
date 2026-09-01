@@ -25,6 +25,8 @@
  * reading as a screensaver.
  */
 
+import { BOLTS, BOLT_VIEWBOX } from './lightning';
+
 /* ------------------------------------------------------------------ */
 /* Snow                                                                */
 /* ------------------------------------------------------------------ */
@@ -249,9 +251,39 @@ export function AmbientBackdrop() {
         <span className="snow-shooting-star" style={{ animationDelay: '-9s' }} />
       </div>
 
-      {/* Its own fixed layer, outside .backdrop's clipping box — a flash
-          should wash the whole viewport, not stop at an edge. */}
-      <div className="backdrop-lightning" aria-hidden />
+      {/*
+        Lightning lives outside .backdrop's clipping box — both the bolt and
+        the flash it throws should reach the whole viewport, not stop at an
+        edge. Each bolt is paired with a flash on the SAME duration and
+        delay, which is what makes the sky light up at the instant the bolt
+        appears instead of on some unrelated schedule.
+      */}
+      {BOLTS.map((b, i) => (
+        <div
+          key={`flash-${i}`}
+          className="bolt-flash"
+          aria-hidden
+          style={{ animationDuration: `${b.duration}s`, animationDelay: `${b.delay}s` }}
+        />
+      ))}
+
+      <svg
+        className="backdrop-bolts"
+        viewBox={`0 0 ${BOLT_VIEWBOX.w} ${BOLT_VIEWBOX.h}`}
+        preserveAspectRatio="xMidYMin slice"
+        aria-hidden
+      >
+        {BOLTS.map((b, i) => (
+          <g
+            key={`bolt-${i}`}
+            className="bolt"
+            style={{ animationDuration: `${b.duration}s`, animationDelay: `${b.delay}s` }}
+          >
+            <path d={b.main} strokeWidth="0.9" />
+            <path d={b.branch} strokeWidth="0.5" strokeOpacity="0.75" />
+          </g>
+        ))}
+      </svg>
     </>
   );
 }

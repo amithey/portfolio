@@ -5,6 +5,8 @@ import { ProjectCard } from '@/components/ProjectCard';
 import { Reveal } from '@/components/Reveal';
 import { WinterScene } from '@/components/WinterScene';
 import { CodeCard } from '@/components/CodeCard';
+import { InterestGrid } from '@/components/InterestGrid';
+import { ABOUT, SKILLS } from '@/data/about';
 
 export default function Home() {
   const featuredSlugs = new Set(FEATURED.map((p) => p.slug));
@@ -22,7 +24,7 @@ export default function Home() {
         <p className="mt-4 max-w-prose leading-relaxed text-muted">
           Everything I&rsquo;ve built is on this page, and {embeddableCount} of them start
           right in the browser.{' '}
-          <Link href="/about" className="link-signal">
+          <Link href="/#about" className="link-signal">
             More about me →
           </Link>
         </p>
@@ -34,10 +36,24 @@ export default function Home() {
         <Reveal delay={120} className="mt-6 block">
           <CodeCard />
         </Reveal>
+
+        {/* The whole site is reachable by scrolling from here, so say so
+            rather than relying on the visitor finding the nav. */}
+        <p className="mt-10 flex justify-center">
+          <a
+            href="#work"
+            className="readout group inline-flex flex-col items-center gap-1.5 text-muted transition-colors hover:text-signal"
+          >
+            Scroll for the work
+            <span aria-hidden className="scroll-cue text-base leading-none">
+              ↓
+            </span>
+          </a>
+        </p>
       </section>
 
       {/* Selected work. */}
-      <section className="border-t border-line py-16 sm:py-20">
+      <section id="work" className="border-t border-line py-16 sm:py-20">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <h2 className="font-display text-3xl font-bold tracking-tight">Selected work</h2>
           <p className="readout text-muted">{PROJECTS.length} projects, nothing hidden</p>
@@ -76,8 +92,49 @@ export default function Home() {
         </p>
       </section>
 
+      {/*
+        About, in summary. The full page at /about still exists and goes
+        deeper — this is here so the homepage can be scrolled end to end
+        without the visitor having to know the nav exists.
+      */}
+      <section id="about" className="border-t border-line py-16 sm:py-20">
+        <h2 className="font-display text-3xl font-bold tracking-tight">About me</h2>
+        <p className="mt-4 max-w-prose leading-relaxed text-muted">
+          {ABOUT.role} based in {ABOUT.location}. Four things I keep coming back to, and the
+          tools I&rsquo;ve actually shipped with.
+        </p>
+
+        <div className="mt-8">
+          <InterestGrid />
+        </div>
+
+        <dl className="mt-10 space-y-4">
+          {SKILLS.map((group) => (
+            <div key={group.group} className="sm:flex sm:gap-6">
+              <dt className="readout w-40 shrink-0 pt-1 text-muted">{group.group}</dt>
+              <dd className="mt-1.5 flex flex-wrap gap-1.5 sm:mt-0">
+                {group.items.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded border border-line px-2 py-0.5 text-sm text-muted"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          ))}
+        </dl>
+
+        <p className="mt-10">
+          <Link href="/about" className="link-signal font-semibold">
+            Background, experience and CV →
+          </Link>
+        </p>
+      </section>
+
       {/* Contact. */}
-      <section className="border-t border-line py-16 sm:py-20">
+      <section id="contact" className="border-t border-line py-16 sm:py-20">
         <h2 className="font-display text-3xl font-bold tracking-tight">Get in touch</h2>
         <p className="mt-4 max-w-prose leading-relaxed text-muted">
           I&rsquo;m looking for a junior developer role. Email is the fastest way to reach me.

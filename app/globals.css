@@ -58,6 +58,8 @@
   --ambient-aurora-a: transparent;
   --ambient-aurora-b: transparent;
   --ambient-flash: #c3d6e8;
+  /* The bolt itself is brighter than the wash it throws. */
+  --ambient-bolt: #7fa9d8;
   /* Code glyphs sit a touch cooler and lighter than the snow, so the two
      layers separate instead of reading as one texture. */
   --ambient-code: #93a9c2;
@@ -120,6 +122,7 @@
     --ambient-aurora-a: rgba(74, 222, 173, 0.34);
     --ambient-aurora-b: rgba(139, 135, 245, 0.32);
     --ambient-flash: #93b6dd;
+    --ambient-bolt: #eaf3ff;
     --ambient-code: #7fa8d4;
 
     --code-kw: #c792ea;
@@ -190,7 +193,8 @@ body {
  * Anchors sit under a sticky header, so anything jumped to needs to clear
  * it — otherwise the target lands behind the bar.
  */
-:target {
+:target,
+section[id] {
   scroll-margin-top: 5.5rem;
 }
 
@@ -471,6 +475,18 @@ body {
   filter: drop-shadow(0 0 4px color-mix(in oklch, var(--live) 75%, transparent));
 }
 
+/* The nudge under the hero. Rests between hops rather than bouncing
+   continuously, which would pull the eye away from the content. */
+@keyframes scroll-cue {
+  0%, 62%, 100% { transform: translateY(0); opacity: 0.55; }
+  76%           { transform: translateY(5px); opacity: 1; }
+  90%           { transform: translateY(0); opacity: 0.7; }
+}
+.scroll-cue {
+  display: inline-block;
+  animation: scroll-cue 2.6s ease-in-out infinite;
+}
+
 /* Signal travelling along a connection. */
 @keyframes scene-synapse {
   0%, 100% { opacity: 0.18; }
@@ -596,6 +612,28 @@ body {
   100% { transform: translate(-26px, -12px) scale(1.7); opacity: 0; }
 }
 .scene-exhaust { animation: scene-exhaust 1.4s ease-out infinite; }
+
+/* Snow thrown off the rear tyre — flatter and faster than the exhaust, so
+   the two clouds stay distinguishable. */
+@keyframes scene-spray {
+  0%   { transform: translate(0, 0) scale(0.5); opacity: 0.7; }
+  100% { transform: translate(-40px, -9px) scale(1.4); opacity: 0; }
+}
+.scene-spray { animation: scene-spray 0.85s ease-out infinite; }
+
+/* The rider settles on the fork's period, later and by less: sprung mass
+   lags the wheel. In lockstep the pair reads as one rigid cut-out. */
+@keyframes scene-rider-settle {
+  0%, 100% { transform: translateY(0); }
+  18%      { transform: translateY(1.1px); }
+  34%      { transform: translateY(0.1px); }
+  61%      { transform: translateY(0.8px); }
+  80%      { transform: translateY(0.1px); }
+}
+.scene-rider-body {
+  transform-box: fill-box;
+  animation: scene-rider-settle 1.1s ease-in-out 0.09s infinite;
+}
 
 /*
  * Night-only layers.
@@ -975,29 +1013,72 @@ body {
   94%           { opacity: 0; transform: rotate(28deg) translateX(260px); }
 }
 
-/* Distant lightning — a soft double-flash washing down from the top, then
-   nothing for the rest of a long cycle. Never fully white: this is snow
-   weather, not a thunderstorm. */
-.backdrop-lightning {
+/*
+ * Lightning: an actual forked bolt, plus the flash it throws.
+ *
+ * Both layers run the SAME duration and delay per strike, which is the only
+ * reason the sky lights up at the instant the bolt appears rather than at
+ * some unrelated moment — the two used to be independent, so the flash read
+ * as a decal that had nothing to do with any bolt.
+ *
+ * The flicker is three unevenly spaced peaks inside about 1% of the cycle:
+ * a strike, an almost-dark gap, a weaker return stroke. Evenly spaced peaks
+ * read as a blinking light instead of a discharge.
+ */
+.backdrop-bolts {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.bolt {
+  opacity: 0;
+  stroke: var(--ambient-bolt);
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px var(--ambient-bolt));
+  animation-name: bolt-strike;
+  animation-timing-function: steps(1, end);
+  animation-iteration-count: infinite;
+}
+
+@keyframes bolt-strike {
+  0%, 97.2%, 100% { opacity: 0; }
+  97.35%          { opacity: 1; }
+  97.55%          { opacity: 0.06; }
+  97.75%          { opacity: 0.85; }
+  98.05%          { opacity: 0; }
+}
+
+.bolt-flash {
   position: fixed;
   inset: 0;
   z-index: 1;
   pointer-events: none;
   background: linear-gradient(to bottom, var(--ambient-flash), transparent 62%);
   opacity: 0;
-  animation: backdrop-lightning 39s linear infinite;
+  animation-name: bolt-flash;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
 }
-@keyframes backdrop-lightning {
-  0%, 96.2%, 100% { opacity: 0; }
-  96.4%           { opacity: 0.5; }
-  96.7%           { opacity: 0.08; }
-  97%             { opacity: 0.34; }
-  97.6%           { opacity: 0; }
+
+@keyframes bolt-flash {
+  0%, 97.2%, 100% { opacity: 0; }
+  97.35%          { opacity: 0.42; }
+  97.55%          { opacity: 0.05; }
+  97.75%          { opacity: 0.3; }
+  98.4%           { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .backdrop,
-  .backdrop-lightning {
+  .backdrop-bolts,
+  .bolt-flash {
     display: none;
   }
 }

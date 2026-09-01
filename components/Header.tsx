@@ -5,30 +5,85 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SITE } from '@/lib/site';
 
+/**
+ * The site is one scrolling page, so the nav points at sections rather than
+ * at separate routes. Hrefs are written as `/#id`, not bare `#id`, so the
+ * same link works from a project detail page — it returns to the homepage
+ * and lands on the section instead of hunting for an anchor that isn't
+ * there.
+ */
 const NAV = [
-  { href: '/projects', label: 'Projects' },
-  { href: '/about', label: 'About' },
+  { id: 'work', label: 'Work' },
+  { id: 'about', label: 'About' },
+  { id: 'contact', label: 'Contact' },
 ];
 
 /**
- * Sticky header: current page picks up the signal colour and an underline, and
- * below the sm breakpoint the nav collapses behind a menu button instead of
- * wrapping onto a second line. A client component for exactly two reasons —
- * knowing the current path and holding the menu's open/closed state — with
- * everything else about the site staying server-rendered.
+ * Sticky header with scroll-spy.
+ *
+ * The active tab is the last section whose top has passed just under the
+ * header — scanning three rects, throttled to one animation frame per scroll
+ * burst.
+ *
+ * This started as an IntersectionObserver and got it wrong: with sections
+ * this tall, several are inside any sensible root band at once, and the
+ * callback receives them in an order that is *not* document order, so
+ * "whichever intersecting entry came last" pinned the highlight to whatever
+ * happened to be reported last. Comparing positions directly has one answer
+ * by construction.
  */
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState<string | null>(null);
 
   // A route change (including a same-page anchor) always closes the menu.
   useEffect(() => setOpen(false), [pathname]);
 
-  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  useEffect(() => {
+    // Sections only exist on the homepage; elsewhere nothing is highlighted.
+    if (pathname !== '/') {
+      setActive(null);
+      return;
+    }
 
-  const linkClass = (href: string) =>
+    const sections = NAV.map((n) => document.getElementById(n.id)).filter(
+      (el): el is HTMLElement => el !== null,
+    );
+    if (sections.length === 0) return;
+
+    // A little below the header, so a section counts as current only once
+    // its heading is genuinely in view rather than grazing the bar.
+    const LINE = 120;
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      let current: string | null = null;
+      for (const el of sections) {
+        if (el.getBoundingClientRect().top <= LINE) current = el.id;
+      }
+      setActive(current);
+    };
+
+    const onScroll = () => {
+      // Coalesce a burst of scroll events into a single measurement.
+      if (frame === 0) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [pathname]);
+
+  const linkClass = (id: string) =>
     `relative py-1 transition-colors ${
-      isActive(href)
+      active === id
         ? "text-signal after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-signal after:content-['']"
         : 'text-muted hover:text-signal'
     }`;
@@ -47,8 +102,12 @@ export function Header() {
         <nav aria-label="Main" className="hidden sm:block">
           <ul className="flex items-center gap-6 text-sm">
             {NAV.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className={linkClass(item.href)} aria-current={isActive(item.href) ? 'page' : undefined}>
+              <li key={item.id}>
+                <Link
+                  href={`/#${item.id}`}
+                  className={linkClass(item.id)}
+                  aria-current={active === item.id ? 'true' : undefined}
+                >
                   {item.label}
                 </Link>
               </li>
@@ -100,11 +159,12 @@ export function Header() {
       >
         <ul className="px-5 py-2 text-sm">
           {NAV.map((item) => (
-            <li key={item.href}>
+            <li key={item.id}>
               <Link
-                href={item.href}
-                className={`block py-2.5 ${isActive(item.href) ? 'font-semibold text-signal' : 'text-muted'}`}
-                aria-current={isActive(item.href) ? 'page' : undefined}
+                href={`/#${item.id}`}
+                onClick={() => setOpen(false)}
+                className={`block py-2.5 ${active === item.id ? 'font-semibold text-signal' : 'text-muted'}`}
+                aria-current={active === item.id ? 'true' : undefined}
               >
                 {item.label}
               </Link>
