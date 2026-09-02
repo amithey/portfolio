@@ -15,16 +15,20 @@ export function InterestGrid() {
   return (
     <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4">
       {ABOUT.interests.map((item, i) => (
-        <Reveal key={item.label} delay={i * 90} dir={i % 2 === 0 ? 'left' : 'right'}>
-          <li className="lift group list-none overflow-hidden rounded-xl border border-line bg-surface-raised hover:border-signal">
-            <div className="aspect-square w-full text-ink/80">
-              <InterestArt label={item.label} />
-            </div>
-            <div className="border-t border-line p-3 text-center">
-              <p className="font-display text-sm font-bold">{item.label}</p>
-              {item.note && <p className="mt-1 text-xs leading-relaxed text-muted">{item.note}</p>}
-            </div>
-          </li>
+        <Reveal
+          key={item.label}
+          as="li"
+          delay={i * 90}
+          dir={i % 2 === 0 ? 'left' : 'right'}
+          className="lift group list-none overflow-hidden rounded-xl border border-line bg-surface-raised hover:border-signal"
+        >
+          <div className="aspect-square w-full text-ink/80">
+            <InterestArt label={item.label} />
+          </div>
+          <div className="border-t border-line p-3 text-center">
+            <p className="font-display text-sm font-bold">{item.label}</p>
+            {item.note && <p className="mt-1 text-xs leading-relaxed text-muted">{item.note}</p>}
+          </div>
         </Reveal>
       ))}
     </ul>

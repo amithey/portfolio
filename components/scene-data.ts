@@ -7,37 +7,7 @@
  */
 
 /**
- * The bright points of the sky. These are the AI motif and the night sky at
- * once: in dark mode they read as stars joined into constellations, in light
- * mode as a neural net over an overcast afternoon. Same geometry, two
- * readings — which is why they aren't two separate sets of coordinates.
- */
-export const NEURONS: { x: number; y: number; r: number }[] = [
-  { x: 78, y: 62, r: 2.6 },
-  { x: 156, y: 108, r: 1.9 },
-  { x: 214, y: 48, r: 2.2 },
-  { x: 292, y: 96, r: 3 },
-  { x: 356, y: 42, r: 1.8 },
-  { x: 430, y: 104, r: 2.4 },
-  { x: 498, y: 56, r: 2.1 },
-  { x: 566, y: 118, r: 2.8 },
-  { x: 628, y: 52, r: 1.9 },
-  { x: 704, y: 100, r: 2.5 },
-  { x: 748, y: 44, r: 2 },
-  { x: 120, y: 158, r: 1.7 },
-  { x: 340, y: 150, r: 2.2 },
-  { x: 610, y: 162, r: 1.8 },
-];
-
-/** Index pairs into NEURONS. Kept sparse so the sky reads as a net, not a mesh. */
-export const SYNAPSES: [number, number][] = [
-  [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 9], [9, 10],
-  [0, 11], [1, 11], [3, 12], [5, 12], [7, 13], [9, 13], [11, 12], [12, 13],
-  [2, 5], [6, 9],
-];
-
-/**
- * Background stars, filling the sky around the constellation above. Dark mode
+ * Background stars, filling the night sky. Dark mode
  * only — a field of stars over a bright overcast afternoon would be nonsense,
  * so the CSS keeps these hidden in light mode.
  *

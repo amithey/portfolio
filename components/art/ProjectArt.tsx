@@ -15,52 +15,6 @@ import { hueFor } from './palette';
 
 /* ------------------------------------------------------------------ */
 
-function WebGamesArt() {
-  // A wall of uploaded games, with one of them playing.
-  const cards = [
-    { x: 26, y: 30, d: '0s' },
-    { x: 128, y: 18, d: '.5s' },
-    { x: 230, y: 30, d: '1s' },
-    { x: 26, y: 118, d: '.8s' },
-    { x: 230, y: 118, d: '.3s' },
-  ];
-
-  return (
-    <Frame id="web-games" hue={hueFor('web-games')}>
-      {cards.map((c) => (
-        <g key={`${c.x}-${c.y}`} className="art-float" style={{ animationDelay: c.d }}>
-          <rect
-            x={c.x}
-            y={c.y}
-            width="64"
-            height="50"
-            rx="7"
-            fill="hsl(var(--h) 60% 55% / 0.18)"
-            stroke={ink}
-            strokeOpacity="0.28"
-          />
-          <circle cx={c.x + 32} cy={c.y + 20} r="7" fill={ink} fillOpacity="0.22" />
-          <rect x={c.x + 17} y={c.y + 34} width="30" height="4" rx="2" fill={ink} fillOpacity="0.3" />
-        </g>
-      ))}
-
-      <g className="art-lift">
-        <rect
-          x="116"
-          y="94"
-          width="88"
-          height="66"
-          rx="9"
-          fill="hsl(var(--h) 75% 58% / 0.42)"
-          stroke={ink}
-          strokeOpacity="0.5"
-        />
-        <path d="M150 114 l22 13 -22 13 z" fill={ink} fillOpacity="0.85" className="art-pulse" />
-      </g>
-    </Frame>
-  );
-}
-
 function BotTradeArt() {
   const candles = [
     { x: 34, y: 118, h: 34, up: false },
@@ -347,7 +301,7 @@ function TaxArt() {
           fontWeight="600"
           fill={ink}
           fillOpacity="0.8"
-          fontFamily="var(--font-geist-mono), monospace"
+          fontFamily="var(--font-plex-mono), monospace"
         >
           ₪
         </text>
@@ -482,7 +436,6 @@ function TrainArt() {
 /* ------------------------------------------------------------------ */
 
 const SCENES: Record<string, () => React.JSX.Element> = {
-  'web-games': WebGamesArt,
   'bot-trade': BotTradeArt,
   'bag-store': BagStoreArt,
   dominion: DominionArt,
@@ -509,7 +462,7 @@ function DefaultArt({ slug, title }: { slug: string; title: string }) {
         fontWeight="600"
         fill={ink}
         fillOpacity="0.4"
-        fontFamily="var(--font-geist-mono), monospace"
+        fontFamily="var(--font-plex-mono), monospace"
         className="art-breathe"
         style={{ transformOrigin: '160px 100px' }}
       >

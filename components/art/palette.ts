@@ -4,7 +4,6 @@
  * Hues are spread around the wheel deliberately — no two neighbours collide.
  */
 export const PROJECT_HUE: Record<string, number> = {
-  'web-games': 265,
   'bot-trade': 158,
   'bag-store': 330,
   dominion: 32,

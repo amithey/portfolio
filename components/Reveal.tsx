@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState, type ElementType } from 'react';
 
 /**
  * Fades content in as it scrolls into view.
@@ -9,24 +9,28 @@ import { useEffect, useRef, useState } from 'react';
  * JS never runs — or the browser lacks IntersectionObserver — the content is
  * visible rather than stranded at opacity 0. Each element is unobserved after
  * its first reveal; nothing re-animates on the way back up.
+ *
+ * `as` lets this wrap list items without inserting an illegal div between
+ * ul/ol and li (or replacing the li itself).
  */
 export function Reveal({
   children,
   delay = 0,
   dir = 'up',
   className = '',
+  as = 'div',
 }: {
   children: React.ReactNode;
   delay?: number;
   /** Which side the content arrives from. Defaults to a plain fade-up. */
   dir?: 'up' | 'left' | 'right';
   className?: string;
+  as?: 'div' | 'li';
 }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const [el, setEl] = useState<HTMLElement | null>(null);
   const [shown, setShown] = useState(true);
 
   useEffect(() => {
-    const el = ref.current;
     if (!el || typeof IntersectionObserver === 'undefined') return;
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -44,17 +48,19 @@ export function Reveal({
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [el]);
+
+  const Tag = as as ElementType;
 
   return (
-    <div
-      ref={ref}
+    <Tag
+      ref={setEl}
       className={`reveal ${className}`}
       data-shown={shown}
       data-dir={dir === 'up' ? undefined : dir}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
-    </div>
+    </Tag>
   );
 }

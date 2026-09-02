@@ -2,27 +2,20 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ALL_TAGS, CATEGORIES, PROJECTS, sortedProjects, type Category } from '@/data/projects';
 import { ProjectCard } from '@/components/ProjectCard';
+import { buildProjectsHref, firstSearchParam } from '@/lib/projects-href';
 
 export const metadata: Metadata = {
   title: 'Projects',
   description: `All ${PROJECTS.length} projects. Filter by category or stack.`,
 };
 
-type Search = { category?: string; tag?: string };
+type Search = { category?: string | string[]; tag?: string | string[] };
 
 /**
  * Filters are plain links, not client-side state. The URL is the state, which
  * means filtered views are shareable, the back button behaves, every control is
  * keyboard-reachable for free, and the whole page still works with JS disabled.
  */
-function buildHref(next: Search) {
-  const params = new URLSearchParams();
-  if (next.category) params.set('category', next.category);
-  if (next.tag) params.set('tag', next.tag);
-  const qs = params.toString();
-  return qs ? `/projects?${qs}` : '/projects';
-}
-
 function Chip({
   href,
   active,
@@ -52,12 +45,15 @@ export default async function ProjectsPage({
 }: {
   searchParams: Promise<Search>;
 }) {
-  const { category, tag } = await searchParams;
+  const raw = await searchParams;
+  const category = firstSearchParam(raw.category);
+  const tag = firstSearchParam(raw.tag);
 
   const validCategory = CATEGORIES.some((c) => c.id === category)
     ? (category as Category)
     : undefined;
   const validTag = tag && ALL_TAGS.includes(tag) ? tag : undefined;
+
 
   // Category and tag combine with AND.
   const results = sortedProjects(
@@ -82,13 +78,13 @@ export default async function ProjectsPage({
         <fieldset>
           <legend className="readout mb-2 text-muted">Category</legend>
           <div className="flex flex-wrap gap-2">
-            <Chip href={buildHref({ tag: validTag })} active={!validCategory}>
+            <Chip href={buildProjectsHref({ tag: validTag })} active={!validCategory}>
               All
             </Chip>
             {CATEGORIES.filter((c) => PROJECTS.some((p) => p.category === c.id)).map((c) => (
               <Chip
                 key={c.id}
-                href={buildHref({ category: c.id, tag: validTag })}
+                href={buildProjectsHref({ category: c.id, tag: validTag })}
                 active={validCategory === c.id}
               >
                 {c.label}
@@ -103,7 +99,7 @@ export default async function ProjectsPage({
             {ALL_TAGS.map((t) => (
               <Chip
                 key={t}
-                href={buildHref({
+                href={buildProjectsHref({
                   category: validCategory,
                   tag: validTag === t ? undefined : t,
                 })}

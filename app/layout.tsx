@@ -38,6 +38,11 @@ export const metadata: Metadata = {
     title: `${SITE.name} · developer`,
     description: SITE.headline,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${SITE.name} · developer`,
+    description: SITE.headline,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

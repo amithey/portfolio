@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CATEGORIES, PROJECTS, getProject, sortedProjects } from '@/data/projects';
 import { RunDemo } from '@/components/RunDemo';
+import { buildProjectsHref } from '@/lib/projects-href';
+import { demoHostLabel } from '@/lib/demo';
 
 export function generateStaticParams() {
   return PROJECTS.map((p) => ({ slug: p.slug }));
@@ -40,6 +42,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const prev = index > 0 ? ordered[index - 1] : undefined;
   const next = index < ordered.length - 1 ? ordered[index + 1] : undefined;
   const category = CATEGORIES.find((c) => c.id === project.category);
+  const hostLabel = project.demo.url ? demoHostLabel(project.demo.url) : undefined;
 
   return (
     <article className="mx-auto max-w-3xl px-5 py-14">
@@ -50,7 +53,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         {' / '}
         {category && (
           <Link
-            href={`/projects?category=${project.category}`}
+            href={buildProjectsHref({ category: project.category })}
             className="hover:text-signal"
           >
             {category.label}
@@ -86,7 +89,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             className="flex items-center justify-between gap-4 rounded-lg border border-line bg-surface-raised px-5 py-4 hover:border-signal"
           >
             <span className="font-semibold">Open the live site</span>
-            <span className="readout text-signal">{new URL(project.demo.url).host} →</span>
+            <span className="readout text-signal">{hostLabel ?? 'open'} →</span>
           </a>
         ) : null}
       </div>
@@ -94,7 +97,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <ul className="mt-6 flex flex-wrap gap-1.5">
         {project.tags.map((tag) => (
           <li key={tag} className="readout rounded border border-line px-1.5 py-0.5 text-muted">
-            <Link href={`/projects?tag=${tag}`} className="hover:text-signal">
+            <Link href={buildProjectsHref({ tag })} className="hover:text-signal">
               {tag}
             </Link>
           </li>

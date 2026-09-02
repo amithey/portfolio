@@ -32,21 +32,25 @@ function Timeline({ entries }: { entries: readonly TimelineEntry[] }) {
   return (
     <ol className="space-y-6 border-l-2 border-line">
       {entries.map((e, i) => (
-        <Reveal key={`${e.title}-${i}`} delay={i * 70} dir="left">
-          <li className="group relative -ml-[2px] border-l-2 border-transparent pl-6">
-            {/* A dot on the timeline, so the sequence reads before the text does. */}
-            <span
-              aria-hidden
-              className="absolute -left-[7px] top-1.5 size-3 rounded-full border-2 border-signal bg-surface transition-transform duration-200 group-hover:scale-125"
-            />
-            <p className="font-display font-bold">{e.title}</p>
-            {(e.org || e.period) && (
-              <p className="readout mt-1 text-muted">
-                {[e.org, e.period].filter(Boolean).join(' · ')}
-              </p>
-            )}
-            {e.detail && <p className="mt-2 text-sm leading-relaxed text-muted">{e.detail}</p>}
-          </li>
+        <Reveal
+          key={`${e.title}-${i}`}
+          as="li"
+          delay={i * 70}
+          dir="left"
+          className="group relative -ml-[2px] border-l-2 border-transparent pl-6"
+        >
+          {/* A dot on the timeline, so the sequence reads before the text does. */}
+          <span
+            aria-hidden
+            className="absolute -left-[7px] top-1.5 size-3 rounded-full border-2 border-signal bg-surface transition-transform duration-200 group-hover:scale-125"
+          />
+          <p className="font-display font-bold">{e.title}</p>
+          {(e.org || e.period) && (
+            <p className="readout mt-1 text-muted">
+              {[e.org, e.period].filter(Boolean).join(' · ')}
+            </p>
+          )}
+          {e.detail && <p className="mt-2 text-sm leading-relaxed text-muted">{e.detail}</p>}
         </Reveal>
       ))}
     </ol>

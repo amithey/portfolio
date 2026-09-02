@@ -59,9 +59,9 @@ export const ABOUT = {
  * list cannot claim something no code on this site backs up.
  */
 export const SKILLS: { group: string; items: string[] }[] = [
-  { group: 'Languages', items: ['TypeScript', 'JavaScript', 'Python', 'Java', 'SQL'] },
+  { group: 'Languages', items: ['TypeScript', 'JavaScript', 'Python', 'SQL'] },
   { group: 'Frontend', items: ['React', 'Next.js', 'Tailwind CSS', 'Three.js', 'HTML Canvas'] },
-  { group: 'Backend & data', items: ['Node.js', 'Express', 'Supabase', 'PostgreSQL', 'REST APIs'] },
+  { group: 'Backend & data', items: ['Node.js', 'Supabase', 'PostgreSQL', 'REST APIs'] },
   { group: 'AI', items: ['LangChain', 'RAG', 'Chroma', 'Claude API', 'scikit learn'] },
   { group: 'Tooling', items: ['Git', 'Docker', 'Vercel', 'Vitest', 'Streamlit'] },
 ];

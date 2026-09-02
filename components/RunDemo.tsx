@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { Demo } from '@/data/projects';
+import { isAllowedDemoUrl } from '@/lib/demo';
 
 /**
  * The one bold thing on the site: a demo boots in place rather than navigating
@@ -12,6 +13,9 @@ import type { Demo } from '@/data/projects';
  * anything iframe-specific, so it works the same for every embedded project.
  * The button is omitted outright when the API isn't there (some iOS browsers)
  * instead of shown and silently failing.
+ *
+ * Only https URLs whose host is an embeddable demo in data/projects.ts are
+ * loaded. Anything else is refused rather than iframed.
  */
 export function RunDemo({ demo, title }: { demo: Demo; title: string }) {
   const [running, setRunning] = useState(false);
@@ -30,6 +34,7 @@ export function RunDemo({ demo, title }: { demo: Demo; title: string }) {
   }, []);
 
   if (!demo.url || !demo.embeddable) return null;
+  if (!isAllowedDemoUrl(demo.url)) return null;
 
   const toggleFullscreen = () => {
     if (document.fullscreenElement) {
