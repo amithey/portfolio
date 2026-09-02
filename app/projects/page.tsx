@@ -5,7 +5,7 @@ import { ProjectCard } from '@/components/ProjectCard';
 
 export const metadata: Metadata = {
   title: 'Projects',
-  description: `All ${PROJECTS.length} projects — filter by category or stack.`,
+  description: `All ${PROJECTS.length} projects. Filter by category or stack.`,
 };
 
 type Search = { category?: string; tag?: string };

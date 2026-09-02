@@ -25,8 +25,8 @@
   --scene-sky-top: #cfe0f0;
   --scene-sky-mid: #e2ecf6;
   --scene-sky-low: #f2f7fb;
-  --scene-wire: #7d9dbd;
-  --scene-node: #4d7fae;
+  --scene-wire: #5a82ab;
+  --scene-node: #3a6ea4;
   --scene-ridge-far: #b9cdde;
   --scene-ridge-near: #93aec6;
   --scene-tree: #5f7f96;
@@ -40,14 +40,19 @@
   --scene-cloud-far: #ccdcea;
   --scene-cloud-near: #eef4f9;
   --scene-tank-hi: #ffffff;
-  --scene-visor: #b9d6ee;
+  --scene-visor: #5b8fd4;
   --scene-star: transparent;
   --scene-bolt: #ffffff;
-  /* Bodywork reads a shade off the silhouette colour so the fairing,
-     engine and wheels separate instead of merging into one blob. */
-  --scene-fairing: #253243;
-  --scene-engine: #46586e;
-  --scene-rim: #7c8ea4;
+  /* Cool slate bike vs warm rider so the person does not merge into the
+     machine. Black motorcycle helmet and red shirt so the rider reads clearly. */
+  --scene-fairing: #243044;
+  --scene-engine: #5a7088;
+  --scene-rim: #8a9bb0;
+  --scene-helmet: #1a1a1a;
+  --scene-helmet-edge: #4b5563;
+  --scene-jacket: #dc2626;
+  --scene-jacket-edge: #991b1b;
+  --scene-boot: #2a2018;
 
   /* Site-wide backdrop, behind the content on every page. Blue-grey rather
      than white — white flakes disappear against this light surface. Stars
@@ -92,8 +97,8 @@
     --scene-sky-top: #0b1220;
     --scene-sky-mid: #142033;
     --scene-sky-low: #1d2c42;
-    --scene-wire: #3d5f8a;
-    --scene-node: #7fb6ff;
+    --scene-wire: #5b8ec4;
+    --scene-node: #8fc4ff;
     --scene-ridge-far: #16253a;
     --scene-ridge-near: #1e3149;
     --scene-tree: #16283d;
@@ -107,12 +112,17 @@
     --scene-cloud-far: #1b2d43;
     --scene-cloud-near: #26405c;
     --scene-tank-hi: #7fb6ff;
-    --scene-visor: #8fc4f5;
+    --scene-visor: #6aa8f0;
     --scene-star: #dce9f7;
     --scene-bolt: #dbe9fb;
-    --scene-fairing: #101a28;
-    --scene-engine: #23344a;
-    --scene-rim: #46617f;
+    --scene-fairing: #0e1826;
+    --scene-engine: #2a3d54;
+    --scene-rim: #5a7694;
+    --scene-helmet: #0f0f0f;
+    --scene-helmet-edge: #6b7280;
+    --scene-jacket: #ef4444;
+    --scene-jacket-edge: #b91c1c;
+    --scene-boot: #1a1410;
 
     /* Pale and near-white, since the surface it drifts over is now dark. */
     --ambient-snow: #cfe0f2;
@@ -487,21 +497,68 @@ section[id] {
   animation: scroll-cue 2.6s ease-in-out infinite;
 }
 
-/* Signal travelling along a connection. */
+/* Signal travelling along a connection: opacity plus a dash that
+   crawls, so the wire reads as carrying a pulse rather than just fading. */
 @keyframes scene-synapse {
-  0%, 100% { opacity: 0.18; }
-  50%      { opacity: 0.7; }
+  0%, 100% { opacity: 0.16; stroke-dashoffset: 24; }
+  50%      { opacity: 0.85; stroke-dashoffset: 0; }
 }
-.scene-synapse { animation: scene-synapse 6s ease-in-out infinite; }
+.scene-synapse {
+  stroke-dasharray: 7 11;
+  animation: scene-synapse 5.2s ease-in-out infinite;
+}
 
 @keyframes scene-node {
-  0%, 100% { opacity: 0.45; transform: scale(1); }
-  50%      { opacity: 1; transform: scale(1.35); }
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.4); }
 }
 .scene-node {
   transform-box: fill-box;
   transform-origin: center;
   animation: scene-node 4.5s ease-in-out infinite;
+}
+
+/* Nodes and wires that live on the cloud puff surface. */
+@keyframes scene-net-node {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.6); }
+}
+.scene-net-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: scene-net-node 3.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 3px var(--scene-node));
+}
+
+@keyframes scene-net-wire {
+  0%, 100% { opacity: 0.28; stroke-dashoffset: 16; }
+  50%      { opacity: 0.95; stroke-dashoffset: 0; }
+}
+.scene-net-wire {
+  stroke-dasharray: 5 7;
+  animation: scene-net-wire 4.4s ease-in-out infinite;
+}
+
+@keyframes scene-visor-glint {
+  0%, 72%, 100% { opacity: 0.7; }
+  80% { opacity: 1; }
+}
+.scene-visor-glint {
+  animation: scene-visor-glint 6s ease-in-out infinite;
+}
+
+/* Each cloud volume inhales and drifts a little on its own, on a period
+   that does not share a factor with the layer scroll, so the field never
+   pulses as one sheet. */
+@keyframes scene-cloud-breathe {
+  0%, 100% { transform: translateY(0) scale(1); }
+  35%      { transform: translateY(-7px) scale(1.055); }
+  68%      { transform: translateY(4px) scale(0.97); }
+}
+.scene-cloud-breathe {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: scene-cloud-breathe 14s ease-in-out infinite;
 }
 
 @keyframes scene-tree {
@@ -519,14 +576,22 @@ section[id] {
    has no seam). Far clouds move slower and stay softer than near ones —
    that speed difference is the entire parallax illusion. */
 @keyframes scene-cloud-far {
-  to { transform: translateX(-800px); }
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-200px, 5px); }
+  50%  { transform: translate(-400px, -4px); }
+  75%  { transform: translate(-600px, 6px); }
+  100% { transform: translate(-800px, 0); }
 }
-.scene-cloud-far { animation: scene-cloud-far 130s linear infinite; }
+.scene-cloud-far { animation: scene-cloud-far 140s linear infinite; }
 
 @keyframes scene-cloud-near {
-  to { transform: translateX(-800px); }
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-200px, -5px); }
+  50%  { transform: translate(-400px, 6px); }
+  75%  { transform: translate(-600px, -3px); }
+  100% { transform: translate(-800px, 0); }
 }
-.scene-cloud-near { animation: scene-cloud-near 85s linear infinite; }
+.scene-cloud-near { animation: scene-cloud-near 92s linear infinite; }
 
 /*
  * Road markings are deliberately NOT animated.
@@ -545,20 +610,51 @@ section[id] {
  * road surface itself — they trace the road's quadratic curve, which sits
  * near y=372 at the edges and dips to about y=366 mid-scene.
  */
+/*
+ * The bike follows the road as a motion path so the wheels stay on the
+ * tarmac through the dip, and offset-rotate: auto banks it a few degrees
+ * with the tangent — that lean is what stops it looking like a sticker
+ * sliding sideways. A mild ease-in-out adds a hint of acceleration out
+ * of the left and a settle toward the right without fighting the wheel
+ * spin too hard (the path is almost straight, so speed variation is small).
+ */
 @keyframes scene-rider {
-  0%   { transform: translate(-110px, 372px); }
-  50%  { transform: translate(400px, 366px); }
-  100% { transform: translate(910px, 378px); }
+  0%   { offset-distance: 0%; }
+  12%  { offset-distance: 8%; }
+  45%  { offset-distance: 52%; }
+  100% { offset-distance: 100%; }
 }
-.scene-rider { animation: scene-rider 15s linear infinite; }
+.scene-rider {
+  offset-path: path("M -110 372 Q 400 356 910 378");
+  offset-rotate: auto 4deg;
+  offset-anchor: 0 0;
+  animation: scene-rider 15s cubic-bezier(0.33, 0.05, 0.67, 0.95) infinite;
+}
+
+/*
+ * Chassis bounce and lean, independent of travel. Uneven keyframes so it
+ * never settles into a metronome with the fork or the wheels.
+ */
+@keyframes scene-chassis {
+  0%, 100% { transform: translateY(0) rotate(-0.7deg); }
+  18%      { transform: translateY(1.2px) rotate(0.8deg); }
+  40%      { transform: translateY(0.15px) rotate(-0.9deg); }
+  62%      { transform: translateY(1px) rotate(0.55deg); }
+  84%      { transform: translateY(0.15px) rotate(-0.7deg); }
+}
+.scene-chassis {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: scene-chassis 1.35s ease-in-out infinite;
+}
 
 /*
  * The bike's own wheels turning, independent of the rider's cross-scene
  * travel — without this the rider reads as sliding rather than riding.
  *
  * The period is derived, not eyeballed: the bike covers ~1020 units in 15s
- * (68 u/s) and a wheel is r13 scaled by BIKE_SCALE 1.35, so its
- * circumference is 2*pi*17.55 ~= 110 units — one rotation per ~1.62s.
+ * (68 u/s) and a wheel is r14 scaled by BIKE_SCALE 1.28, so its
+ * circumference is 2*pi*17.92 ~= 113 units — one rotation per ~1.66s.
  * Getting this wrong is exactly what makes CG vehicles look like they're
  * gliding on ice, so it has to be kept in step with BIKE_SCALE.
  */
@@ -568,7 +664,9 @@ section[id] {
 .scene-wheel {
   transform-box: fill-box;
   transform-origin: center;
-  animation: scene-wheel 1.62s linear infinite;
+  /* Path length ~1020 over 15s => 68 u/s; wheel r = 14 * 1.28 = 17.92,
+     circumference ~113, so one turn every ~1.66s. */
+  animation: scene-wheel 1.66s linear infinite;
 }
 
 /*
@@ -577,15 +675,15 @@ section[id] {
  * Deliberately not a clean sine: a fork reacting to a real surface compresses
  * sharply and rebounds more slowly, and it does not hit the same bump twice.
  * The four uneven steps here, on a period that shares no common factor with
- * the wheel rotation (1.62s) or the exhaust (1.4s), keep the whole bike from
+ * the wheel rotation (1.73s) or the exhaust (1.4s), keep the whole bike from
  * settling into one visible pulse.
  */
 @keyframes scene-suspension {
   0%, 100% { transform: translateY(0); }
-  18%      { transform: translateY(2.4px); }
-  34%      { transform: translateY(0.3px); }
-  61%      { transform: translateY(1.7px); }
-  80%      { transform: translateY(0.2px); }
+  16%      { transform: translateY(2.2px); }
+  32%      { transform: translateY(0.3px); }
+  55%      { transform: translateY(1.7px); }
+  78%      { transform: translateY(0.2px); }
 }
 .scene-suspension {
   transform-box: fill-box;
@@ -625,10 +723,10 @@ section[id] {
    lags the wheel. In lockstep the pair reads as one rigid cut-out. */
 @keyframes scene-rider-settle {
   0%, 100% { transform: translateY(0); }
-  18%      { transform: translateY(1.1px); }
-  34%      { transform: translateY(0.1px); }
-  61%      { transform: translateY(0.8px); }
-  80%      { transform: translateY(0.1px); }
+  18%      { transform: translateY(0.8px); }
+  34%      { transform: translateY(0.08px); }
+  61%      { transform: translateY(0.55px); }
+  80%      { transform: translateY(0.08px); }
 }
 .scene-rider-body {
   transform-box: fill-box;
@@ -812,6 +910,47 @@ section[id] {
   .card:hover { transform: none; }
   .card:hover .card-cover { transform: none; }
   .card:hover .card-arrow { transform: none; }
+
+  /*
+   * The global 0.01ms animation rule would run every scene loop once and
+   * then snap the bike off the road (fill-mode none, origin at 0,0). Kill
+   * the animations outright and park the rider mid-scene instead.
+   */
+  .scene-rider {
+    animation: none !important;
+    offset-path: path("M -110 372 Q 400 356 910 378");
+    offset-distance: 48% !important;
+    offset-rotate: 4deg;
+  }
+  .scene-chassis,
+  .scene-wheel,
+  .scene-suspension,
+  .scene-rider-body,
+  .scene-cloud-far,
+  .scene-cloud-near,
+  .scene-cloud-breathe,
+  .scene-net-node,
+  .scene-net-wire,
+  .scene-synapse,
+  .scene-node,
+  .scene-tree,
+  .scene-star,
+  .scene-beam,
+  .scene-lamp-glow,
+  .scene-visor-glint,
+  .scene-bolt,
+  .scene-bolt-flash {
+    animation: none !important;
+  }
+  .scene-exhaust,
+  .scene-spray,
+  .scene-motion-line,
+  .scene-flake,
+  .scene-bolt,
+  .scene-bolt-flash {
+    animation: none !important;
+    opacity: 0;
+  }
 }
 
 /* ------------------------------------------------------------------

@@ -62,6 +62,6 @@ export const SKILLS: { group: string; items: string[] }[] = [
   { group: 'Languages', items: ['TypeScript', 'JavaScript', 'Python', 'Java', 'SQL'] },
   { group: 'Frontend', items: ['React', 'Next.js', 'Tailwind CSS', 'Three.js', 'HTML Canvas'] },
   { group: 'Backend & data', items: ['Node.js', 'Express', 'Supabase', 'PostgreSQL', 'REST APIs'] },
-  { group: 'AI', items: ['LangChain', 'RAG', 'Chroma', 'Claude API', 'scikit-learn'] },
+  { group: 'AI', items: ['LangChain', 'RAG', 'Chroma', 'Claude API', 'scikit learn'] },
   { group: 'Tooling', items: ['Git', 'Docker', 'Vercel', 'Vitest', 'Streamlit'] },
 ];

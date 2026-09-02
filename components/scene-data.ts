@@ -73,68 +73,43 @@ export interface Cloud {
 
 export const CLOUDS_FAR: Cloud[] = [
   {
-    x: 70,
-    y: 62,
-    scale: 1,
+    x: 90,
+    y: 48,
+    scale: 1.35,
     puffs: [
-      { dx: -46, dy: 10, rx: 26, ry: 9 },
-      { dx: -14, dy: 1, rx: 30, ry: 14 },
-      { dx: 22, dy: 7, rx: 24, ry: 10 },
-      { dx: 50, dy: 12, rx: 18, ry: 7 },
-    ],
-  },
-  {
-    x: 330,
-    y: 44,
-    scale: 0.75,
-    puffs: [
-      { dx: -30, dy: 6, rx: 22, ry: 8 },
-      { dx: 2, dy: -2, rx: 26, ry: 12 },
-      { dx: 32, dy: 8, rx: 18, ry: 7 },
+      { dx: -62, dy: 14, rx: 40, ry: 16 },
+      { dx: -16, dy: -2, rx: 48, ry: 24 },
+      { dx: 32, dy: 8, rx: 38, ry: 17 },
+      { dx: 70, dy: 16, rx: 28, ry: 12 },
     ],
   },
   {
     x: 560,
-    y: 76,
-    scale: 1.15,
+    y: 58,
+    scale: 1.4,
     puffs: [
-      { dx: -50, dy: 9, rx: 24, ry: 8 },
-      { dx: -18, dy: 0, rx: 30, ry: 13 },
-      { dx: 16, dy: 5, rx: 26, ry: 11 },
-      { dx: 48, dy: 11, rx: 16, ry: 6 },
+      { dx: -66, dy: 12, rx: 38, ry: 15 },
+      { dx: -20, dy: -4, rx: 48, ry: 22 },
+      { dx: 26, dy: 6, rx: 40, ry: 18 },
+      { dx: 66, dy: 15, rx: 26, ry: 11 },
     ],
   },
 ];
 
 export const CLOUDS_NEAR: Cloud[] = [
   {
-    x: 170,
-    y: 124,
-    scale: 1.25,
+    x: 280,
+    y: 100,
+    scale: 1.55,
     puffs: [
-      { dx: -60, dy: 12, rx: 30, ry: 10 },
-      { dx: -22, dy: 2, rx: 36, ry: 16 },
-      { dx: 18, dy: -3, rx: 32, ry: 15 },
-      { dx: 54, dy: 9, rx: 26, ry: 10 },
-      { dx: 84, dy: 14, rx: 16, ry: 6 },
-    ],
-  },
-  {
-    x: 500,
-    y: 104,
-    scale: 1,
-    puffs: [
-      { dx: -44, dy: 10, rx: 26, ry: 9 },
-      { dx: -8, dy: 0, rx: 34, ry: 15 },
-      { dx: 30, dy: 8, rx: 24, ry: 9 },
+      { dx: -80, dy: 16, rx: 44, ry: 16 },
+      { dx: -28, dy: 0, rx: 54, ry: 26 },
+      { dx: 28, dy: -6, rx: 50, ry: 24 },
+      { dx: 74, dy: 10, rx: 40, ry: 16 },
     ],
   },
 ];
 
-/**
- * A branching lightning bolt, drawn in the scene's own coordinates. Rare —
- * see .scene-bolt in globals.css for the long cycle it sits idle through.
- */
 export const LIGHTNING_BOLT =
   'M232 6 L214 74 L242 70 L206 152 L228 96 L200 100 Z M214 74 L188 108 M228 96 L252 124';
 

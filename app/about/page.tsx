@@ -10,7 +10,7 @@ import { InterestGrid } from '@/components/InterestGrid';
 
 export const metadata: Metadata = {
   title: 'About',
-  description: `${SITE.name} — developer. Background, skills and contact details.`,
+  description: `${SITE.name}, developer. Background, skills and contact details.`,
 };
 
 function Section({
@@ -126,7 +126,7 @@ export default function AboutPage() {
         ) : (
           <p>
             I build things and put them where people can actually use them.{' '}
-            {PROJECTS.length} projects are listed on this site — {embeddableCount} of them
+            {PROJECTS.length} projects are listed on this site. {embeddableCount} of them
             start in the browser, and every one links to its source.{' '}
             <Link href="/projects" className="link-signal">
               See the work →

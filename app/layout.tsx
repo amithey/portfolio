@@ -28,14 +28,14 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: `${SITE.name} — developer`,
-    template: `%s — ${SITE.name}`,
+    default: `${SITE.name} · developer`,
+    template: `%s · ${SITE.name}`,
   },
   description: SITE.headline,
   openGraph: {
     type: 'website',
     siteName: SITE.name,
-    title: `${SITE.name} — developer`,
+    title: `${SITE.name} · developer`,
     description: SITE.headline,
   },
 };
