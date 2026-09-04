@@ -75,13 +75,18 @@ export const PROJECTS: Project[] = [
       'The largest thing on this site: roughly 21,000 lines of Python. It pulls market data and news, retrieves against a Chroma vector store of trading knowledge, and asks Claude for a decision that is then filtered through explicit risk rules. It backtests strategies, tracks a portfolio, trains anomaly and market regime models, and reports through a Streamlit dashboard.',
     category: 'data-and-ai',
     tags: ['python', 'langchain', 'rag', 'claude', 'machine learning', 'backtesting', 'streamlit', 'docker'],
-    status: 'wip',
+    status: 'live',
     featured: true,
     repo: 'https://github.com/amithey/bot-trade',
     demo: {
-      kind: 'video',
+      kind: 'external',
+      url: 'https://bottrade.fly.dev',
+      // Not embeddable, and not because of a frame header: bottrade.fly.dev
+      // sends neither X-Frame-Options nor frame-ancestors. Sign in is Google
+      // OAuth, and Google refuses to render its consent screen in an iframe,
+      // so an embed would strand every visitor on the first screen.
       embeddable: false,
-      note: 'A live version is on the way: a free COMMITTEE only mode that makes no API calls at all, plus bring your own key for the LLM modes. Shown as a recording until sign in and hosting are finished, then this becomes a real demo you can run.',
+      note: 'Opens in a new tab, because signing in goes through Google and Google will not load inside an embedded frame. Free to actually use: the COMMITTEE mode runs 38 indicators voting against each other and makes no model calls at all, so nothing is behind a key. Everything it trades is simulated. No brokerage is connected anywhere in the code.',
     },
     cover: '/images/projects/bot-trade.webp',
     highlights: [
@@ -89,7 +94,8 @@ export const PROJECTS: Project[] = [
       'Model output never reaches an order directly. It passes through a separate risk layer with position sizing, a daily loss limit, and a hard halt.',
       'Per ticker anomaly and market regime models are trained and persisted alongside the rule engine.',
       'Backtesting runs the same decision path against historical data, so strategy changes are measurable rather than guessed at.',
-      'Being rebuilt for multiple simultaneous users: a shared decision cache so concurrent visitors on the same bar cost one upstream call, per account sign in, and a live trading engine that survives a page refresh instead of orphaning its thread.',
+      'Runs multi tenant: per account sign in, a shared decision cache so concurrent visitors on the same bar cost one upstream call, and a trading engine that survives a page refresh instead of orphaning its thread.',
+      'Anyone can run the full product without paying for anything. COMMITTEE mode decides on 38 indicators alone, so the free tier is a working bot rather than a locked screenshot, and the paid modes are the ones that spend on Claude.',
       'The portfolio it trades is entirely simulated. No live brokerage connection exists anywhere in the code.',
     ],
     learned: '',
