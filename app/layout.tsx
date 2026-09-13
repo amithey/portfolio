@@ -4,6 +4,19 @@ import './globals.css';
 import { SITE } from '@/lib/site';
 import { Header } from '@/components/Header';
 import { AmbientBackdrop } from '@/components/AmbientBackdrop';
+import { ScrollManager } from '@/components/ScrollManager';
+
+/**
+ * Every visit starts at the top.
+ *
+ * Runs before first paint, as the first thing in <body>, because by the time
+ * React hydrates the browser has already done the damage: it has jumped to
+ * whatever `#section` is left in the URL, or restored the scroll position
+ * from last time — which on a phone was the bottom of the page. Clearing the
+ * hash here, before the target element even exists, means there is nothing
+ * to jump to. Inline scripts are allowed by the CSP in next.config.ts.
+ */
+const START_AT_TOP = `try{if('scrollRestoration' in history)history.scrollRestoration='manual';if(location.hash)history.replaceState(null,'',location.pathname+location.search)}catch(e){}`;
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
@@ -49,6 +62,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${spaceGrotesk.variable} ${plexSans.variable} ${plexMono.variable}`}>
+        <script dangerouslySetInnerHTML={{ __html: START_AT_TOP }} />
+        <ScrollManager />
         <AmbientBackdrop />
 
         <a

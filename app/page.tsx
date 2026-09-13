@@ -7,6 +7,7 @@ import { WinterScene } from '@/components/WinterScene';
 import { CodeCard } from '@/components/CodeCard';
 import { InterestGrid } from '@/components/InterestGrid';
 import { ABOUT, SKILLS } from '@/data/about';
+import { SectionLink } from '@/components/SectionLink';
 
 export default function Home() {
   const featuredSlugs = new Set(FEATURED.map((p) => p.slug));
@@ -24,9 +25,9 @@ export default function Home() {
         <p className="mt-4 max-w-prose leading-relaxed text-muted">
           Everything I&rsquo;ve built is on this page, and {embeddableCount} of them start
           right in the browser.{' '}
-          <Link href="/#about" className="link-signal">
+          <SectionLink id="about" className="link-signal">
             More about me →
-          </Link>
+          </SectionLink>
         </p>
 
         <div className="mt-10 sm:mt-12">
@@ -40,15 +41,15 @@ export default function Home() {
         {/* The whole site is reachable by scrolling from here, so say so
             rather than relying on the visitor finding the nav. */}
         <p className="mt-10 flex justify-center">
-          <a
-            href="#work"
+          <SectionLink
+            id="work"
             className="readout group inline-flex flex-col items-center gap-1.5 text-muted transition-colors hover:text-signal"
           >
             Scroll for the work
             <span aria-hidden className="scroll-cue text-base leading-none">
               ↓
             </span>
-          </a>
+          </SectionLink>
         </p>
       </section>
 

@@ -4,13 +4,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SITE } from '@/lib/site';
+import { SectionLink } from './SectionLink';
 
 /**
  * The site is one scrolling page, so the nav points at sections rather than
- * at separate routes. Hrefs are written as `/#id`, not bare `#id`, so the
- * same link works from a project detail page — it returns to the homepage
- * and lands on the section instead of hunting for an anchor that isn't
- * there.
+ * at separate routes. Each tab is a SectionLink, which scrolls without
+ * leaving `#id` in the address bar — see that file for why the hash made
+ * phones reopen the site at the bottom.
  */
 const NAV = [
   { id: 'work', label: 'Work' },
@@ -116,13 +116,13 @@ export function Header() {
           <ul className="flex items-center gap-6 text-sm">
             {NAV.map((item) => (
               <li key={item.id}>
-                <Link
-                  href={`/#${item.id}`}
+                <SectionLink
+                  id={item.id}
                   className={linkClass(item.id)}
                   aria-current={active === item.id ? 'true' : undefined}
                 >
                   {item.label}
-                </Link>
+                </SectionLink>
               </li>
             ))}
             <li>
@@ -173,14 +173,14 @@ export function Header() {
         <ul className="px-5 py-2 text-sm">
           {NAV.map((item) => (
             <li key={item.id}>
-              <Link
-                href={`/#${item.id}`}
-                onClick={() => setOpen(false)}
+              <SectionLink
+                id={item.id}
+                onNavigate={() => setOpen(false)}
                 className={`block py-2.5 ${active === item.id ? 'font-semibold text-signal' : 'text-muted'}`}
                 aria-current={active === item.id ? 'true' : undefined}
               >
                 {item.label}
-              </Link>
+              </SectionLink>
             </li>
           ))}
           <li>
