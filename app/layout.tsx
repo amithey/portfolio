@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -77,6 +77,15 @@ export const metadata: Metadata = {
   },
 };
 
+// Tints mobile browser chrome (the address bar / status bar) to match
+// whichever theme is active, using the same --surface tokens as globals.css.
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#fbfcfd' },
+    { media: '(prefers-color-scheme: dark)', color: '#10151b' },
+  ],
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -119,12 +128,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </a>
               </li>
               <li>
-                <a href={SITE.github} className="transition-colors hover:text-signal" rel="noreferrer noopener">
+                <a
+                  href={SITE.github}
+                  className="transition-colors hover:text-signal"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
                   GitHub
                 </a>
               </li>
               <li>
-                <a href={SITE.linkedin} className="transition-colors hover:text-signal" rel="noreferrer noopener">
+                <a
+                  href={SITE.linkedin}
+                  className="transition-colors hover:text-signal"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
                   LinkedIn
                 </a>
               </li>

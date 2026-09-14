@@ -103,12 +103,12 @@ export default function AboutPage() {
               </a>
             </li>
             <li>
-              <a href={SITE.linkedin} className="link-signal" rel="noreferrer noopener">
+              <a href={SITE.linkedin} className="link-signal" target="_blank" rel="noreferrer noopener">
                 LinkedIn
               </a>
             </li>
             <li>
-              <a href={SITE.github} className="link-signal" rel="noreferrer noopener">
+              <a href={SITE.github} className="link-signal" target="_blank" rel="noreferrer noopener">
                 GitHub
               </a>
             </li>

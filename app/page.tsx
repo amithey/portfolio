@@ -154,10 +154,10 @@ export default function Home() {
           <a href={`mailto:${SITE.email}`} className="btn-signal">
             {SITE.email}
           </a>
-          <a href={SITE.linkedin} className="link-signal" rel="noreferrer noopener">
+          <a href={SITE.linkedin} className="link-signal" target="_blank" rel="noreferrer noopener">
             LinkedIn
           </a>
-          <a href={SITE.github} className="link-signal" rel="noreferrer noopener">
+          <a href={SITE.github} className="link-signal" target="_blank" rel="noreferrer noopener">
             GitHub
           </a>
         </div>

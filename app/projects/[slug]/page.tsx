@@ -134,6 +134,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <section className="mt-10 border-t border-line pt-6">
         <a
           href={project.repo}
+          target="_blank"
           rel="noreferrer noopener"
           className="link-signal font-semibold"
         >

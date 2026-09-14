@@ -10,6 +10,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...PROJECTS.map((p) => ({
       url: `${SITE.url}/projects/${p.slug}`,
       priority: 0.7,
+      // Only set where the real month is known (see data/projects.ts) — a
+      // guessed date would be worse than none for a field search engines
+      // use to decide whether a page is worth re-crawling.
+      ...(p.built ? { lastModified: `${p.built}-01` } : {}),
     })),
   ];
 }
