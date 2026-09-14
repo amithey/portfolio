@@ -40,6 +40,16 @@ export function Header() {
   // A route change (including a same-page anchor) always closes the menu.
   useEffect(() => setOpen(false), [pathname]);
 
+  // Escape closes the mobile menu, same as any other dismissible overlay.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+
   useEffect(() => {
     // Sections only exist on the homepage; elsewhere nothing is highlighted.
     if (pathname !== '/') {
