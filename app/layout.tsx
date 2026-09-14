@@ -1,10 +1,29 @@
 import type { Metadata } from 'next';
 import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 import { SITE } from '@/lib/site';
+import { ABOUT } from '@/data/about';
 import { Header } from '@/components/Header';
 import { AmbientBackdrop } from '@/components/AmbientBackdrop';
 import { ScrollManager } from '@/components/ScrollManager';
+
+/**
+ * Person structured data, built from the same SITE/ABOUT objects the page
+ * renders from — so this can't drift out of sync with what's actually on
+ * the page the way a hand-typed JSON-LD block would.
+ */
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: SITE.name,
+  url: SITE.url,
+  email: `mailto:${SITE.email}`,
+  jobTitle: ABOUT.role,
+  ...(ABOUT.location ? { address: ABOUT.location } : {}),
+  sameAs: [SITE.github, SITE.linkedin],
+};
 
 /**
  * Every visit starts at the top.
@@ -62,6 +81,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${spaceGrotesk.variable} ${plexSans.variable} ${plexMono.variable}`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         <script dangerouslySetInnerHTML={{ __html: START_AT_TOP }} />
         <ScrollManager />
         <AmbientBackdrop />
@@ -108,6 +131,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </ul>
           </div>
         </footer>
+
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
