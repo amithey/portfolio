@@ -88,7 +88,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             rel="noreferrer noopener"
             className="flex items-center justify-between gap-4 rounded-lg border border-line bg-surface-raised px-5 py-4 hover:border-signal"
           >
-            <span className="font-semibold">Open the live site</span>
+            <span className="font-semibold">{project.demo.label ?? 'Open the live site'}</span>
             <span className="readout text-signal">{hostLabel ?? 'open'} →</span>
           </a>
         ) : null}

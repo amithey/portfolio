@@ -25,6 +25,8 @@ export interface Demo {
   embeddable: boolean;
   /** Required whenever the demo carries a caveat the visitor should know first. */
   note?: string;
+  /** Link text for a non-embeddable demo. Defaults to "Open the live site". */
+  label?: string;
 }
 
 export interface Project {
@@ -52,7 +54,7 @@ export const CATEGORIES: { id: Category; label: string; blurb: string }[] = [
   {
     id: 'games-and-interactive',
     label: 'Games & interactive',
-    blurb: 'Things you can play in the browser right now.',
+    blurb: 'Games you can play, in the browser or on your desktop.',
   },
   {
     id: 'web-apps',
@@ -72,7 +74,7 @@ export const PROJECTS: Project[] = [
     title: 'BotTrade',
     tagline: 'An AI trading assistant with a RAG knowledge base, backtesting, and risk controls.',
     description:
-      'The largest thing on this site: roughly 21,000 lines of Python. It pulls market data and news, retrieves against a Chroma vector store of trading knowledge, and asks Claude for a decision that is then filtered through explicit risk rules. It backtests strategies, tracks a portfolio, trains anomaly and market regime models, and reports through a Streamlit dashboard.',
+      'The largest web project on this site, and still being worked on: over 80 commits, more than 1,000 automated tests, and a deployment on Fly.io. It pulls market data and news, retrieves against a Chroma vector store of trading knowledge, and asks Claude for a decision that is then filtered through an entry research gate and explicit risk rules. It backtests strategies, tracks a paper portfolio, trains anomaly and market regime models, and reports through a Streamlit dashboard.',
     category: 'data-and-ai',
     tags: ['python', 'langchain', 'rag', 'claude', 'machine learning', 'backtesting', 'streamlit', 'docker'],
     status: 'live',
@@ -86,7 +88,7 @@ export const PROJECTS: Project[] = [
       // OAuth, and Google refuses to render its consent screen in an iframe,
       // so an embed would strand every visitor on the first screen.
       embeddable: false,
-      note: 'Opens in a new tab, because signing in goes through Google and Google will not load inside an embedded frame. Free to actually use: the COMMITTEE mode runs 38 indicators voting against each other and makes no model calls at all, so nothing is behind a key. Everything it trades is simulated. No brokerage is connected anywhere in the code.',
+      note: 'Opens in a new tab, because the sign in flow will not work inside an embedded frame. Free to actually use: the COMMITTEE mode runs 38 indicators voting against each other and makes no model calls at all, so nothing is behind a key. Everything it trades is simulated. No brokerage is connected anywhere in the code.',
     },
     cover: '/images/projects/bot-trade.webp',
     highlights: [
@@ -94,9 +96,39 @@ export const PROJECTS: Project[] = [
       'Model output never reaches an order directly. It passes through a separate risk layer with position sizing, a daily loss limit, and a hard halt.',
       'Per ticker anomaly and market regime models are trained and persisted alongside the rule engine.',
       'Backtesting runs the same decision path against historical data, so strategy changes are measurable rather than guessed at.',
-      'Runs multi tenant: per account sign in, a shared decision cache so concurrent visitors on the same bar cost one upstream call, and a trading engine that survives a page refresh instead of orphaning its thread.',
+      'Every entry passes a deterministic gate on completed candles: an established trend, a confirmed pullback or breakout, enough volume, and a limit on how stretched the price is. The repository labels these as testable hypotheses, not a proven edge.',
+      'Open paper positions are protected by a persistent, fee aware trailing exit that runs independently of the AI, so a slow model call cannot hand back unrealised gains.',
+      'It reports its own results without flattering them. Over 2022 to 2026 the multi asset trend scanner returned about what buy and hold did, at about half the drawdown, and the write up says plainly that any excess return is not established.',
+      'Runs multi tenant: email and password accounts that survive a refresh, a shared decision cache so concurrent visitors on the same bar cost one upstream call, and a trading engine that survives a page refresh instead of orphaning its thread.',
       'Anyone can run the full product without paying for anything. COMMITTEE mode decides on 38 indicators alone, so the free tier is a working bot rather than a locked screenshot, and the paid modes are the ones that spend on Claude.',
       'The portfolio it trades is entirely simulated. No live brokerage connection exists anywhere in the code.',
+    ],
+    learned: '',
+  },
+  {
+    slug: 'project-noesis',
+    title: 'Project Noesis',
+    tagline: 'A fruit fly body driven by a simulation of its real connectome, with nothing scripted.',
+    description:
+      'A research project that simulates the nervous system of a fruit fly from published connectome data: around 158,000 neurons wired as an event driven leaky integrate and fire network, connected to a physics model of the fly’s body in MuJoCo through motor neurons, muscles and sensory neurons. The goal is a fly whose behaviour comes only from that wiring, and eventually one that learns from the world on its own. It is early and unfinished, and its findings log records what failed as carefully as what worked.',
+    category: 'data-and-ai',
+    tags: ['python', 'neuroscience', 'connectome', 'simulation', 'mujoco', 'numba', 'research'],
+    status: 'wip',
+    built: '2026-10',
+    repo: 'https://github.com/amithey/Project-Noesis',
+    featured: false,
+    demo: {
+      kind: 'none',
+      embeddable: false,
+      note: 'Code only, and it is a work in progress. The connectome data is not in the repository because of its licence, and most of the code currently lives on feature branches rather than the default branch, so the GitHub landing page looks emptier than the project is.',
+    },
+    cover: '/images/projects/project-noesis.webp',
+    highlights: [
+      'Reproduces a published result from the data rather than from tuning: driving the sugar tasting neurons activates the proboscis motor neuron MN9, as in Shiu et al., Nature 2024.',
+      'Corrects for a real data problem. One connectome undercounts synapses by 20 to 60 percent per brain region compared with another, so counts are rescaled region by region from a second dataset, and that alone restores the sugar response without any tuning.',
+      'Validates against predictions written down in advance: an eight part response battery covering sugar, water, bitter and odour.',
+      'Wires real sensory input into the body, including leg afferents, gravity sensing and the halteres, and a mushroom body with dopamine gated plasticity as a first step toward learning.',
+      'Keeps a dated findings log of single runs, including corrections to its own earlier notes and a clear statement of what is not statistically established.',
     ],
     learned: '',
   },
@@ -129,26 +161,28 @@ export const PROJECTS: Project[] = [
   {
     slug: 'dominion',
     title: 'Dominion',
-    tagline: 'A real time strategy game running entirely in the browser on Three.js.',
+    tagline: 'A 3D real time strategy game for Windows, built in Godot. Currently in public alpha.',
     description:
-      'A 3D real time strategy game in the spirit of Civilization crossed with Command & Conquer. You start from a headquarters, found villages and cities, claim territory, research your way through national eras, and fight AI opponents by land and sea until every rival headquarters is gone. Around 10,900 lines of JavaScript across eleven modules, with no backend at all.',
+      'A 3D real time strategy game in the spirit of Civilization crossed with Command & Conquer. You start from a headquarters, found villages and cities, claim territory, research your way through national eras, and fight AI opponents by land and sea. It began as a Three.js prototype in the browser and has since been rebuilt as a native Windows game in Godot, which is now the only version in active development: the repository has nearly 500 commits and the code is mostly GDScript.',
     category: 'games-and-interactive',
-    tags: ['threejs', 'javascript', 'webgl', 'rts', 'game development'],
-    status: 'live',
+    tags: ['godot', 'gdscript', 'rts', 'game development', 'windows', '3d'],
+    status: 'wip',
     featured: true,
     repo: 'https://github.com/amithey/dominion',
     demo: {
-      kind: 'embed',
-      url: 'https://dominion-one-kappa.vercel.app',
-      embeddable: true,
-      note: 'Loads around 60 MB of 3D models and textures, so give it a moment on a slow connection. Built for a desktop and a mouse.',
+      kind: 'external',
+      url: 'https://github.com/amithey/dominion/releases/tag/v1.0.3-alpha',
+      embeddable: false,
+      label: 'Download the alpha',
+      note: 'This is a Windows download, not a browser demo: the installer is about 200 MB and the build is a pre-release alpha for testers. It is not on Steam, though Steam is the intended release.',
     },
     cover: '/images/projects/dominion.webp',
     highlights: [
-      'Its own AI opponent, diplomacy system, pathfinding, and territory model, each a separate module rather than one game loop.',
+      'Rebuilt from a browser prototype into a native Windows game with its own installer, versioned releases, and a test script that can also check the exported executable.',
+      'Units are modelled on real equipment, nation by nation. The 1.0.3 alpha added 27 main battle tank models and 69 armoured carriers, scouts, and support vehicles, with turrets that track targets, guns that recoil, and wrecks when a vehicle is destroyed.',
+      'Its own AI opponents, diplomacy, and territory systems, carried over from the browser version.',
       'The map is an island, and the coastline is a real constraint: shipyards must touch water and warships patrol the ocean ring.',
-      'Settlements have construction districts, so where you can build is a consequence of what you have already founded.',
-      'Falls back to procedural meshes automatically when a GLB model is missing, so the game still runs with assets absent.',
+      'Each release is written up with what changed, and customer-style review rounds are kept in the repository.',
     ],
     learned: '',
   },

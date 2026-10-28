@@ -10,6 +10,7 @@ export const PROJECT_HUE: Record<string, number> = {
   'capital-gains-tax-report-generator': 200,
   'pong-game': 88,
   'train-game': 8,
+  'project-noesis': 268,
 };
 
 /** Same idea, keyed by the interest label instead of a project slug. */

@@ -74,8 +74,8 @@ export default function Home() {
       <section className="border-t border-line py-16 sm:py-20">
         <h2 className="font-display text-3xl font-bold tracking-tight">Everything else</h2>
         <p className="mt-4 max-w-prose leading-relaxed text-muted">
-          A tax tool that solves a problem I actually had, and the two arcade games that
-          taught me the basics.
+          A fruit fly simulation still in progress, a tax tool that solves a problem I
+          actually had, and the two arcade games that taught me the basics.
         </p>
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {rest.map((project, i) => (
