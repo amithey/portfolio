@@ -1221,3 +1221,161 @@ section[id] {
     display: none;
   }
 }
+
+/* ------------------------------------------------------------------
+ * Project Noesis showcase page.
+ *
+ * A deliberately dark, self-contained scene: this one page is presented
+ * as a lab screen whatever the visitor's theme, so its colours live in
+ * --nx-* tokens scoped to .nx rather than the site tokens. All motion is
+ * class-driven and switched off by the global reduced-motion rule.
+ * ------------------------------------------------------------------ */
+
+.nx {
+  --nx-bg: #05080f;
+  --nx-bg2: #0a1220;
+  --nx-card: rgba(14, 23, 38, 0.72);
+  --nx-line: rgba(148, 180, 255, 0.16);
+  --nx-ink: #e9f0fb;
+  --nx-muted: #a3b3c9;
+  --nx-cyan: #5eead4;
+  --nx-blue: #60a5fa;
+  --nx-violet: #a78bfa;
+  --nx-amber: #fbbf24;
+  --nx-ok: #34d399;
+  position: relative;
+  margin-bottom: -6rem; /* meets the footer, which carries a 6rem top margin */
+  background: var(--nx-bg);
+  color: var(--nx-ink);
+  overflow: hidden;
+}
+
+.nx-hero-glow {
+  background:
+    radial-gradient(60% 55% at 78% 12%, rgba(96, 165, 250, 0.22), transparent 70%),
+    radial-gradient(50% 50% at 12% 30%, rgba(167, 139, 250, 0.18), transparent 70%),
+    radial-gradient(40% 40% at 50% 100%, rgba(94, 234, 212, 0.1), transparent 70%);
+}
+
+.nx-title {
+  background: linear-gradient(100deg, #ffffff 0%, #bfe3ff 38%, var(--nx-cyan) 68%, var(--nx-violet) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.nx-card {
+  position: relative;
+  border: 1px solid var(--nx-line);
+  border-radius: 1rem;
+  background: var(--nx-card);
+  backdrop-filter: blur(6px);
+}
+
+/* A gradient hairline that glows around featured media. */
+.nx-frame {
+  position: relative;
+  border-radius: 1rem;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(94, 234, 212, 0.6), rgba(96, 165, 250, 0.25) 40%, rgba(167, 139, 250, 0.6));
+  box-shadow: 0 0 60px -12px rgba(96, 165, 250, 0.45), 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+}
+.nx-frame > .nx-frame-inner {
+  overflow: hidden;
+  border-radius: calc(1rem - 1px);
+  background: var(--nx-bg2);
+}
+
+.nx-eyebrow {
+  font-family: var(--font-plex-mono, ui-monospace, monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--nx-cyan);
+}
+
+.nx-muted { color: var(--nx-muted); }
+
+.nx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--nx-line);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.75rem;
+  color: var(--nx-muted);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.nx-live-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--nx-ok);
+  box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+  animation: nx-ping 2s ease-out infinite;
+}
+@keyframes nx-ping {
+  0%   { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55); }
+  80%, 100% { box-shadow: 0 0 0 9px rgba(52, 211, 153, 0); }
+}
+
+/* Signal travelling along a wire between loop steps. */
+.nx-wire {
+  position: relative;
+  overflow: hidden;
+  background: var(--nx-line);
+}
+.nx-wire::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--nx-cyan), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  animation: nx-flow 2.4s linear infinite;
+}
+.nx-wire-v::after {
+  background: linear-gradient(180deg, transparent, var(--nx-cyan), transparent);
+  background-size: 100% 40%;
+  background-repeat: no-repeat;
+  animation-name: nx-flow-v;
+}
+@keyframes nx-flow   { from { background-position: -60% 0; } to { background-position: 160% 0; } }
+@keyframes nx-flow-v { from { background-position: 0 -60%; } to { background-position: 0 160%; } }
+
+.nx-spine {
+  background: linear-gradient(to bottom, transparent, var(--nx-cyan) 8%, var(--nx-violet) 92%, transparent);
+  opacity: 0.55;
+}
+
+.nx-badge {
+  box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.1), 0 0 24px rgba(94, 234, 212, 0.35);
+}
+.nx-badge-warn {
+  box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.1), 0 0 24px rgba(251, 191, 36, 0.3);
+}
+
+.nx-bar-fill {
+  transition: width 1.1s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.nx-scan::after {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 3px);
+}
+
+.nx-float { animation: nx-float 7s ease-in-out infinite; }
+@keyframes nx-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+.nx a:focus-visible, .nx button:focus-visible {
+  outline: 2px solid var(--nx-cyan);
+  outline-offset: 3px;
+}

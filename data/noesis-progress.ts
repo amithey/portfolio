@@ -113,6 +113,21 @@ export const METRICS: Metric[] = [
   },
 ];
 
+/** Headline figures, all from the repository's findings log. */
+export const HERO_STATS: { value: number; label: string }[] = [
+  { value: 158262, label: 'neurons simulated' },
+  { value: 3037361, label: 'connections between them' },
+  { value: 42, label: 'leg joints driven by muscles' },
+];
+
+export const BRAIN_VIDEO = {
+  src: '/videos/brain-activity-10s.mp4',
+  poster: '/images/noesis/brain_activity.png',
+  label: 'Ten seconds of simulated firing across the whole fly brain and nerve cord',
+  caption:
+    'Ten seconds of real simulation output: the firing of the whole brain and nerve cord, with mean rate per region on the right. Positions are schematic, because the data has no coordinates, and the links drawn are a sample of real ones. Learning is switched off and no vision or odour input is connected; only joint, load and balance feedback is.',
+};
+
 export const BRAIN_FRAME = {
   src: '/images/noesis/brain_activity.png',
   alt: 'A schematic of the fly brain and nerve cord lit by firing neurons, beside bars of mean firing rate for each brain region.',

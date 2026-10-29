@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CATEGORIES, PROJECTS, getProject, sortedProjects } from '@/data/projects';
 import { RunDemo } from '@/components/RunDemo';
-import { NoesisProgress } from '@/components/NoesisProgress';
+import { NoesisPage } from '@/components/noesis/NoesisPage';
 import { buildProjectsHref } from '@/lib/projects-href';
 import { demoHostLabel } from '@/lib/demo';
 
@@ -44,6 +44,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const next = index < ordered.length - 1 ? ordered[index + 1] : undefined;
   const category = CATEGORIES.find((c) => c.id === project.category);
   const hostLabel = project.demo.url ? demoHostLabel(project.demo.url) : undefined;
+
+  if (project.slug === 'project-noesis') {
+    return <NoesisPage project={project} prev={prev} next={next} />;
+  }
 
   return (
     <article className="mx-auto max-w-3xl px-5 py-14">
@@ -109,8 +113,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <h2 className="font-display text-xl font-bold tracking-tight">What it does</h2>
         <p className="mt-3 leading-relaxed text-muted">{project.description}</p>
       </section>
-
-      {project.slug === 'project-noesis' && <NoesisProgress />}
 
       {project.highlights.length > 0 && (
         <section className="mt-10">
