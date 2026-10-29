@@ -82,7 +82,7 @@ export function BagsPage({
             <div className="mt-9 flex flex-wrap items-center gap-4">
               {shopUrl && (
                 <a href={shopUrl} target="_blank" rel="noreferrer noopener" className="bg-btn">
-                  Visit the live shop <span aria-hidden="true">↗</span>
+                  Visit the live shop <span aria-hidden="true">→</span>
                 </a>
               )}
               <a href={project.repo} target="_blank" rel="noreferrer noopener" className="bg-btn bg-btn-ghost">
@@ -293,7 +293,7 @@ export function BagsPage({
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 {shopUrl && (
                   <a href={shopUrl} target="_blank" rel="noreferrer noopener" className="bg-btn bg-btn-light">
-                    Open {host ?? 'the shop'} <span aria-hidden="true">↗</span>
+                    Open {host ?? 'the shop'} <span aria-hidden="true">→</span>
                   </a>
                 )}
                 <a href={project.repo} target="_blank" rel="noreferrer noopener" className="bg-btn bg-btn-line">
