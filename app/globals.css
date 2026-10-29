@@ -1509,3 +1509,140 @@ section[id] {
 .dm-shot:hover img { transform: scale(1.04); }
 
 .dm a:focus-visible, .dm button:focus-visible { outline: 2px solid var(--dm-gold); outline-offset: 3px; }
+
+/* ------------------------------------------------------------------
+ * Capital Gains Tax Report Generator showcase page.
+ *
+ * Light, ledger-paper, in the app's own mint and teal. Scoped to .tx so
+ * it never leaks into the rest of the site; motion is class-driven and
+ * covered by the global prefers-reduced-motion rule.
+ * ------------------------------------------------------------------ */
+
+.tx {
+  --tx-bg: #f2f9f6;
+  --tx-ink: #0b2b27;
+  --tx-muted: #4a6660;
+  --tx-teal: #0f766e;
+  --tx-teal-deep: #065f46;
+  --tx-mint: #dff3ec;
+  --tx-line: #cfe5de;
+  --tx-amber: #b45309;
+  position: relative;
+  margin-bottom: -6rem; /* meets the footer, which carries a 6rem top margin */
+  background: var(--tx-bg);
+  color: var(--tx-ink);
+  overflow: hidden;
+}
+
+/* Ledger paper: faint horizontal rules, with a soft mint glow top right. */
+.tx-ledger {
+  background:
+    radial-gradient(55% 60% at 85% 10%, rgba(15, 118, 110, 0.14), transparent 70%),
+    repeating-linear-gradient(to bottom, transparent 0 31px, rgba(15, 118, 110, 0.07) 31px 32px),
+    var(--tx-bg);
+}
+
+.tx-eyebrow {
+  font-family: var(--font-plex-mono, ui-monospace, monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tx-teal);
+}
+
+/* A highlighter swipe behind the project name. */
+.tx-mark {
+  background: linear-gradient(transparent 62%, rgba(15, 118, 110, 0.22) 62% 92%, transparent 92%);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  color: var(--tx-teal-deep);
+}
+
+.tx-card {
+  border: 1px solid var(--tx-line);
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 1px 0 rgba(15, 118, 110, 0.04), 0 18px 40px -26px rgba(11, 43, 39, 0.35);
+}
+
+.tx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--tx-line);
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.78rem;
+  color: var(--tx-muted);
+}
+.tx-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--tx-teal);
+  animation: tx-ping 2s ease-out infinite;
+}
+@keyframes tx-ping {
+  0%   { box-shadow: 0 0 0 0 rgba(15, 118, 110, 0.5); }
+  80%, 100% { box-shadow: 0 0 0 8px rgba(15, 118, 110, 0); }
+}
+
+.tx-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 1px solid var(--tx-teal-deep);
+  border-radius: 0.6rem;
+  background: var(--tx-teal-deep);
+  padding: 0.8rem 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  box-shadow: 0 10px 24px -12px rgba(6, 95, 70, 0.7);
+  transition: transform 0.2s, background-color 0.2s;
+}
+.tx-btn:hover { transform: translateY(-2px); background: var(--tx-teal); }
+.tx-btn-ghost { background: transparent; color: var(--tx-teal-deep); box-shadow: none; }
+.tx-btn-ghost:hover { background: var(--tx-mint); color: var(--tx-teal-deep); }
+
+.tx-stat {
+  border-left: 1px solid var(--tx-line);
+  padding: 0.25rem 1.25rem;
+}
+
+.tx-tick {
+  display: inline-flex;
+  height: 2rem;
+  width: 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: var(--tx-mint);
+  color: var(--tx-teal);
+  font-weight: 800;
+}
+
+.tx-browser {
+  overflow: hidden;
+  border: 1px solid var(--tx-line);
+  border-radius: 0.9rem;
+  background: #ffffff;
+  box-shadow: 0 30px 60px -34px rgba(11, 43, 39, 0.45);
+}
+
+.tx-fade { animation: tx-fade 0.45s ease both; }
+@keyframes tx-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.tx-float { animation: tx-float 7s ease-in-out infinite; }
+@keyframes tx-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+.tx a:focus-visible, .tx button:focus-visible {
+  outline: 2px solid var(--tx-teal);
+  outline-offset: 3px;
+}
