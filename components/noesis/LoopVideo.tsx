@@ -62,7 +62,7 @@ export function LoopVideo({
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         onClick={reduced ? undefined : toggle}
-        className={`block w-full cursor-pointer ${className}`}
+        className={`block aspect-[4/3] w-full cursor-pointer bg-black ${className}`}
       />
       {!reduced && (
         <button
