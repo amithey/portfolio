@@ -109,6 +109,31 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <p className="mt-3 leading-relaxed text-muted">{project.description}</p>
       </section>
 
+      {project.videos && project.videos.length > 0 && (
+        <section className="mt-10">
+          <h2 className="font-display text-xl font-bold tracking-tight">Progress so far</h2>
+          <div className="mt-4 space-y-6">
+            {project.videos.map((video) => (
+              <figure key={video.src}>
+                <video
+                  src={video.src}
+                  controls
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label={video.title}
+                  className="w-full rounded-lg border border-line bg-surface-sunken"
+                />
+                <figcaption className="mt-2 text-sm leading-relaxed text-muted">
+                  <span className="font-semibold text-ink">{video.title}.</span> {video.caption}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
+
       {project.highlights.length > 0 && (
         <section className="mt-10">
           <h2 className="font-display text-xl font-bold tracking-tight">Worth knowing</h2>

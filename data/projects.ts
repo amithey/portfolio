@@ -29,6 +29,14 @@ export interface Demo {
   label?: string;
 }
 
+export interface ProjectVideo {
+  /** Public path under /videos. */
+  src: string;
+  title: string;
+  /** Factual: what the clip shows and the numbers the repository reports for it. */
+  caption: string;
+}
+
 export interface Project {
   slug: string;
   title: string;
@@ -44,6 +52,8 @@ export interface Project {
   demo: Demo;
   cover: string;
   screenshots?: string[];
+  /** Progress clips, shown on the detail page. */
+  videos?: ProjectVideo[];
   /** Factual statements about what the code does. */
   highlights: string[];
   /** Amit's own words. Empty until written — never auto-generated. */
@@ -110,7 +120,7 @@ export const PROJECTS: Project[] = [
     title: 'Project Noesis',
     tagline: 'A fruit fly body driven by a simulation of its real connectome, with nothing scripted.',
     description:
-      'A research project that simulates the nervous system of a fruit fly from published connectome data: around 158,000 neurons wired as an event driven leaky integrate and fire network, connected to a physics model of the fly’s body in MuJoCo through motor neurons, muscles and sensory neurons. The goal is a fly whose behaviour comes only from that wiring, and eventually one that learns from the world on its own. It is early and unfinished, and its findings log records what failed as carefully as what worked.',
+      'The idea: take the real wiring diagram of a fruit fly’s nervous system, mapped and published by neuroscientists, and run it as a simulation instead of programming the fly’s behaviour by hand. Around 158,000 neurons are modelled as an event driven leaky integrate and fire network, linked through motor neurons and muscles to a physics model of the fly’s body in MuJoCo, with sensory neurons feeding back what the body feels. Whatever the fly does has to come out of that wiring, and eventually out of learning. It is early and unfinished, and its findings log records what failed as carefully as what worked.',
     category: 'data-and-ai',
     tags: ['python', 'neuroscience', 'connectome', 'simulation', 'mujoco', 'numba', 'research'],
     status: 'wip',
@@ -123,11 +133,27 @@ export const PROJECTS: Project[] = [
       note: 'Code only, and it is a work in progress. The connectome data is not in the repository because of its licence, and most of the code currently lives on feature branches rather than the default branch, so the GitHub landing page looks emptier than the project is.',
     },
     cover: '/images/projects/project-noesis.webp',
+    videos: [
+      {
+        src: '/videos/fly-stage2-gripped-steps-10s.mp4',
+        title: 'Stage 2: gripped steps',
+        caption:
+          'Ten seconds of simulation at 30 FPS from the validated Stage 2 checkpoint, which passed a two seed gate. Forward displacement: 2.58 mm.',
+      },
+      {
+        src: '/videos/fly-stage3-continuous-walking-10s.mp4',
+        title: 'Stage 3: continuous walking',
+        caption:
+          'Ten seconds at 30 FPS from the Stage 3 candidate. Forward displacement: 1.06 mm, with tripod leg coordination of 0.141. A candidate, not a finished gait.',
+      },
+    ],
     highlights: [
       'Reproduces a published result from the data rather than from tuning: driving the sugar tasting neurons activates the proboscis motor neuron MN9, as in Shiu et al., Nature 2024.',
       'Corrects for a real data problem. One connectome undercounts synapses by 20 to 60 percent per brain region compared with another, so counts are rescaled region by region from a second dataset, and that alone restores the sugar response without any tuning.',
       'Validates against predictions written down in advance: an eight part response battery covering sugar, water, bitter and odour.',
       'Wires real sensory input into the body, including leg afferents, gravity sensing and the halteres, and a mushroom body with dopamine gated plasticity as a first step toward learning.',
+      'Has moved on to training: a GPU pilot with checkpoints, frozen comparisons, and physical gait metrics that classify movement from falling and dragging through to coordinated tripod walking, tested on synthetic data first.',
+      'Holds itself to pre-registered rules. A recent exploration experiment failed its own pass condition, so neither result was promoted, and the write up says so.',
       'Keeps a dated findings log of single runs, including corrections to its own earlier notes and a clear statement of what is not statistically established.',
     ],
     learned: '',
@@ -171,10 +197,10 @@ export const PROJECTS: Project[] = [
     repo: 'https://github.com/amithey/dominion',
     demo: {
       kind: 'external',
-      url: 'https://github.com/amithey/dominion/releases/tag/v1.0.3-alpha',
+      url: 'https://github.com/amithey/dominion/releases/download/v1.0.3-alpha/DOMINION-Setup.exe',
       embeddable: false,
-      label: 'Download the alpha',
-      note: 'This is a Windows download, not a browser demo: the installer is about 200 MB and the build is a pre-release alpha for testers. It is not on Steam, though Steam is the intended release.',
+      label: 'Download for Windows (installer, about 200 MB)',
+      note: 'This is a Windows download, not a browser demo. The build is a pre-release alpha for testers, version 1.0.3, and Windows may warn about an unrecognised publisher. It is not on Steam, though Steam is the intended release. Release notes are on the GitHub releases page.',
     },
     cover: '/images/projects/dominion.webp',
     highlights: [
