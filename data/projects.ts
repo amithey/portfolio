@@ -29,14 +29,6 @@ export interface Demo {
   label?: string;
 }
 
-export interface ProjectVideo {
-  /** Public path under /videos. */
-  src: string;
-  title: string;
-  /** Factual: what the clip shows and the numbers the repository reports for it. */
-  caption: string;
-}
-
 export interface Project {
   slug: string;
   title: string;
@@ -52,8 +44,6 @@ export interface Project {
   demo: Demo;
   cover: string;
   screenshots?: string[];
-  /** Progress clips, shown on the detail page. */
-  videos?: ProjectVideo[];
   /** Factual statements about what the code does. */
   highlights: string[];
   /** Amit's own words. Empty until written — never auto-generated. */
@@ -133,20 +123,7 @@ export const PROJECTS: Project[] = [
       note: 'Code only, and it is a work in progress. The connectome data is not in the repository because of its licence, and most of the code currently lives on feature branches rather than the default branch, so the GitHub landing page looks emptier than the project is.',
     },
     cover: '/images/projects/project-noesis.webp',
-    videos: [
-      {
-        src: '/videos/fly-stage2-gripped-steps-10s.mp4',
-        title: 'Stage 2: gripped steps',
-        caption:
-          'Ten seconds of simulation at 30 FPS from the validated Stage 2 checkpoint, which passed a two seed gate. Forward displacement: 2.58 mm.',
-      },
-      {
-        src: '/videos/fly-stage3-continuous-walking-10s.mp4',
-        title: 'Stage 3: continuous walking',
-        caption:
-          'Ten seconds at 30 FPS from the Stage 3 candidate. Forward displacement: 1.06 mm, with tripod leg coordination of 0.141. A candidate, not a finished gait.',
-      },
-    ],
+
     highlights: [
       'Reproduces a published result from the data rather than from tuning: driving the sugar tasting neurons activates the proboscis motor neuron MN9, as in Shiu et al., Nature 2024.',
       'Corrects for a real data problem. One connectome undercounts synapses by 20 to 60 percent per brain region compared with another, so counts are rescaled region by region from a second dataset, and that alone restores the sugar response without any tuning.',
@@ -187,7 +164,7 @@ export const PROJECTS: Project[] = [
   {
     slug: 'dominion',
     title: 'Dominion',
-    tagline: 'A 3D real time strategy game for Windows, built in Godot. Currently in public alpha.',
+    tagline: 'A 3D real time strategy game for Windows, built in Godot. Alpha 1.0.3.',
     description:
       'A 3D real time strategy game in the spirit of Civilization crossed with Command & Conquer. You start from a headquarters, found villages and cities, claim territory, research your way through national eras, and fight AI opponents by land and sea. It began as a Three.js prototype in the browser and has since been rebuilt as a native Windows game in Godot, which is now the only version in active development: the repository has nearly 500 commits and the code is mostly GDScript.',
     category: 'games-and-interactive',
@@ -199,13 +176,13 @@ export const PROJECTS: Project[] = [
       kind: 'external',
       url: 'https://github.com/amithey/dominion/releases/download/v1.0.3-alpha/DOMINION-Setup.exe',
       embeddable: false,
-      label: 'Download for Windows (installer, about 200 MB)',
-      note: 'This is a Windows download, not a browser demo. The build is a pre-release alpha for testers, version 1.0.3, and Windows may warn about an unrecognised publisher. It is not on Steam, though Steam is the intended release. Release notes are on the GitHub releases page.',
+      label: 'Download Alpha 1.0.3 for Windows (about 200 MB)',
+      note: 'This is a Windows download, not a browser demo. Alpha 1.0.3 is a pre-release build for testers, and Windows may warn about an unrecognised publisher. It is not on Steam, though Steam is the intended release. Release notes are on the GitHub releases page.',
     },
     cover: '/images/projects/dominion.webp',
     highlights: [
       'Rebuilt from a browser prototype into a native Windows game with its own installer, versioned releases, and a test script that can also check the exported executable.',
-      'Units are modelled on real equipment, nation by nation. The 1.0.3 alpha added 27 main battle tank models and 69 armoured carriers, scouts, and support vehicles, with turrets that track targets, guns that recoil, and wrecks when a vehicle is destroyed.',
+      'Units are modelled on real equipment, nation by nation. Alpha 1.0.3 added 27 main battle tank models and 69 armoured carriers, scouts, and support vehicles, with turrets that track targets, guns that recoil, and wrecks when a vehicle is destroyed.',
       'Its own AI opponents, diplomacy, and territory systems, carried over from the browser version.',
       'The map is an island, and the coastline is a real constraint: shipyards must touch water and warships patrol the ocean ring.',
       'Each release is written up with what changed, and customer-style review rounds are kept in the repository.',
