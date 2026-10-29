@@ -1379,3 +1379,133 @@ section[id] {
   outline: 2px solid var(--nx-cyan);
   outline-offset: 3px;
 }
+
+/* ------------------------------------------------------------------
+ * Dominion showcase page.
+ *
+ * Styled after the game's own HUD: deep navy panels, thin gold rules,
+ * a small-caps serif for headings and a gold-on-navy menu bar, as seen in
+ * the in-game screenshots. Scoped to .dm so it never leaks into the rest
+ * of the site; motion is class-driven and covered by the global
+ * prefers-reduced-motion rule.
+ * ------------------------------------------------------------------ */
+
+.dm {
+  --dm-bg: #08121f;
+  --dm-panel: #0f2038;
+  --dm-panel-2: #142a47;
+  --dm-edge: #28415f;
+  --dm-gold: #d9b66f;
+  --dm-gold-dim: #a88b4f;
+  --dm-ink: #eaf0f8;
+  --dm-muted: #9db0c8;
+  --dm-blue: #6fb0ff;
+  --dm-green: #7fd49a;
+  --dm-red: #ff8a73;
+  position: relative;
+  margin-bottom: -6rem; /* meets the footer, which carries a 6rem top margin */
+  background: var(--dm-bg);
+  color: var(--dm-ink);
+  overflow: hidden;
+}
+
+.dm-serif {
+  font-family: var(--font-cinzel), 'Times New Roman', serif;
+  letter-spacing: 0.06em;
+}
+
+.dm-gold { color: var(--dm-gold); }
+.dm-muted { color: var(--dm-muted); }
+
+/* The game's panel: navy fill, hairline edge, and gold corner ticks. */
+.dm-panel {
+  position: relative;
+  border: 1px solid var(--dm-edge);
+  background: linear-gradient(180deg, var(--dm-panel-2), var(--dm-panel));
+  border-radius: 0.35rem;
+  box-shadow: 0 18px 50px -24px rgba(0, 0, 0, 0.8);
+}
+.dm-panel::before,
+.dm-panel::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--dm-gold);
+  pointer-events: none;
+}
+.dm-panel::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+.dm-panel::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+
+.dm-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--dm-gold-dim), transparent);
+}
+
+/* The in-game top menu: a navy bar of gold-lit tabs. */
+.dm-menu {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  border: 1px solid var(--dm-edge);
+  background: rgba(8, 18, 31, 0.88);
+  backdrop-filter: blur(6px);
+  border-radius: 0.35rem;
+  padding: 0.25rem;
+  scrollbar-width: none;
+}
+.dm-menu::-webkit-scrollbar { display: none; }
+.dm-menu a {
+  flex: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  color: var(--dm-muted);
+  transition: background-color 0.2s, color 0.2s;
+}
+.dm-menu a:hover,
+.dm-menu a:focus-visible {
+  background: rgba(217, 182, 111, 0.14);
+  color: var(--dm-gold);
+}
+
+.dm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid var(--dm-gold);
+  border-radius: 0.3rem;
+  padding: 0.85rem 1.6rem;
+  font-weight: 700;
+  background: linear-gradient(180deg, #e6c47f, #c79f55);
+  color: #1a1305;
+  box-shadow: 0 0 0 0 rgba(217, 182, 111, 0.5), 0 10px 30px -10px rgba(217, 182, 111, 0.55);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.dm-btn:hover { transform: translateY(-2px); box-shadow: 0 0 0 4px rgba(217, 182, 111, 0.18), 0 14px 36px -10px rgba(217, 182, 111, 0.7); }
+.dm-btn-ghost {
+  background: transparent;
+  color: var(--dm-gold);
+  box-shadow: none;
+}
+.dm-btn-ghost:hover { background: rgba(217, 182, 111, 0.1); box-shadow: none; }
+
+/* Hero stat bar, laid out like the game's resource strip. */
+.dm-resbar {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1px solid var(--dm-edge);
+  background: rgba(8, 18, 31, 0.82);
+  backdrop-filter: blur(6px);
+  border-radius: 0.35rem;
+}
+@media (min-width: 640px) { .dm-resbar { grid-template-columns: repeat(4, 1fr); } }
+.dm-resbar > div { padding: 0.9rem 1.1rem; border-left: 1px solid var(--dm-edge); }
+.dm-resbar > div:nth-child(odd) { border-left: 0; }
+@media (min-width: 640px) { .dm-resbar > div:nth-child(odd) { border-left: 1px solid var(--dm-edge); } .dm-resbar > div:first-child { border-left: 0; } }
+
+.dm-shot { overflow: hidden; }
+.dm-shot img { transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.dm-shot:hover img { transform: scale(1.04); }
+
+.dm a:focus-visible, .dm button:focus-visible { outline: 2px solid var(--dm-gold); outline-offset: 3px; }

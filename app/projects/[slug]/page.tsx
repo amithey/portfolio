@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { CATEGORIES, PROJECTS, getProject, sortedProjects } from '@/data/projects';
 import { RunDemo } from '@/components/RunDemo';
 import { NoesisPage } from '@/components/noesis/NoesisPage';
+import { DominionPage } from '@/components/dominion/DominionPage';
 import { buildProjectsHref } from '@/lib/projects-href';
 import { demoHostLabel } from '@/lib/demo';
 
@@ -47,6 +48,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   if (project.slug === 'project-noesis') {
     return <NoesisPage project={project} prev={prev} next={next} />;
+  }
+  if (project.slug === 'dominion') {
+    return <DominionPage project={project} prev={prev} next={next} />;
   }
 
   return (
