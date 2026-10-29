@@ -1247,7 +1247,7 @@ section[id] {
   margin-bottom: -6rem; /* meets the footer, which carries a 6rem top margin */
   background: var(--nx-bg);
   color: var(--nx-ink);
-  overflow: hidden;
+  overflow-x: clip; /* clip, not hidden: hidden would stop sticky children from sticking */
 }
 
 .nx-hero-glow {
@@ -1406,7 +1406,7 @@ section[id] {
   margin-bottom: -6rem; /* meets the footer, which carries a 6rem top margin */
   background: var(--dm-bg);
   color: var(--dm-ink);
-  overflow: hidden;
+  overflow-x: clip; /* clip, not hidden: hidden would stop sticky children from sticking */
 }
 
 .dm-serif {
@@ -1448,7 +1448,7 @@ section[id] {
   gap: 0.25rem;
   overflow-x: auto;
   border: 1px solid var(--dm-edge);
-  background: rgba(8, 18, 31, 0.88);
+  background: rgba(8, 18, 31, 0.97);
   backdrop-filter: blur(6px);
   border-radius: 0.35rem;
   padding: 0.25rem;
@@ -1531,7 +1531,7 @@ section[id] {
   margin-bottom: -6rem; /* meets the footer, which carries a 6rem top margin */
   background: var(--tx-bg);
   color: var(--tx-ink);
-  overflow: hidden;
+  overflow-x: clip; /* clip, not hidden: hidden would stop sticky children from sticking */
 }
 
 /* Ledger paper: faint horizontal rules, with a soft mint glow top right. */
@@ -1668,7 +1668,7 @@ section[id] {
   margin-bottom: -6rem; /* meets the footer, which carries a 6rem top margin */
   background: var(--bg-cream);
   color: var(--bg-ink);
-  overflow: hidden;
+  overflow-x: clip; /* clip, not hidden: hidden would stop sticky children from sticking */
 }
 
 .bg-serif {
@@ -1905,4 +1905,28 @@ section[id] {
 .bg a:focus-visible, .bg button:focus-visible, .bg [tabindex]:focus-visible {
   outline: 2px solid var(--bg-taupe);
   outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------
+ * The sticky site header over the dark showcase pages.
+ *
+ * Its frosted light bar reads as a washed-out grey over a dark hero, so on
+ * pages that open dark (Noesis, Dominion) the header re-themes through the
+ * same colour tokens it already uses. :has() keeps this in CSS, with no
+ * change to the Header component.
+ * ------------------------------------------------------------------ */
+
+body:has(.nx) header.sticky,
+body:has(.dm) header.sticky {
+  --surface: #060b14;
+  --ink: #e9f0fb;
+  --muted: #a3b3c9;
+  --line: rgba(148, 180, 255, 0.16);
+  --signal: #7fb6ff;
+  --surface-muted: rgba(255, 255, 255, 0.08);
+  background-color: rgba(6, 11, 20, 0.96);
+  color: var(--ink);
+}
+body:has(.dm) header.sticky {
+  --signal: #d9b66f;
 }

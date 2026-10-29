@@ -12,6 +12,7 @@ function demoLabel(project: Project): string {
   const { demo } = project;
   if (demo.kind === 'none') return 'code only';
   if (demo.kind === 'video') return 'video';
+  if (demo.kind === 'download') return 'download';
   if (demo.embeddable) return 'runs here';
   return 'live site';
 }

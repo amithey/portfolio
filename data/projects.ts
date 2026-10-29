@@ -16,7 +16,7 @@
 
 export type Category = 'games-and-interactive' | 'web-apps' | 'data-and-ai';
 export type ProjectStatus = 'live' | 'wip' | 'archived';
-export type DemoKind = 'embed' | 'external' | 'video' | 'notebook' | 'none';
+export type DemoKind = 'embed' | 'external' | 'download' | 'video' | 'notebook' | 'none';
 
 export interface Demo {
   kind: DemoKind;
@@ -173,7 +173,7 @@ export const PROJECTS: Project[] = [
     featured: true,
     repo: 'https://github.com/amithey/dominion',
     demo: {
-      kind: 'external',
+      kind: 'download',
       url: 'https://github.com/amithey/dominion/releases/download/v1.0.3-alpha/DOMINION-Setup.exe',
       embeddable: false,
       label: 'Download Alpha 1.0.3 for Windows (about 200 MB)',

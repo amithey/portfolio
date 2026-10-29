@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ALL_TAGS, CATEGORIES, PROJECTS, sortedProjects, type Category } from '@/data/projects';
 import { ProjectCard } from '@/components/ProjectCard';
 import { buildProjectsHref, firstSearchParam } from '@/lib/projects-href';
+import { embeddableCount } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Projects',
@@ -70,8 +71,8 @@ export default async function ProjectsPage({
     <div className="mx-auto max-w-5xl px-5 py-14">
       <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">Projects</h1>
       <p className="mt-3 text-muted">
-        {PROJECTS.length} projects. Every one links to its source, and most of them start in
-        the page.
+        {PROJECTS.length} projects. Every one links to its source, and {embeddableCount} of them
+        start in the page.
       </p>
 
       <div className="mt-9 space-y-4">

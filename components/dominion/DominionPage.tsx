@@ -131,7 +131,7 @@ export function DominionPage({
       </header>
 
       {/* The game's top menu, as page navigation. */}
-      <div className="sticky top-[57px] z-30 mx-auto max-w-5xl px-5 py-3">
+      <div className="sticky top-[69px] sm:top-[56px] z-30 mx-auto max-w-5xl px-5 py-3">
         <nav aria-label="On this page" className="dm-menu">
           {MENU.map((item) => (
             <a key={item.href} href={item.href}>
