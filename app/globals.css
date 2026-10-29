@@ -1646,3 +1646,263 @@ section[id] {
   outline: 2px solid var(--tx-teal);
   outline-offset: 3px;
 }
+
+/* ------------------------------------------------------------------
+ * BagStore showcase page.
+ *
+ * Editorial boutique: the shop's own cream, taupe and gold, in the same
+ * Frank Ruhl Libre serif, with arches, thin gold rules and generous
+ * space. Scoped to .bg so it never leaks into the rest of the site;
+ * motion is class-driven and covered by the global reduced-motion rule.
+ * ------------------------------------------------------------------ */
+
+.bg {
+  --bg-cream: #f5f0e8;
+  --bg-bone: #ebe3d5;
+  --bg-ink: #1a1a1a;
+  --bg-taupe: #8b6f47;
+  --bg-gold: #b8956a;
+  --bg-muted: #6f6454;
+  --bg-line: #d9cfc1;
+  position: relative;
+  margin-bottom: -6rem; /* meets the footer, which carries a 6rem top margin */
+  background: var(--bg-cream);
+  color: var(--bg-ink);
+  overflow: hidden;
+}
+
+.bg-serif {
+  font-family: var(--font-frank), Georgia, 'Times New Roman', serif;
+}
+
+.bg-paper {
+  background:
+    radial-gradient(60% 70% at 90% 0%, rgba(184, 149, 106, 0.22), transparent 70%),
+    radial-gradient(50% 60% at 0% 100%, rgba(235, 227, 213, 0.9), transparent 70%),
+    var(--bg-cream);
+}
+
+.bg-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--bg-taupe);
+}
+
+.bg-rule {
+  height: 1px;
+  background: linear-gradient(90deg, var(--bg-gold), transparent);
+}
+
+.bg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid var(--bg-line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  padding: 0.25rem 0.85rem;
+  font-size: 0.8rem;
+  color: var(--bg-muted);
+}
+.bg-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--bg-gold);
+  animation: bg-ping 2.2s ease-out infinite;
+}
+@keyframes bg-ping {
+  0%   { box-shadow: 0 0 0 0 rgba(184, 149, 106, 0.6); }
+  80%, 100% { box-shadow: 0 0 0 8px rgba(184, 149, 106, 0); }
+}
+
+.bg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 1px solid var(--bg-ink);
+  border-radius: 999px;
+  background: var(--bg-ink);
+  padding: 0.85rem 1.8rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  color: var(--bg-cream);
+  transition: transform 0.25s, background-color 0.25s, color 0.25s;
+}
+.bg-btn:hover { transform: translateY(-2px); background: var(--bg-taupe); border-color: var(--bg-taupe); }
+.bg-btn-ghost { background: transparent; color: var(--bg-ink); }
+.bg-btn-ghost:hover { background: var(--bg-ink); border-color: var(--bg-ink); color: var(--bg-cream); }
+.bg-btn-light { background: var(--bg-cream); border-color: var(--bg-cream); color: var(--bg-ink); }
+.bg-btn-light:hover { background: var(--bg-gold); border-color: var(--bg-gold); color: var(--bg-ink); }
+.bg-btn-line { background: transparent; border-color: rgba(245, 240, 232, 0.5); color: var(--bg-cream); }
+.bg-btn-line:hover { background: rgba(245, 240, 232, 0.12); border-color: var(--bg-cream); }
+
+/* The hero bag sits in an arch, with a gold outline offset behind it. */
+.bg-arch {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 999px 999px 1.25rem 1.25rem;
+  background: var(--bg-bone);
+  box-shadow: 0 40px 70px -40px rgba(60, 40, 15, 0.55);
+}
+.bg-arch-ring {
+  position: absolute;
+  inset: 0;
+  transform: translate(14px, 14px);
+  border: 1px solid var(--bg-gold);
+  border-radius: 999px 999px 1.25rem 1.25rem;
+}
+.bg-tag {
+  position: absolute;
+  bottom: 1.25rem;
+  left: -0.75rem;
+  border-radius: 999px;
+  background: var(--bg-ink);
+  padding: 0.45rem 1rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--bg-cream);
+}
+.bg-float { animation: bg-float 8s ease-in-out infinite; }
+@keyframes bg-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+/* A slow ribbon of model names, like the shop's own. */
+.bg-ribbon {
+  overflow: hidden;
+  border-block: 1px solid var(--bg-line);
+  background: var(--bg-bone);
+  padding: 1.1rem 0;
+}
+.bg-marquee {
+  display: flex;
+  width: max-content;
+  gap: 2.5rem;
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: var(--bg-taupe);
+  animation: bg-marquee 46s linear infinite;
+}
+.bg-marquee > span { white-space: nowrap; }
+.bg-star { margin-left: 2.5rem; color: var(--bg-gold); font-size: 0.9rem; }
+@keyframes bg-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Lookbook: native scroll snap, so it works by touch, wheel and keyboard. */
+.bg-scroller {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.25rem 1.5rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--bg-gold) var(--bg-bone);
+  scrollbar-width: thin;
+}
+.bg-card {
+  flex: none;
+  width: min(78vw, 20rem);
+  scroll-snap-align: start;
+}
+.bg-card-photo {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 999px 999px 1rem 1rem;
+  background: var(--bg-bone);
+}
+.bg-card-blur {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  filter: blur(22px) saturate(1.1);
+  transform: scale(1.3);
+  opacity: 0.85;
+}
+.bg-card-img {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  /* Feather the photo's top and bottom edges into the blurred fill behind it. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bg-card:hover .bg-card-img { transform: scale(1.05); }
+
+/* The order flow, as a quiet numbered list down a gold line. */
+.bg-flow {
+  position: relative;
+  display: grid;
+  gap: 2.5rem;
+}
+.bg-flow::before {
+  content: '';
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  left: 1.6rem;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--bg-gold), transparent);
+}
+.bg-flow > li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.4rem 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+.bg-flow-num {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 3.2rem;
+  width: 3.2rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--bg-gold);
+  border-radius: 999px;
+  background: var(--bg-cream);
+  font-size: 1.1rem;
+  color: var(--bg-taupe);
+}
+
+.bg-frame {
+  overflow: hidden;
+  border: 1px solid var(--bg-line);
+  border-radius: 1.1rem;
+  background: #fffdf9;
+  box-shadow: 0 30px 60px -40px rgba(60, 40, 15, 0.45);
+}
+.bg-phone-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.bg-phone {
+  margin-top: 1.5rem;
+  width: min(62%, 15rem);
+  overflow: hidden;
+  border: 6px solid var(--bg-ink);
+  border-radius: 1.9rem;
+  box-shadow: 0 24px 40px -22px rgba(0, 0, 0, 0.55);
+}
+
+.bg-visit {
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(60% 80% at 100% 0%, rgba(184, 149, 106, 0.3), transparent 70%),
+    var(--bg-ink);
+  padding: clamp(2rem, 6vw, 4.5rem);
+  color: var(--bg-cream);
+}
+
+.bg a:focus-visible, .bg button:focus-visible, .bg [tabindex]:focus-visible {
+  outline: 2px solid var(--bg-taupe);
+  outline-offset: 3px;
+}

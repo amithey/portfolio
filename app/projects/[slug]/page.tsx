@@ -6,6 +6,7 @@ import { RunDemo } from '@/components/RunDemo';
 import { NoesisPage } from '@/components/noesis/NoesisPage';
 import { DominionPage } from '@/components/dominion/DominionPage';
 import { TaxPage } from '@/components/tax/TaxPage';
+import { BagsPage } from '@/components/bags/BagsPage';
 import { buildProjectsHref } from '@/lib/projects-href';
 import { demoHostLabel } from '@/lib/demo';
 
@@ -52,6 +53,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   }
   if (project.slug === 'capital-gains-tax-report-generator') {
     return <TaxPage project={project} prev={prev} next={next} />;
+  }
+  if (project.slug === 'bag-store') {
+    return <BagsPage project={project} prev={prev} next={next} />;
   }
   if (project.slug === 'dominion') {
     return <DominionPage project={project} prev={prev} next={next} />;
