@@ -25,8 +25,8 @@ export function TradingChartBackdrop() {
     let isVisible = true;
 
     // Simulation state
-    const candleWidth = 9;
-    const candleGap = 6;
+    const candleWidth = 11;
+    const candleGap = 7;
     const step = candleWidth + candleGap;
     let candles: Candle[] = [];
     let currentPrice = 185;
@@ -37,33 +37,33 @@ export function TradingChartBackdrop() {
     // Generate initial candlestick history
     const generateInitialData = (count: number) => {
       const data: Candle[] = [];
-      let price = 160;
+      let price = 155;
       for (let i = 0; i < count; i++) {
-        // Trend with random walk
-        const change = (Math.random() - 0.48) * 4.5 + Math.sin(i / 8) * 1.5;
+        // Trend upwards with volatility
+        const change = (Math.random() - 0.46) * 5 + Math.sin(i / 6) * 2;
         const open = price;
         const close = price + change;
-        const high = Math.max(open, close) + Math.random() * 3.5;
-        const low = Math.min(open, close) - Math.random() * 3.5;
-        const vol = Math.floor(Math.random() * 80 + 20);
+        const high = Math.max(open, close) + Math.random() * 4.5;
+        const low = Math.min(open, close) - Math.random() * 4.5;
+        const vol = Math.floor(Math.random() * 85 + 25);
         data.push({ open, close, high, low, vol });
         price = close;
       }
       currentPrice = price;
-      targetPrice = price + (Math.random() - 0.48) * 5;
+      targetPrice = price + (Math.random() - 0.46) * 6;
       return data;
     };
 
     const handleResize = () => {
       const rect = canvas.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
+      width = rect.width || window.innerWidth;
+      height = rect.height || 600;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const neededCandles = Math.ceil(width / step) + 8;
+      const neededCandles = Math.ceil(width / step) + 10;
       if (candles.length < neededCandles) {
         candles = generateInitialData(neededCandles);
       }
@@ -71,6 +71,12 @@ export function TradingChartBackdrop() {
 
     handleResize();
     window.addEventListener('resize', handleResize);
+
+    // ResizeObserver ensures correct dimensions even after layout shifts
+    const resizeObserver = new ResizeObserver(() => {
+      handleResize();
+    });
+    resizeObserver.observe(canvas);
 
     // Visibility observer to pause animation when offscreen
     const observer = new IntersectionObserver(([entry]) => {
@@ -90,7 +96,7 @@ export function TradingChartBackdrop() {
 
       // Animation & price progression
       if (!prefersReducedMotion) {
-        offset += 0.35; // gentle continuous drift leftwards
+        offset += 0.4; // gentle continuous drift leftwards
         tickCount++;
 
         // Live candle tick simulation
@@ -100,10 +106,10 @@ export function TradingChartBackdrop() {
           last.close = currentPrice;
           if (currentPrice > last.high) last.high = currentPrice;
           if (currentPrice < last.low) last.low = currentPrice;
-          last.vol += 0.1;
+          last.vol += 0.15;
 
-          if (tickCount % 45 === 0) {
-            targetPrice = currentPrice + (Math.random() - 0.49) * 4;
+          if (tickCount % 40 === 0) {
+            targetPrice = currentPrice + (Math.random() - 0.48) * 5;
           }
         }
 
@@ -111,12 +117,12 @@ export function TradingChartBackdrop() {
         if (offset >= step) {
           offset -= step;
           const open = last ? last.close : 180;
-          const close = open + (Math.random() - 0.48) * 3;
-          const high = Math.max(open, close) + Math.random() * 2.5;
-          const low = Math.min(open, close) - Math.random() * 2.5;
-          const vol = Math.floor(Math.random() * 60 + 20);
+          const close = open + (Math.random() - 0.47) * 4;
+          const high = Math.max(open, close) + Math.random() * 3.5;
+          const low = Math.min(open, close) - Math.random() * 3.5;
+          const vol = Math.floor(Math.random() * 70 + 25);
           candles.push({ open, close, high, low, vol });
-          if (candles.length > Math.ceil(width / step) + 12) {
+          if (candles.length > Math.ceil(width / step) + 14) {
             candles.shift();
           }
         }
@@ -132,13 +138,13 @@ export function TradingChartBackdrop() {
         if (c.high > maxP) maxP = c.high;
         if (c.vol > maxVol) maxVol = c.vol;
       }
-      const pad = (maxP - minP) * 0.18 || 10;
+      const pad = (maxP - minP) * 0.16 || 10;
       minP -= pad;
       maxP += pad;
       const priceRange = maxP - minP;
 
-      const chartTop = height * 0.08;
-      const chartBottom = height * 0.88;
+      const chartTop = height * 0.06;
+      const chartBottom = height * 0.90;
       const chartHeight = chartBottom - chartTop;
 
       const toY = (price: number) => {
@@ -147,12 +153,12 @@ export function TradingChartBackdrop() {
 
       // 1. Draw horizontal grid lines & price levels
       ctx.lineWidth = 1;
-      const gridLevels = 5;
+      const gridLevels = 6;
       for (let i = 0; i <= gridLevels; i++) {
         const y = chartTop + (chartHeight / gridLevels) * i;
         const levelPrice = maxP - (priceRange / gridLevels) * i;
 
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
         ctx.setLineDash([4, 6]);
         ctx.beginPath();
         ctx.moveTo(0, y);
@@ -160,9 +166,9 @@ export function TradingChartBackdrop() {
         ctx.stroke();
 
         // Price label on right
-        ctx.font = '10px monospace';
-        ctx.fillStyle = 'rgba(147, 160, 171, 0.35)';
-        ctx.fillText(`$${levelPrice.toFixed(1)}`, width - 52, y - 4);
+        ctx.font = '11px monospace';
+        ctx.fillStyle = 'rgba(147, 160, 171, 0.6)';
+        ctx.fillText(`$${levelPrice.toFixed(1)}`, width - 58, y - 4);
       }
       ctx.setLineDash([]);
 
@@ -176,8 +182,8 @@ export function TradingChartBackdrop() {
 
         const isBull = c.close >= c.open;
         const color = isBull ? '#62b6a4' : '#ef6b6b';
-        const colorAlpha = isBull ? 'rgba(98, 182, 164, 0.65)' : 'rgba(239, 107, 107, 0.65)';
-        const fillAlpha = isBull ? 'rgba(98, 182, 164, 0.45)' : 'rgba(239, 107, 107, 0.45)';
+        const wickColor = isBull ? 'rgba(98, 182, 164, 0.85)' : 'rgba(239, 107, 107, 0.85)';
+        const fillAlpha = isBull ? 'rgba(98, 182, 164, 0.75)' : 'rgba(239, 107, 107, 0.75)';
 
         const yOpen = toY(c.open);
         const yClose = toY(c.close);
@@ -185,12 +191,12 @@ export function TradingChartBackdrop() {
         const yLow = toY(c.low);
 
         const bodyTop = Math.min(yOpen, yClose);
-        const bodyHeight = Math.max(Math.abs(yClose - yOpen), 2);
+        const bodyHeight = Math.max(Math.abs(yClose - yOpen), 2.5);
         const candleCenterX = x + candleWidth / 2;
 
-        // Wick
-        ctx.strokeStyle = colorAlpha;
-        ctx.lineWidth = 1.2;
+        // Wick (fat & visible)
+        ctx.strokeStyle = wickColor;
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(candleCenterX, yHigh);
         ctx.lineTo(candleCenterX, yLow);
@@ -200,12 +206,12 @@ export function TradingChartBackdrop() {
         ctx.fillStyle = fillAlpha;
         ctx.fillRect(x, bodyTop, candleWidth, bodyHeight);
         ctx.strokeStyle = color;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1.2;
         ctx.strokeRect(x, bodyTop, candleWidth, bodyHeight);
 
         // Volume bar at bottom
-        const volH = (c.vol / maxVol) * (height * 0.16);
-        ctx.fillStyle = isBull ? 'rgba(98, 182, 164, 0.15)' : 'rgba(239, 107, 107, 0.15)';
+        const volH = (c.vol / maxVol) * (height * 0.18);
+        ctx.fillStyle = isBull ? 'rgba(98, 182, 164, 0.35)' : 'rgba(239, 107, 107, 0.35)';
         ctx.fillRect(x, height - volH - 4, candleWidth, volH);
 
         // Store close price point for MA line
@@ -216,7 +222,7 @@ export function TradingChartBackdrop() {
       if (points.length > 2) {
         ctx.save();
 
-        // Create smooth path
+        // Glowing Trendline
         ctx.beginPath();
         ctx.moveTo(points[0].x, points[0].y);
         for (let i = 1; i < points.length; i++) {
@@ -226,14 +232,13 @@ export function TradingChartBackdrop() {
         }
         ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
 
-        // Glow layer
-        ctx.strokeStyle = 'rgba(98, 182, 164, 0.55)';
+        ctx.strokeStyle = '#62b6a4';
         ctx.lineWidth = 2.5;
-        ctx.shadowColor = 'rgba(98, 182, 164, 0.7)';
-        ctx.shadowBlur = 12;
+        ctx.shadowColor = 'rgba(98, 182, 164, 0.9)';
+        ctx.shadowBlur = 14;
         ctx.stroke();
 
-        // Fill under trendline
+        // Fill area under trendline
         const fillPath = new Path2D();
         fillPath.moveTo(points[0].x, points[0].y);
         for (let i = 1; i < points.length; i++) {
@@ -247,7 +252,7 @@ export function TradingChartBackdrop() {
         fillPath.closePath();
 
         const grad = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
-        grad.addColorStop(0, 'rgba(98, 182, 164, 0.08)');
+        grad.addColorStop(0, 'rgba(98, 182, 164, 0.16)');
         grad.addColorStop(1, 'rgba(98, 182, 164, 0.0)');
         ctx.fillStyle = grad;
         ctx.shadowBlur = 0;
@@ -258,13 +263,13 @@ export function TradingChartBackdrop() {
         if (lastPt) {
           ctx.fillStyle = '#62b6a4';
           ctx.shadowColor = '#62b6a4';
-          ctx.shadowBlur = 10;
+          ctx.shadowBlur = 14;
           ctx.beginPath();
-          ctx.arc(lastPt.x, lastPt.y, 3.5, 0, Math.PI * 2);
+          ctx.arc(lastPt.x, lastPt.y, 4.5, 0, Math.PI * 2);
           ctx.fill();
 
-          // Horizontal pulsing line to the right edge
-          ctx.strokeStyle = 'rgba(98, 182, 164, 0.4)';
+          // Horizontal pulsing line to right
+          ctx.strokeStyle = 'rgba(98, 182, 164, 0.6)';
           ctx.lineWidth = 1;
           ctx.setLineDash([3, 4]);
           ctx.beginPath();
@@ -287,27 +292,28 @@ export function TradingChartBackdrop() {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
       observer.disconnect();
     };
   }, []);
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
       aria-hidden="true"
     >
-      {/* Canvas chart */}
+      {/* Canvas chart - crisp & visible */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 h-full w-full opacity-35"
+        className="absolute inset-0 h-full w-full opacity-60"
       />
 
-      {/* Radial and vertical fade overlays so text remains crystal clear */}
+      {/* Subtle vignette so left side hero text is super readable without hiding the chart */}
       <div
-        className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--bt-bg)] opacity-90"
+        className="absolute inset-0 bg-gradient-to-r from-[var(--bt-bg)]/85 via-[var(--bt-bg)]/40 to-transparent"
       />
       <div
-        className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(11,13,15,0.7)_0%,transparent_70%)]"
+        className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--bt-bg)]"
       />
     </div>
   );
