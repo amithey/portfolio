@@ -15,6 +15,7 @@ import { Reveal } from '@/components/Reveal';
 import { CountUp } from '@/components/noesis/CountUp';
 import { demoHostLabel } from '@/lib/demo';
 import { CommitteeVote } from './CommitteeVote';
+import { TradingChartBackdrop } from './TradingChartBackdrop';
 
 /**
  * The BotTrade showcase: a trading-desk page in the product's own dark
@@ -70,8 +71,9 @@ export function BotPage({
   return (
     <article className="bt">
       {/* ───────── Hero ───────── */}
-      <header className="bt-grid relative">
-        <div className="mx-auto grid max-w-5xl gap-12 px-5 pb-20 pt-14 sm:pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-14 lg:pb-24">
+      <header className="bt-grid relative overflow-hidden">
+        <TradingChartBackdrop />
+        <div className="relative z-10 mx-auto grid max-w-5xl gap-12 px-5 pb-20 pt-14 sm:pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-14 lg:pb-24">
           <div>
             <p className="bt-eyebrow">
               <Link href="/projects" className="hover:underline">
@@ -111,7 +113,7 @@ export function BotPage({
           <CommitteeVote />
         </div>
 
-        <dl className="mx-auto grid max-w-5xl grid-cols-3 gap-px px-5 pb-14">
+        <dl className="relative z-10 mx-auto grid max-w-5xl grid-cols-3 gap-px px-5 pb-14">
           {HERO_STATS.map((s) => (
             <div key={s.label} className="bt-stat">
               <dt className="sr-only">{s.label}</dt>
