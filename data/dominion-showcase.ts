@@ -10,10 +10,10 @@
  */
 
 export const HERO_STATS: { value: string; label: string }[] = [
-  { value: '1.0.3', label: 'alpha build' },
+  { value: '1.0.4', label: 'alpha build' },
   { value: '27', label: 'main battle tank models' },
   { value: '69', label: 'armoured carriers and support vehicles' },
-  { value: '199 MB', label: 'Windows installer' },
+  { value: '394 MB', label: 'Windows installer' },
 ];
 
 export interface Shot {
@@ -83,9 +83,12 @@ export const FEATURES: Feature[] = [
 ];
 
 export const WHATS_NEW = {
-  version: 'Alpha 1.0.3',
+  version: 'Alpha 1.0.4',
   intro: 'The latest release, for testers.',
   items: [
+    'Engine & late-game performance overhaul: batched MultiMesh instances for grass & foliage cards, shared shader materials, bounded physics queries, and zero-allocation per-frame updates.',
+    'Late-game stability: resolved framerate drops and micro-stutters during heavy combat, large armies, and extended play sessions.',
+    'Combat & AI fixes: patched retreat navigation, carrier strike wings, target re-acquisition loops, and bunker health overlay refresh.',
     'The whole armoured army has real models, each nation’s own: 27 main battle tanks and 69 carriers, fighting vehicles, scouts and support vehicles.',
     'Turrets turn to the target, guns lift to the range and kick back, wheels roll, track pads run round their loop, and a destroyed vehicle becomes a burnt-out wreck.',
     'The meadow is now many kinds of grass, wildflowers, shrubs and reeds, swaying in the wind and under snow in winter.',
@@ -102,4 +105,4 @@ export const KNOWN_ISSUES: string[] = [
 ];
 
 export const SCREENSHOT_NOTE =
-  'Screenshots are from the current development build, 1.0.4 alpha, which is a little ahead of the 1.0.3 download below.';
+  'Screenshots are captured from the 1.0.4 alpha build on Windows.';
