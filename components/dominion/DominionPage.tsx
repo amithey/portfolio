@@ -217,7 +217,7 @@ export function DominionPage({
                       className="block w-full"
                     />
                     <div className="pointer-events-none absolute right-3 top-3 rounded border border-[var(--dm-edge)] bg-[rgba(8,18,31,0.85)] px-2.5 py-1 font-mono text-[0.65rem] text-[var(--dm-gold)]">
-                      REC-CAM #{String(i + 1).padStart(2, '0')} // INTEL FEED
+                      REC-CAM #{String(i + 1).padStart(2, '0')} · INTEL FEED
                     </div>
                   </div>
                   <figcaption className="px-3 pb-2 pt-4">

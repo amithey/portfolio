@@ -126,10 +126,6 @@ export function DominionBackdrop() {
           const cx = col * hexW + ((row % 2) * hexW) / 2;
           const cy = row * vertDist;
 
-          // Distance from radar center
-          const dist = Math.hypot(cx - radarX, cy - radarY);
-          const angle = Math.atan2(cy - radarY, cx - radarX);
-
           // Territory territory highlight (certain hexes belong to allied territory)
           const isTerritory = (col * 3 + row * 7) % 11 === 0;
           const isFrontline = (col * 5 + row * 2) % 13 === 0;
@@ -248,7 +244,7 @@ export function DominionBackdrop() {
         // Draw trail
         ctx.beginPath();
         ctx.moveTo(u.x, u.y);
-        u.trail.forEach((t, i) => {
+        u.trail.forEach((t) => {
           ctx.lineTo(t.x, t.y);
         });
         ctx.strokeStyle = u.faction === 'allied' ? 'rgba(217, 182, 111, 0.18)' : 'rgba(111, 176, 255, 0.18)';
