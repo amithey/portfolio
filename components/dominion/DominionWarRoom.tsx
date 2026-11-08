@@ -141,10 +141,10 @@ export function DominionWarRoom() {
         {/* Tactical Feed Selector Thumbnails */}
         <div className="border-t border-[var(--dm-edge)] bg-[rgba(6,14,24,0.95)] p-4 sm:p-5">
           <p className="font-mono text-xs uppercase tracking-wider text-[var(--dm-gold)]">
-            Select Surveillance Camera Feed (5 Sectors):
+            מצלמות שטח ומעקב מבצעי בזמן אמת (6 גזרות פעילות):
           </p>
 
-          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-5">
+          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {SHOTS.map((shot, idx) => {
               const isSelected = selectedShot.src === shot.src;
               return (

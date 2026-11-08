@@ -1,15 +1,15 @@
 /**
- * Authentic showcase data for Dominion (Alpha 1.0.4)
- * Built with Godot 4 Engine.
+ * Authentic showcase data for Dominion (Alpha 1.0.5)
+ * Built with Godot 4.7 Engine.
  *
- * Screenshots sourced directly from the player's native Windows Godot Alpha 1.0.4 build.
+ * 100% authentic screenshots generated directly from the current Godot build.
  */
 
 export const HERO_STATS: { value: string; label: string }[] = [
-  { value: '1.0.4', label: 'alpha build' },
+  { value: '1.0.5', label: 'alpha build' },
   { value: '27', label: 'authentic tank models' },
   { value: '69', label: 'armored vehicles' },
-  { value: '394 MB', label: 'Windows installer' },
+  { value: '60 FPS', label: 'MultiMesh engine' },
 ];
 
 export interface Shot {
@@ -25,71 +25,82 @@ export interface Shot {
 }
 
 export const HERO_SHOT: Shot = {
-  src: '/images/dominion/battle.jpg',
-  alt: 'Intense 3D battlefield combat in Dominion with Abrams tanks firing, explosions, artillery strikes, and combat health indicators on hex tiles.',
-  title: 'Real-Time Combined Arms Warfare',
-  caption: 'Active tactical engagement: Abrams tanks advancing under smoke, artillery shells detonating, and tracking turrets engaging enemy armor.',
+  src: '/images/dominion/battlefield-current.jpg',
+  alt: 'Dominion 3D battlefield in the current build featuring rolling hills, tree stands, modern armored units, and tactical hex terrain.',
+  title: 'Current Build 3D Battlefield',
+  caption: 'Direct in-engine capture of the live 3D tactical theater: rolling topographical hills, dynamic terrain shaders, and combined-arms units.',
   category: 'COMBAT',
   width: 1280,
   height: 800,
-  badge: 'ACTIVE BATTLE',
+  badge: 'ALPHA 1.0.5',
 };
 
 export const SHOTS: Shot[] = [
   {
-    src: '/images/dominion/battle.jpg',
-    alt: 'M1A2 Abrams tanks engaging hostile armor with gun recoil, smoke trails, and real-time damage bars.',
-    title: 'Combined-Arms Armor Battle',
-    caption: 'Real-time tactical combat: tanks fire with realistic recoil, turrets track targets, and artillery barrages shatter enemy positions.',
+    src: '/images/dominion/battlefield-current.jpg',
+    alt: 'High-altitude strategic battlefield view showing armored divisions, rolling hills, and tactical island hexes.',
+    title: '3D Tactical Battlefield',
+    caption: 'The current engine in full glory: gentle rolling swells, dirt tracks between capitals, MultiMesh tree stands, and modern armored units.',
     category: 'COMBAT',
     width: 1280,
     height: 800,
-    badge: 'REAL COMBAT',
-    actionText: 'Watch armor engagement',
-  },
-  {
-    src: '/images/dominion/alpha-metropolis.jpg',
-    alt: 'High-altitude strategic view of a sprawling Alpha 1.0.4 metropolis with industrial zones, power cooling towers, and hex borders.',
-    title: 'Alpha 1.0.4 Sprawling Metropolis',
-    caption: 'Advanced late-game capital: MultiMesh grass and trees, smoking factory chimneys, cooling towers, and defensive artillery divisions.',
-    category: 'EMPIRE',
-    width: 1400,
-    height: 822,
     badge: 'LATEST BUILD',
-    actionText: 'Inspect capital city',
+    actionText: 'View live battlefield',
   },
   {
-    src: '/images/dominion/building.jpg',
-    alt: 'Founding an empire in Spring Year 1: Town Hall, Farm under construction with yellow hex boundary stripes, and resource gatherers.',
-    title: 'Founding & Hex Construction',
-    caption: 'From a solitary colony outpost to an empire: claim hex tiles, construct farms and mines, and manage local workforce allocation.',
-    category: 'ECONOMY',
-    width: 1280,
-    height: 800,
-    badge: 'FOUNDING ERA',
-    actionText: 'View early game base',
-  },
-  {
-    src: '/images/dominion/armies.jpg',
-    alt: 'Tactical army assignments along strategic island hex borders showing Anti-Air, Artillery, Armor, and Infantry divisions.',
-    title: 'Strategic Army Roles & Frontlines',
-    caption: 'Hex-based frontline doctrine: position Anti-Air (AA), Artillery (ART), and Armored (ARM) divisions along contested borders.',
+    src: '/images/dominion/combat-armor-current.jpg',
+    alt: 'Damaged armor unit selection with real-time health indicator, ownership marker, and tactical command HUD.',
+    title: 'Armored Units & Tactical HUD',
+    caption: 'Direct unit engagement: damaged armor retains clear health indicators, ownership markers, and responsive turret tracking.',
     category: 'TACTICS',
     width: 1280,
     height: 800,
-    badge: 'HEX DOCTRINE',
-    actionText: 'Inspect tactical frontlines',
+    badge: 'COMBAT HUD',
+    actionText: 'Inspect unit command',
   },
   {
-    src: '/images/dominion/coastline.jpg',
-    alt: 'Island coastline constraints with offshore oil platform, shipyard touching water, and dynamic sea shaders.',
-    title: 'Offshore Drilling & Naval Yards',
-    caption: 'Island geography dictates strategy: offshore oil rigs extract vital fuel while coastal shipyards produce fleets of warships.',
-    category: 'NAVAL',
+    src: '/images/dominion/metropolis-current.jpg',
+    alt: 'Sprawling capital metropolis with industrial zones, nuclear cooling towers, and artillery batteries.',
+    title: 'Alpha Metropolis & Infrastructure',
+    caption: 'Late-game metropolis: industrial complexes with active smoke columns, cooling towers, MultiMesh foliage, and defensive artillery divisions.',
+    category: 'EMPIRE',
+    width: 1400,
+    height: 822,
+    badge: 'CAPITAL CITY',
+    actionText: 'Inspect capital city',
+  },
+  {
+    src: '/images/dominion/construction-current.jpg',
+    alt: 'Active farm construction with workers and yellow hazard hex boundary stripes.',
+    title: 'Hex Construction & Workers',
+    caption: 'Colony expansion in real time: place farms, power facilities, and factories on hex tiles with assigned physical construction crews.',
+    category: 'ECONOMY',
     width: 1280,
     height: 800,
-    badge: 'COASTAL WAR',
-    actionText: 'Explore naval frontier',
+    badge: 'CONSTRUCTION',
+    actionText: 'View colony building',
+  },
+  {
+    src: '/images/dominion/missiles-current.jpg',
+    alt: 'Strategic ballistic missile silo interface with DEFCON levels, launch queue, and island minimap.',
+    title: 'Strategic Missile Silo & DEFCON',
+    caption: 'High-tier strategic warfare: manage silo queues, monitor island minimap sectors, and arm ballistic deterrent weapons under DEFCON alerts.',
+    category: 'DEFENSE',
+    width: 1280,
+    height: 800,
+    badge: 'STRATEGIC SILO',
+    actionText: 'Explore missile systems',
+  },
+  {
+    src: '/images/dominion/territory-current.jpg',
+    alt: 'Island territory map lens showing claimed national hex boundaries and frontline influence.',
+    title: 'Island Hex Borders & Diplomacy',
+    caption: 'Strategic map view: monitor sovereign hex borders, contested island sectors, and diplomatic boundaries across rival nations.',
+    category: 'TERRITORY',
+    width: 1280,
+    height: 800,
+    badge: 'HEX EXPANSION',
+    actionText: 'View territory map',
   },
 ];
 
@@ -110,51 +121,51 @@ export const GAMEPLAY_LOOP: GameplayStep[] = [
     sub: 'הנח את המפקדה, ספח שטחים וגייס עובדים',
     desc: 'המשחק מתחיל בהנחת עיר בירה על מפת משושים (Hex Grid). כל משושה מספק משאבים טבעיים — ברזל, נפט, חיטה ואורניום. עליך לתכנן רשת חוות, תחנות כוח ומפעלים ולשמור על מאזן כלכלי יציב.',
     icon: '🏛️',
-    shot: SHOTS[2], // building.jpg
+    shot: SHOTS[3], // construction-current.jpg
     bullets: [
       'שליטה ב-10 משאבי יסוד: חשמל, דלק, מתכת, מזון ואוצר לאומי',
-      'בנייה על פי גבולות טריטוריה במשושים',
-      'הצבת פועלים ושרשראות אספקה דינמיות',
+      'בנייה על פי גבולות טריטוריה במשושים עם צוותי בנייה פיזיים',
+      'ניהול רשת חשמל עירונית וכיבוי אש מובנה בגרסה הנוכחית',
     ],
   },
   {
     step: '02',
-    title: 'מחקר וטכנולוגיה (Research & Progress)',
+    title: 'מחקר ועיר ענק (Research & Expand)',
     sub: 'מעידן ההקמה ועד לעידן העתיד',
     desc: 'חקור עשרות טכנולוגיות בעץ מחקר 4-שלבי. ממעבר מנשק קל לחטיבות שריון כבדות, ועד לטילים היפרסוניים, סיבי תעשייה מתקדמים ומערכות הגנה אווירית מתקדמות.',
     icon: '🔬',
-    shot: SHOTS[1], // alpha-metropolis.jpg
+    shot: SHOTS[2], // metropolis-current.jpg
     bullets: [
       '4 עידנים היסטוריים: הקמה, תעשייה, מודרני ועתיד',
-      'שדרוג סדנאות נשק, מחנות צבא ומרכזי מחקר',
-      'פתיחת 27 דגמי טנקים אמיתיים (Abrams, Merkava, Leopard 2, T-90)',
+      'שדרוג מפעלי תעשייה, מגדלי קירור, בתי חולים ותחנות כוח',
+      'פתיחת 27 דגמי טנקים מודרניים אותנטיים (Abrams, Merkava, Leopard 2, T-90)',
     ],
   },
   {
     step: '03',
     title: 'קרב בזמן אמת וכיבוש (Command & Conquer)',
-    sub: 'טנקים, ארטילריה, לוחמה ימית וטילים',
+    sub: 'שריון, ארטילריה, לוחמת ים וסילו טילים',
     desc: 'הקרבות בדומיניון מתרחשים בזמן אמת בתלת-ממד מלא. טנקים מזיזים צריחים לפי מטרות, פגזים מחושבים בליסטית, וספינות קרב חולשות על קווי החוף של האי מול בינה מלאכותית תוקפנית.',
     icon: '⚔️',
-    shot: SHOTS[0], // battle.jpg
+    shot: SHOTS[1], // combat-armor-current.jpg
     bullets: [
       'מערכת לחימה משולבת: שריון, חיל רגלים, ארטילריה וספינות',
-      'הדמיית רתע, עשן, פיצוצים והריסות רכבים שרופים',
-      'סילו טילים אסטרטגיים ומערכות נ״מ להגנת המטרופולין',
+      'מדדי חיים טקטיים, סיבוב צריחים בזמן אמת והריסות רכבים שרופים',
+      'סילו טילים אסטרטגיים ומערכות נ״מ להגנת המטרופולין תחת התראות DEFCON',
     ],
   },
 ];
 
 export const WHATS_NEW = {
-  version: 'Alpha 1.0.4',
-  intro: 'הגרסה העדכנית ביותר הפועלת במחשב — מנוע Godot 4 משודרג:',
+  version: 'Alpha 1.0.5',
+  intro: 'הגרסה העדכנית ביותר הפועלת במחשב — מנוע Godot 4.7 משודרג:',
   items: [
-    'שדרוג ביצועי שדה הקרב: טכנולוגיית MultiMesh לצמחייה ודשא בדיוק 60 FPS ללא האטות.',
-    '27 דגמי טנקי מערכה אמיתיים ו-69 נגמ״שים ורכבי תמיכה בעיצובים לאומיים מדויקים.',
-    'פיזיקת לחימה משופרת: צריחים עוקבים בזמן אמת, רתע קנה מורגש, ועשן פיצוצים דינמי.',
-    'מערכת עונות ומזג אוויר: שלג בחורף, פריחה באביב, ותאורת לילה טקטית.',
-    'מבנים חדשים: תחנות כוח, מגדלי קירור, מפעלי נשק, סילו לטילים ובתי חולים.',
-    'שיפורי בינה מלאכותית ליריבים: ניווט מתקדם, נסיגות טקטיות ותקיפות ימיות מתוזמנות.',
+    'שדרוג מודלים מלא ב-Blender: כל המבנים, הדמויות, והרכבים עוצבו מחדש ברמת פירוט גבוהה.',
+    'טופוגרפיה ריאליסטית: גבעות מתונות (Rolling Hills), שבילי עפר בין ערים וצבעי אגמים עמוקים.',
+    'מערכת שריון עדכנית: 27 דגמי טנקי מערכה מודרניים עם צריחים עוקבים ומערכת הגנה אקטיבית.',
+    'מערכת לוגיסטיקה ואוכלוסייה: ניהול רשת חשמל עם עומסי MW, כבאיות ואמבולנסים פיזיים.',
+    'סילו טילים ומכ״ם: בקרת טילי שיוט מתקדמת, מערכות DEFCON ועדשות מפה אסטרטגיות.',
+    'שיפורי בינה מלאכותית: יריבי מחשב חכמים יותר בפריסת חזיתות ותקיפות ימיות מתוזמנות.',
   ],
 };
 
@@ -163,4 +174,4 @@ export const KNOWN_ISSUES: string[] = [
 ];
 
 export const SCREENSHOT_NOTE =
-  'צילומי מסך מקוריים שנלכדו ישירות מתוך גרסת האלפא 1.0.4 הפועלת ב-Godot Engine במחשב.';
+  'כל צילומי המסך נלכדו ישירות מתוך הגרסה הנוכחית של המשחק (Alpha 1.0.5) הפועלת ב-Godot Engine במחשב.';
