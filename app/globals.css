@@ -1510,6 +1510,42 @@ section[id] {
 
 .dm a:focus-visible, .dm button:focus-visible { outline: 2px solid var(--dm-gold); outline-offset: 3px; }
 
+.dm-title-gold {
+  background: linear-gradient(180deg, #ffffff 10%, #edd8a5 45%, #d9b66f 75%, #9b7e3e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 25px rgba(217, 182, 111, 0.35));
+}
+
+.dm-tactical-box {
+  position: relative;
+}
+.dm-tactical-box::before,
+.dm-tactical-box::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--dm-gold);
+  pointer-events: none;
+}
+.dm-tactical-box::before { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+.dm-tactical-box::after { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+
+.dm-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--dm-edge);
+  border-radius: 0.25rem;
+  background: rgba(8, 18, 31, 0.85);
+  padding: 0.2rem 0.6rem;
+  font-family: var(--font-plex-mono, ui-monospace, monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--dm-gold);
+}
+
 /* ------------------------------------------------------------------
  * Capital Gains Tax Report Generator showcase page.
  *

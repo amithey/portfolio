@@ -2,11 +2,9 @@
  * Content for the Dominion showcase page, kept apart from the project
  * catalogue so a new release is a data edit.
  *
- * Sources: the v1.0.3-alpha release notes, the repository README, and the
- * screenshots captured from the local development build. That build is 1.0.4
- * alpha, ahead of the published 1.0.3 download, and the page says so rather
- * than passing them off as the download. Screens that show real people's
- * portraits (the diplomacy contacts) are deliberately not used.
+ * Sources: the GitHub release notes, the repository README, and screenshots
+ * captured from the game on Windows. Screens that show real people's portraits
+ * (the diplomacy contacts) are deliberately not used.
  */
 
 export const HERO_STATS: { value: string; label: string }[] = [
