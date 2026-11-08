@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Cinzel } from 'next/font/google';
@@ -12,8 +15,11 @@ import {
 } from '@/data/dominion-showcase';
 import { Reveal } from '@/components/Reveal';
 import { DominionHUD } from './DominionHUD';
-import { DominionBackdrop } from './DominionBackdrop';
+import { DominionBackdrop, type DominionSeason } from './DominionBackdrop';
 import { DominionWarRoom } from './DominionWarRoom';
+import { DominionFactions } from './DominionFactions';
+import { DominionTechTree } from './DominionTechTree';
+import { soundFX } from './DominionAudio';
 
 const cinzel = Cinzel({
   subsets: ['latin'],
@@ -22,16 +28,13 @@ const cinzel = Cinzel({
   display: 'swap',
 });
 
-/**
- * The Dominion showcase: styled like the game's actual in-game RTS command center,
- * with animated hex tactical radar, real-time resource bars, and military war room aesthetics.
- */
-
 const MENU = [
-  { href: '#overview', label: 'Overview' },
-  { href: '#screens', label: 'Sat-Recon' },
-  { href: '#play', label: 'Command Directives' },
-  { href: '#new', label: 'Combat Dispatches' },
+  { href: '#overview', label: 'War Room' },
+  { href: '#surveillance', label: 'Tactical Recon' },
+  { href: '#factions', label: 'Doctrines & Tanks' },
+  { href: '#techtree', label: 'Tech Ladder' },
+  { href: '#play', label: 'Directives' },
+  { href: '#new', label: 'Dispatches' },
   { href: '#download', label: 'Deploy Alpha' },
 ];
 
@@ -66,11 +69,12 @@ export function DominionPage({
   next?: Project;
 }) {
   const downloadUrl = project.demo.url;
+  const [season, setSeason] = useState<DominionSeason>('spring');
 
   return (
     <article className={`dm ${cinzel.variable}`}>
-      {/* Top RTS in-game resource & status strip */}
-      <DominionHUD />
+      {/* Top RTS in-game resource & weather status strip */}
+      <DominionHUD season={season} onSeasonChange={setSeason} />
 
       {/* ───────── Hero: Strategic War Room ───────── */}
       <header className="relative isolate overflow-hidden">
@@ -81,11 +85,11 @@ export function DominionPage({
           fill
           priority
           sizes="100vw"
-          className="-z-30 object-cover object-center brightness-[0.55] contrast-[1.15]"
+          className="pointer-events-none -z-30 object-cover object-center brightness-[0.52] contrast-[1.18]"
         />
 
-        {/* Animated tactical hex radar & patrol units */}
-        <DominionBackdrop />
+        {/* Animated tactical hex radar & patrol units with season support */}
+        <DominionBackdrop season={season} />
 
         <div
           className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(8,18,31,0.65)_0%,rgba(8,18,31,0.85)_60%,var(--dm-bg)_100%)]"
@@ -101,13 +105,18 @@ export function DominionPage({
               {' / '}Games &amp; interactive
             </p>
 
-            <span className="dm-tag">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--dm-green)]" />
-              THEATER: NATIVE WINDOWS RTS
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="dm-tag">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--dm-green)]" />
+                GODOT 4 NATIVE CLIENT
+              </span>
+              <span className="dm-tag hidden sm:inline-flex">
+                MULTI-MESH 60 FPS
+              </span>
+            </div>
           </div>
 
-          <div className="dm-tactical-box mt-8 border border-[var(--dm-edge)] bg-[rgba(8,18,31,0.65)] p-6 backdrop-blur-md sm:p-10">
+          <div className="dm-tactical-box mt-8 border border-[var(--dm-edge)] bg-[rgba(8,18,31,0.7)] p-6 backdrop-blur-md sm:p-10">
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="dm-serif text-xs uppercase tracking-[0.3em] text-[var(--dm-gold)]">
                 ✦ STRATEGIC COMMAND CONSOLE
@@ -126,19 +135,24 @@ export function DominionPage({
               A 3D real time strategy game for Windows, built in Godot.
             </p>
             <p className="dm-muted mt-3 max-w-xl text-sm leading-relaxed sm:text-base">
-              Found capitals, claim hex territories, command nation-specific tank divisions and naval fleets, and conquer through historical eras.
+              Found capitals, claim hex territories, command nation-specific tank divisions and naval fleets, and conquer through historical national eras.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
               {downloadUrl && (
-                <a href={downloadUrl} className="dm-btn">
-                  Download for Windows (394 MB) <span aria-hidden="true">↓</span>
+                <a
+                  href={downloadUrl}
+                  onClick={() => soundFX.playLaunchRumble()}
+                  className="dm-btn"
+                >
+                  Download Alpha 1.0.4 for Windows (394 MB) <span aria-hidden="true">↓</span>
                 </a>
               )}
               <a
                 href={project.repo}
                 target="_blank"
                 rel="noreferrer noopener"
+                onClick={() => soundFX.playTacticalBeep()}
                 className="dm-btn dm-btn-ghost"
               >
                 Source Repository (GDScript) <span aria-hidden="true">→</span>
@@ -169,7 +183,11 @@ export function DominionPage({
       <div className="sticky top-[69px] z-30 mx-auto max-w-5xl px-5 py-3 sm:top-[56px]">
         <nav aria-label="On this page" className="dm-menu">
           {MENU.map((item) => (
-            <a key={item.href} href={item.href}>
+            <a
+              key={item.href}
+              href={item.href}
+              onClick={() => soundFX.playTacticalBeep(900)}
+            >
               {item.label}
             </a>
           ))}
@@ -181,7 +199,7 @@ export function DominionPage({
         <section id="overview" className="scroll-mt-32">
           <Reveal>
             <div className="grid gap-8 lg:grid-cols-[1fr_1.5fr] lg:gap-14">
-              <Head tag="Overview" title="Command a nation" />
+              <Head tag="War Council" title="Command a nation" />
               <div>
                 <p className="text-lg leading-relaxed text-[var(--dm-ink)] sm:text-xl">{project.description}</p>
                 {project.demo.note && (
@@ -198,11 +216,11 @@ export function DominionPage({
           </Reveal>
         </section>
 
-        {/* ───────── Screens: Satellite Recon & Interactive Command Console ───────── */}
-        <section id="screens" className="scroll-mt-32">
+        {/* ───────── Tactical Recon: Interactive Battlefield Console ───────── */}
+        <section id="surveillance" className="scroll-mt-32">
           <Reveal>
             <Head tag="Surveillance & Recon" title="Interactive Battlefield Feeds">
-              Switch feeds on the live terminal below to inspect the Alpha 1.0.4 metropolis, strategic nuclear complexes, and the in-game command HUD.
+              Switch feeds on the live terminal below to inspect the Alpha 1.0.4 metropolis, missile silos, and the war council screen. Click any feed to enlarge to high resolution.
             </Head>
           </Reveal>
 
@@ -212,6 +230,36 @@ export function DominionPage({
             </Reveal>
           </div>
           <p className="dm-muted mt-5 font-mono text-xs">{SCREENSHOT_NOTE}</p>
+        </section>
+
+        {/* ───────── Factions & Armor: National Doctrines ───────── */}
+        <section id="factions" className="scroll-mt-32">
+          <Reveal>
+            <Head tag="National Arsenal" title="Playable Factions & Tank Arsenals">
+              Dominion models 27 real main battle tanks and 69 armored fighting vehicles, each nation equipped with authentic national equipment and strategic powers.
+            </Head>
+          </Reveal>
+
+          <div className="mt-8">
+            <Reveal>
+              <DominionFactions />
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ───────── Tech Tree: Era Progression ───────── */}
+        <section id="techtree" className="scroll-mt-32">
+          <Reveal>
+            <Head tag="Era Ladder" title="Four Historical Eras">
+              Progress from settlement camp to the Future Era. What buildings, units, and orbital assets you can commission depends on your national research depth.
+            </Head>
+          </Reveal>
+
+          <div className="mt-8">
+            <Reveal>
+              <DominionTechTree />
+            </Reveal>
+          </div>
         </section>
 
         {/* ───────── Gameplay: Command Directives ───────── */}
@@ -292,7 +340,11 @@ export function DominionPage({
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 {downloadUrl && (
-                  <a href={downloadUrl} className="dm-btn">
+                  <a
+                    href={downloadUrl}
+                    onClick={() => soundFX.playLaunchRumble()}
+                    className="dm-btn"
+                  >
                     Download Installer (394 MB) <span aria-hidden="true">↓</span>
                   </a>
                 )}
@@ -300,6 +352,7 @@ export function DominionPage({
                   href="https://github.com/amithey/dominion/releases/tag/v1.0.4-alpha"
                   target="_blank"
                   rel="noreferrer noopener"
+                  onClick={() => soundFX.playTacticalBeep()}
                   className="dm-btn dm-btn-ghost"
                 >
                   GitHub Release Notes <span aria-hidden="true">→</span>
