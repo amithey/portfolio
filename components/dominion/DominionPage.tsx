@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { Cinzel } from 'next/font/google';
 import type { Project } from '@/data/projects';
 import {
-  FEATURES,
   HERO_SHOT,
   HERO_STATS,
   KNOWN_ISSUES,
@@ -16,9 +15,10 @@ import {
 import { Reveal } from '@/components/Reveal';
 import { DominionHUD } from './DominionHUD';
 import { DominionBackdrop, type DominionSeason } from './DominionBackdrop';
+import { DominionGameplayLoop } from './DominionGameplayLoop';
 import { DominionWarRoom } from './DominionWarRoom';
+import { DominionLiveFeed } from './DominionLiveFeed';
 import { DominionFactions } from './DominionFactions';
-import { DominionTechTree } from './DominionTechTree';
 import { soundFX } from './DominionAudio';
 
 const cinzel = Cinzel({
@@ -29,20 +29,11 @@ const cinzel = Cinzel({
 });
 
 const MENU = [
-  { href: '#overview', label: 'War Room' },
-  { href: '#surveillance', label: 'Tactical Recon' },
-  { href: '#factions', label: 'Doctrines & Tanks' },
-  { href: '#techtree', label: 'Tech Ladder' },
-  { href: '#play', label: 'Directives' },
-  { href: '#new', label: 'Dispatches' },
-  { href: '#download', label: 'Deploy Alpha' },
-];
-
-const FEATURE_BADGES = [
-  'COLONY HQ & TERRITORY',
-  'ERA PROGRESSION TREE',
-  'FOREIGN RELATIONS & TREATIES',
-  'THEATER OF WAR (LAND & SEA)',
+  { href: '#loop', label: 'איך המשחק עובד' },
+  { href: '#recon', label: 'צילומי מסך מהמשחק' },
+  { href: '#livefeed', label: 'משדר קרב חי' },
+  { href: '#factions', label: 'צבאות ושריון' },
+  { href: '#download', label: 'הורדת Alpha 1.0.4' },
 ];
 
 function Head({ tag, title, children }: { tag: string; title: string; children?: React.ReactNode }) {
@@ -50,11 +41,13 @@ function Head({ tag, title, children }: { tag: string; title: string; children?:
     <div className="max-w-2xl">
       <div className="flex items-center gap-2">
         <span className="h-1.5 w-1.5 bg-[var(--dm-gold)]" />
-        <p className="dm-serif dm-gold text-sm uppercase tracking-wider">{tag}</p>
+        <p className="dm-serif dm-gold text-xs uppercase tracking-wider">{tag}</p>
       </div>
-      <h2 className="dm-serif mt-2 text-3xl font-bold uppercase sm:text-4xl text-[var(--dm-ink)]">{title}</h2>
-      <div className="dm-rule mt-4 w-40" />
-      {children && <p className="dm-muted mt-5 text-lg leading-relaxed">{children}</p>}
+      <h2 className="dm-serif mt-2 text-2xl font-bold uppercase sm:text-3xl lg:text-4xl text-[var(--dm-ink)]">
+        {title}
+      </h2>
+      <div className="dm-rule mt-3 w-32" />
+      {children && <p className="dm-muted mt-3 text-base leading-relaxed sm:text-lg">{children}</p>}
     </div>
   );
 }
@@ -78,31 +71,32 @@ export function DominionPage({
 
       {/* ───────── Hero: Strategic War Room ───────── */}
       <header className="relative isolate overflow-hidden">
-        {/* Background battlefield terrain */}
+        {/* Background battlefield terrain - Real combat screenshot */}
         <Image
           src={HERO_SHOT.src}
-          alt=""
+          alt={HERO_SHOT.alt}
           fill
           priority
           sizes="100vw"
-          className="pointer-events-none -z-30 object-cover object-center brightness-[0.52] contrast-[1.18]"
+          className="pointer-events-none -z-30 object-cover object-center brightness-[0.45] contrast-[1.2]"
         />
 
-        {/* Animated tactical hex radar & patrol units with season support */}
+        {/* Animated tactical hex radar & artillery tracers with weather support */}
         <DominionBackdrop season={season} />
 
         <div
-          className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(8,18,31,0.65)_0%,rgba(8,18,31,0.85)_60%,var(--dm-bg)_100%)]"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(5,13,24,0.65)_0%,rgba(5,13,24,0.85)_60%,var(--dm-bg)_100%)]"
           aria-hidden="true"
         />
 
-        <div className="relative z-10 mx-auto max-w-5xl px-5 pb-16 pt-10 sm:pb-24 sm:pt-14">
+        <div className="relative z-10 mx-auto max-w-5xl px-5 pb-16 pt-8 sm:pb-24 sm:pt-12">
+          {/* Breadcrumb & status */}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="dm-serif dm-gold text-xs uppercase sm:text-sm">
               <Link href="/projects" className="hover:underline">
                 Projects
               </Link>
-              {' / '}Games &amp; interactive
+              {' / '}Games &amp; Interactive
             </p>
 
             <div className="flex items-center gap-2">
@@ -116,57 +110,67 @@ export function DominionPage({
             </div>
           </div>
 
-          <div className="dm-tactical-box mt-8 border border-[var(--dm-edge)] bg-[rgba(8,18,31,0.7)] p-6 backdrop-blur-md sm:p-10">
+          {/* Hero Command Box */}
+          <div className="dm-tactical-box mt-6 border border-[var(--dm-edge)] bg-[rgba(6,15,26,0.8)] p-6 backdrop-blur-md sm:p-10 shadow-2xl">
             <div className="flex flex-wrap items-center gap-2.5">
-              <span className="dm-serif text-xs uppercase tracking-[0.3em] text-[var(--dm-gold)]">
-                ✦ STRATEGIC COMMAND CONSOLE
+              <span className="dm-serif text-xs uppercase tracking-[0.25em] text-[var(--dm-gold)]">
+                ✦ STRATEGIC 3D WARFARE
               </span>
               <span className="text-[var(--dm-edge)]">·</span>
               <span className="font-mono text-xs uppercase tracking-wider text-[var(--dm-muted)]">
-                Founding Era · Alpha 1.0.4
+                Alpha 1.0.4 Windows Build
               </span>
             </div>
 
-            <h1 className="dm-serif dm-title-gold mt-4 text-6xl font-bold uppercase leading-none tracking-wider sm:text-8xl lg:text-9xl">
+            <h1 className="dm-serif dm-title-gold mt-3 text-5xl font-bold uppercase leading-none tracking-wider sm:text-7xl lg:text-8xl">
               Dominion
             </h1>
-            <div className="dm-rule mt-6 w-60" />
-            <p className="mt-6 max-w-2xl text-xl leading-snug text-[var(--dm-ink)] sm:text-2xl">
-              A 3D real time strategy game for Windows, built in Godot.
+            <div className="dm-rule mt-4 w-44" />
+
+            <p className="mt-4 max-w-2xl text-lg font-medium leading-snug text-[var(--dm-ink)] sm:text-2xl">
+              משחק אסטרטגיה ומלחמה בזמן אמת בתלת-ממד שנבנה ב-Godot Engine
             </p>
-            <p className="dm-muted mt-3 max-w-xl text-sm leading-relaxed sm:text-base">
-              Found capitals, claim hex territories, command nation-specific tank divisions and naval fleets, and conquer through historical national eras.
+            <p className="dm-muted mt-2 max-w-2xl text-sm leading-relaxed sm:text-base">
+              הקם עיר בירה על מפת משושים, פתח טכנולוגיות לאורך עידנים, פקד על 27 דגמי טנקים מודרניים, ספינות קרב לאורך קווי החוף וסילו טילים — וכבוש את האי מול בינה מלאכותית תוקפנית.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+            {/* CTAs */}
+            <div className="mt-7 flex flex-wrap items-center gap-3.5">
               {downloadUrl && (
                 <a
                   href={downloadUrl}
                   onClick={() => soundFX.playLaunchRumble()}
                   className="dm-btn"
                 >
-                  Download Alpha 1.0.4 for Windows (394 MB) <span aria-hidden="true">↓</span>
+                  הורד את המשחק ל-Windows (394 MB) <span aria-hidden="true">↓</span>
                 </a>
               )}
+              <a
+                href="#recon"
+                onClick={() => soundFX.playTacticalBeep()}
+                className="dm-btn dm-btn-ghost"
+              >
+                צפה בצילומי המשחק <span aria-hidden="true">↓</span>
+              </a>
               <a
                 href={project.repo}
                 target="_blank"
                 rel="noreferrer noopener"
                 onClick={() => soundFX.playTacticalBeep()}
-                className="dm-btn dm-btn-ghost"
+                className="dm-btn dm-btn-ghost hidden sm:inline-flex"
               >
-                Source Repository (GDScript) <span aria-hidden="true">→</span>
+                קוד מקור ב-GitHub <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>
 
           {/* Resource strip / stats */}
-          <dl className="dm-resbar mt-10">
+          <dl className="dm-resbar mt-8">
             {HERO_STATS.map((stat) => (
               <div key={stat.label}>
                 <dt className="sr-only">{stat.label}</dt>
                 <dd>
-                  <span className="dm-serif dm-gold block text-2xl font-bold sm:text-3xl">
+                  <span className="dm-serif dm-gold block text-xl font-bold sm:text-2xl">
                     {stat.value}
                   </span>
                   <span className="dm-muted mt-0.5 block text-xs leading-snug sm:text-sm">
@@ -179,8 +183,8 @@ export function DominionPage({
         </div>
       </header>
 
-      {/* The game's top menu, as page navigation */}
-      <div className="sticky top-[69px] z-30 mx-auto max-w-5xl px-5 py-3 sm:top-[56px]">
+      {/* The game's top menu, as quick page navigation */}
+      <div className="sticky top-[69px] z-30 mx-auto max-w-5xl px-5 py-2.5 sm:top-[56px]">
         <nav aria-label="On this page" className="dm-menu">
           {MENU.map((item) => (
             <a
@@ -194,33 +198,27 @@ export function DominionPage({
         </nav>
       </div>
 
-      <div className="mx-auto max-w-5xl space-y-24 px-5 pb-28 pt-12 sm:space-y-32">
-        {/* ───────── Overview ───────── */}
-        <section id="overview" className="scroll-mt-32">
+      <div className="mx-auto max-w-5xl space-y-20 px-5 pb-24 pt-8 sm:space-y-24">
+        {/* ───────── 1. CORE GAMEPLAY LOOP ───────── */}
+        <section id="loop" className="scroll-mt-32">
           <Reveal>
-            <div className="grid gap-8 lg:grid-cols-[1fr_1.5fr] lg:gap-14">
-              <Head tag="War Council" title="Command a nation" />
-              <div>
-                <p className="text-lg leading-relaxed text-[var(--dm-ink)] sm:text-xl">{project.description}</p>
-                {project.demo.note && (
-                  <div className="dm-panel dm-muted mt-6 p-5 text-sm leading-relaxed">
-                    <div className="flex items-center gap-2 font-mono text-xs uppercase text-[var(--dm-gold)]">
-                      <span>◈</span>
-                      <span>PRE-RELEASE OPERATIONAL DIRECTIVE</span>
-                    </div>
-                    <p className="mt-2">{project.demo.note}</p>
-                  </div>
-                )}
-              </div>
-            </div>
+            <Head tag="מהלך המשחק · Core Gameplay" title="איך המשחק עובד?">
+              דומיניון משלב בין ניהול אימפריה במשושים (Hexes) לבין קרבות שריון וים בזמן אמת. המשחק מתקדם בשלושה שלבים מרכזיים:
+            </Head>
           </Reveal>
+
+          <div className="mt-8">
+            <Reveal>
+              <DominionGameplayLoop />
+            </Reveal>
+          </div>
         </section>
 
-        {/* ───────── Tactical Recon: Interactive Battlefield Console ───────── */}
-        <section id="surveillance" className="scroll-mt-32">
+        {/* ───────── 2. TACTICAL RECON SCREENSHOTS ───────── */}
+        <section id="recon" className="scroll-mt-32">
           <Reveal>
-            <Head tag="Surveillance & Recon" title="Interactive Battlefield Feeds">
-              Switch feeds on the live terminal below to inspect the Alpha 1.0.4 metropolis, missile silos, and the war council screen. Click any feed to enlarge to high resolution.
+            <Head tag="מוקד צילומים · Tactical Recon" title="צילומי מסך מקוריים מתוך האלפא">
+              עבור בין 5 מצלמות השטח למטה לצפייה ישירה בצילומים האותנטיים של גרסה 1.0.4. לחץ על כל תמונה להגדלה מלאה.
             </Head>
           </Reveal>
 
@@ -229,14 +227,29 @@ export function DominionPage({
               <DominionWarRoom />
             </Reveal>
           </div>
-          <p className="dm-muted mt-5 font-mono text-xs">{SCREENSHOT_NOTE}</p>
+          <p className="dm-muted mt-4 font-mono text-xs">{SCREENSHOT_NOTE}</p>
         </section>
 
-        {/* ───────── Factions & Armor: National Doctrines ───────── */}
+        {/* ───────── 3. LIVE BATTLEFIELD TELEMETRY ───────── */}
+        <section id="livefeed" className="scroll-mt-32">
+          <Reveal>
+            <Head tag="מודיעין חי · Live Simulation" title="משדר קרב ואירועים חיים">
+              סימולציה חיה של זירת הקרב: דיווחי שריון בזמן אמת, מצב רשת החשמל במטרופולין, תנועות ספינות והתקפות ארטילריה. לחץ על הכפתורים להפעלת אירועי שטח.
+            </Head>
+          </Reveal>
+
+          <div className="mt-6">
+            <Reveal>
+              <DominionLiveFeed />
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ───────── 4. FACTIONS & ARMOR ARSENAL ───────── */}
         <section id="factions" className="scroll-mt-32">
           <Reveal>
-            <Head tag="National Arsenal" title="Playable Factions & Tank Arsenals">
-              Dominion models 27 real main battle tanks and 69 armored fighting vehicles, each nation equipped with authentic national equipment and strategic powers.
+            <Head tag="דוקטרינות ושריון · Playable Nations" title="עמי הקמפיין וטנקי המערכה">
+              לכל אומה טנקים אותנטיים ייחודיים (Abrams, Merkava, Leopard 2, K2), יכולות הגנה מיוחדות ודוקטרינת לחימה משלה.
             </Head>
           </Reveal>
 
@@ -247,97 +260,22 @@ export function DominionPage({
           </div>
         </section>
 
-        {/* ───────── Tech Tree: Era Progression ───────── */}
-        <section id="techtree" className="scroll-mt-32">
-          <Reveal>
-            <Head tag="Era Ladder" title="Four Historical Eras">
-              Progress from settlement camp to the Future Era. What buildings, units, and orbital assets you can commission depends on your national research depth.
-            </Head>
-          </Reveal>
-
-          <div className="mt-8">
-            <Reveal>
-              <DominionTechTree />
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ───────── Gameplay: Command Directives ───────── */}
-        <section id="play" className="scroll-mt-32">
-          <Reveal>
-            <Head tag="Gameplay" title="Strategic Pillars" />
-          </Reveal>
-          <ul className="mt-10 grid gap-5 sm:grid-cols-2">
-            {FEATURES.map((f, i) => (
-              <Reveal key={f.tag} as="li" delay={i * 80} className="h-full">
-                <div className="dm-panel h-full p-6">
-                  <div className="flex items-center justify-between">
-                    <p className="dm-serif dm-gold text-xs uppercase tracking-[0.25em]">{f.tag}</p>
-                    <span className="font-mono text-[0.62rem] text-[var(--dm-muted)]">
-                      {FEATURE_BADGES[i] ?? 'DIRECTIVE'}
-                    </span>
-                  </div>
-                  <h3 className="dm-serif mt-3 text-xl font-bold text-[var(--dm-ink)]">{f.title}</h3>
-                  <div className="dm-rule my-3 w-16" />
-                  <p className="dm-muted leading-relaxed">{f.text}</p>
-                </div>
-              </Reveal>
-            ))}
-          </ul>
-        </section>
-
-        {/* ───────── What's new: Field Dispatches ───────── */}
-        <section id="new" className="scroll-mt-32">
-          <Reveal>
-            <Head tag={WHATS_NEW.version} title="Field Dispatches">
-              {WHATS_NEW.intro}
-            </Head>
-          </Reveal>
-          <ul className="mt-10 grid gap-x-12 gap-y-5 sm:grid-cols-2">
-            {WHATS_NEW.items.map((item) => (
-              <li key={item} className="flex gap-3 leading-relaxed">
-                <span aria-hidden="true" className="dm-gold mt-1 shrink-0 text-xs">
-                  ◆
-                </span>
-                <span className="dm-muted text-sm sm:text-base">{item}</span>
-              </li>
-            ))}
-          </ul>
-          {project.highlights.length > 0 && (
-            <div className="mt-12 rounded-lg border border-[var(--dm-edge)] bg-[rgba(8,18,31,0.5)] p-6">
-              <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 bg-[var(--dm-gold)]" />
-                <p className="dm-serif dm-gold text-sm uppercase">Technical Specifications (Under the hood)</p>
-              </div>
-              <ul className="mt-4 space-y-3">
-                {project.highlights.map((h) => (
-                  <li key={h} className="flex gap-3 text-sm leading-relaxed sm:text-base">
-                    <span aria-hidden="true" className="dm-gold mt-1 shrink-0 text-xs">
-                      ◇
-                    </span>
-                    <span className="dm-muted">{h}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </section>
-
-        {/* ───────── Download: Deployment Terminal ───────── */}
+        {/* ───────── 5. DOWNLOAD & DISPATCHES ───────── */}
         <section id="download" className="scroll-mt-32">
           <Reveal>
             <div className="dm-panel p-8 sm:p-12">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 animate-ping rounded-full bg-[var(--dm-gold)]" />
-                <p className="dm-serif dm-gold text-sm uppercase">Alpha 1.0.4 · Windows Deployment</p>
+                <p className="dm-serif dm-gold text-sm uppercase">התקנה למחשב · Alpha 1.0.4 Windows</p>
               </div>
               <h2 className="dm-serif dm-title-gold mt-3 text-3xl font-bold uppercase sm:text-5xl">
-                Deploy The Game
+                הורד ושחק ב-Dominion
               </h2>
               <div className="dm-rule mt-4 w-44" />
-              <p className="dm-muted mt-5 max-w-2xl text-lg leading-relaxed">
-                A pre-release Windows executable build for commanders and testers. Experience the full 3D RTS warfare built in Godot.
+              <p className="dm-muted mt-4 max-w-2xl text-base leading-relaxed sm:text-lg">
+                גרסת התקנה רשמית למחשב (Windows x64). התנסה במשחק האסטרטגיה והקרבות בזמן אמת בתלת-ממד מלא.
               </p>
+
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 {downloadUrl && (
                   <a
@@ -345,7 +283,7 @@ export function DominionPage({
                     onClick={() => soundFX.playLaunchRumble()}
                     className="dm-btn"
                   >
-                    Download Installer (394 MB) <span aria-hidden="true">↓</span>
+                    הורד את קובץ ההתקנה (394 MB) <span aria-hidden="true">↓</span>
                   </a>
                 )}
                 <a
@@ -359,13 +297,28 @@ export function DominionPage({
                 </a>
               </div>
 
+              {/* What's New Bullet Points */}
               <div className="mt-10 border-t border-[var(--dm-edge)] pt-6">
-                <p className="dm-serif dm-gold text-xs uppercase tracking-wider">Known Recon &amp; Performance Issues</p>
-                <ul className="mt-3 space-y-2">
+                <p className="dm-serif dm-gold text-sm uppercase tracking-wider">
+                  חידושים בגרסת {WHATS_NEW.version}:
+                </p>
+                <ul className="mt-4 grid gap-3 sm:grid-cols-2 text-sm text-[var(--dm-muted)]">
+                  {WHATS_NEW.items.map((item) => (
+                    <li key={item} className="flex gap-2.5 items-start">
+                      <span className="text-[var(--dm-gold)] mt-0.5">◆</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Known Issues */}
+              <div className="mt-6 border-t border-[var(--dm-edge)]/60 pt-4">
+                <ul className="space-y-2">
                   {KNOWN_ISSUES.map((issue) => (
-                    <li key={issue} className="dm-muted flex gap-3 text-sm leading-relaxed">
-                      <span aria-hidden="true" className="text-[var(--dm-red)]">
-                        ▸
+                    <li key={issue} className="dm-muted flex gap-2.5 text-xs leading-relaxed text-[var(--dm-muted)]">
+                      <span aria-hidden="true" className="text-[var(--dm-gold)]">
+                        ℹ
                       </span>
                       <span>{issue}</span>
                     </li>
@@ -376,19 +329,19 @@ export function DominionPage({
           </Reveal>
         </section>
 
-        {/* ───────── Navigation ───────── */}
+        {/* ───────── Navigation between projects ───────── */}
         <nav aria-label="Other projects" className="flex justify-between gap-6 border-t border-[var(--dm-edge)] pt-8 text-sm">
           {prev ? (
             <Link href={`/projects/${prev.slug}`} className="group max-w-[45%]">
-              <span className="dm-serif dm-muted text-xs uppercase">← previous</span>
+              <span className="dm-serif dm-muted text-xs uppercase">← הפרויקט הקודם</span>
               <span className="mt-1 block font-semibold group-hover:text-[var(--dm-gold)]">{prev.title}</span>
             </Link>
           ) : (
             <span />
           )}
           {next && (
-            <Link href={`/projects/${next.slug}`} className="group max-w-[45%] text-right">
-              <span className="dm-serif dm-muted text-xs uppercase">next →</span>
+            <Link href={`/projects/${next.slug}`} className="group max-w-[45%] text-left">
+              <span className="dm-serif dm-muted text-xs uppercase">הפרויקט הבא →</span>
               <span className="mt-1 block font-semibold group-hover:text-[var(--dm-gold)]">{next.title}</span>
             </Link>
           )}
