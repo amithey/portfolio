@@ -8,12 +8,12 @@ import {
   HERO_STATS,
   KNOWN_ISSUES,
   SCREENSHOT_NOTE,
-  SHOTS,
   WHATS_NEW,
 } from '@/data/dominion-showcase';
 import { Reveal } from '@/components/Reveal';
 import { DominionHUD } from './DominionHUD';
 import { DominionBackdrop } from './DominionBackdrop';
+import { DominionWarRoom } from './DominionWarRoom';
 
 const cinzel = Cinzel({
   subsets: ['latin'],
@@ -198,35 +198,18 @@ export function DominionPage({
           </Reveal>
         </section>
 
-        {/* ───────── Screens: Satellite Recon ───────── */}
+        {/* ───────── Screens: Satellite Recon & Interactive Command Console ───────── */}
         <section id="screens" className="scroll-mt-32">
           <Reveal>
-            <Head tag="Satellite Recon" title="Battlefield Surveillance" />
+            <Head tag="Surveillance & Recon" title="Interactive Battlefield Feeds">
+              Switch feeds on the live terminal below to inspect the Alpha 1.0.4 metropolis, strategic nuclear complexes, and the in-game command HUD.
+            </Head>
           </Reveal>
-          <div className="mt-10 grid gap-6">
-            {SHOTS.map((shot, i) => (
-              <Reveal key={shot.src} delay={i * 90} className="h-full">
-                <figure className="dm-panel h-full p-2.5">
-                  <div className="dm-shot relative">
-                    <Image
-                      src={shot.src}
-                      alt={shot.alt}
-                      width={shot.width}
-                      height={shot.height}
-                      sizes="(min-width: 1024px) 960px, 100vw"
-                      className="block w-full"
-                    />
-                    <div className="pointer-events-none absolute right-3 top-3 rounded border border-[var(--dm-edge)] bg-[rgba(8,18,31,0.85)] px-2.5 py-1 font-mono text-[0.65rem] text-[var(--dm-gold)]">
-                      REC-CAM #{String(i + 1).padStart(2, '0')} · INTEL FEED
-                    </div>
-                  </div>
-                  <figcaption className="px-3 pb-2 pt-4">
-                    <p className="dm-serif dm-gold text-sm uppercase">{shot.title}</p>
-                    <p className="dm-muted mt-1 text-sm leading-relaxed">{shot.caption}</p>
-                  </figcaption>
-                </figure>
-              </Reveal>
-            ))}
+
+          <div className="mt-8">
+            <Reveal>
+              <DominionWarRoom />
+            </Reveal>
           </div>
           <p className="dm-muted mt-5 font-mono text-xs">{SCREENSHOT_NOTE}</p>
         </section>

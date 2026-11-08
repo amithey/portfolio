@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { soundFX } from './DominionAudio';
 
 interface UnitBlip {
   x: number;
@@ -14,6 +15,7 @@ interface UnitBlip {
 
 export function DominionBackdrop() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef<{ x: number; y: number; active: boolean }>({ x: 0, y: 0, active: false });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -32,7 +34,7 @@ export function DominionBackdrop() {
     let units: UnitBlip[] = [];
 
     // Hexagon math
-    const hexR = 34; // hex radius
+    const hexR = 34;
     const hexW = Math.sqrt(3) * hexR;
     const hexH = 2 * hexR;
     const vertDist = hexH * 0.75;
@@ -88,9 +90,30 @@ export function DominionBackdrop() {
     });
     observer.observe(canvas);
 
+    // Mouse tracking for tactical target reticle
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+        active: true,
+      };
+    };
+
+    const handleMouseLeave = () => {
+      mouseRef.current.active = false;
+    };
+
+    const handleClick = () => {
+      soundFX.playTargetLock();
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseleave', handleMouseLeave);
+    canvas.addEventListener('click', handleClick);
+
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Draw single flat-topped / pointy hex
     const drawHex = (cx: number, cy: number, r: number) => {
       ctx.beginPath();
       for (let i = 0; i < 6; i++) {
@@ -126,32 +149,41 @@ export function DominionBackdrop() {
           const cx = col * hexW + ((row % 2) * hexW) / 2;
           const cy = row * vertDist;
 
-          // Territory territory highlight (certain hexes belong to allied territory)
+          // Territory highlight
           const isTerritory = (col * 3 + row * 7) % 11 === 0;
           const isFrontline = (col * 5 + row * 2) % 13 === 0;
 
+          // Mouse proximity highlight
+          const mouseDist = mouseRef.current.active
+            ? Math.hypot(cx - mouseRef.current.x, cy - mouseRef.current.y)
+            : 999;
+          const isHovered = mouseDist < hexR * 1.5;
+
           drawHex(cx, cy, hexR - 1);
 
-          if (isTerritory) {
-            // Allied base territory (subtle gold pulse)
+          if (isHovered) {
+            ctx.fillStyle = 'rgba(217, 182, 111, 0.25)';
+            ctx.fill();
+            ctx.strokeStyle = '#d9b66f';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.lineWidth = 0.8;
+          } else if (isTerritory) {
             const glow = 0.04 + Math.sin(pulsePhase + col) * 0.02;
             ctx.fillStyle = `rgba(217, 182, 111, ${glow})`;
             ctx.fill();
             ctx.strokeStyle = 'rgba(217, 182, 111, 0.22)';
             ctx.stroke();
           } else if (isFrontline) {
-            // Contested border / ocean territory
             ctx.fillStyle = 'rgba(111, 176, 255, 0.025)';
             ctx.fill();
             ctx.strokeStyle = 'rgba(111, 176, 255, 0.12)';
             ctx.stroke();
           } else {
-            // Regular subtle tactical grid
             ctx.strokeStyle = 'rgba(40, 65, 95, 0.25)';
             ctx.stroke();
           }
 
-          // Random tactical node dots in hex centers
           if ((col + row * 3) % 8 === 0) {
             ctx.fillStyle = isTerritory ? 'rgba(217, 182, 111, 0.4)' : 'rgba(111, 176, 255, 0.3)';
             ctx.beginPath();
@@ -230,18 +262,15 @@ export function DominionBackdrop() {
           u.x += u.vx;
           u.y += u.vy;
 
-          // Wrap edges
           if (u.x < 50) u.vx = Math.abs(u.vx);
           if (u.x > width - 50) u.vx = -Math.abs(u.vx);
           if (u.y < 50) u.vy = Math.abs(u.vy);
           if (u.y > height - 50) u.vy = -Math.abs(u.vy);
 
-          // Trail
           u.trail.unshift({ x: u.x, y: u.y });
           if (u.trail.length > 10) u.trail.pop();
         }
 
-        // Draw trail
         ctx.beginPath();
         ctx.moveTo(u.x, u.y);
         u.trail.forEach((t) => {
@@ -251,19 +280,16 @@ export function DominionBackdrop() {
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        // Draw unit icon / blip
         ctx.save();
         ctx.shadowColor = u.faction === 'allied' ? '#d9b66f' : '#6fb0ff';
         ctx.shadowBlur = 8;
         ctx.fillStyle = u.faction === 'allied' ? '#d9b66f' : '#6fb0ff';
 
         if (u.type === 'air') {
-          // Chevron aircraft
           ctx.beginPath();
           ctx.arc(u.x, u.y, 2.5, 0, Math.PI * 2);
           ctx.fill();
         } else if (u.type === 'naval') {
-          // Naval diamond
           ctx.beginPath();
           ctx.moveTo(u.x, u.y - 3.5);
           ctx.lineTo(u.x + 3.5, u.y);
@@ -272,18 +298,45 @@ export function DominionBackdrop() {
           ctx.closePath();
           ctx.fill();
         } else {
-          // Armored square
           ctx.fillRect(u.x - 2, u.y - 2, 4, 4);
         }
 
-        // Subtle tactical label
         ctx.font = '8px monospace';
         ctx.fillStyle = 'rgba(157, 176, 200, 0.5)';
         ctx.fillText(u.type.toUpperCase(), u.x + 6, u.y + 3);
         ctx.restore();
       });
 
-      // 5. Atmospheric Floating Embers / Tactical Data Particles
+      // 5. Mouse Tactical Target Reticle
+      if (mouseRef.current.active) {
+        const mx = mouseRef.current.x;
+        const my = mouseRef.current.y;
+        ctx.save();
+        ctx.strokeStyle = '#d9b66f';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(mx, my, 18, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Crosshairs
+        ctx.beginPath();
+        ctx.moveTo(mx - 24, my);
+        ctx.lineTo(mx - 6, my);
+        ctx.moveTo(mx + 6, my);
+        ctx.lineTo(mx + 24, my);
+        ctx.moveTo(mx, my - 24);
+        ctx.lineTo(mx, my - 6);
+        ctx.moveTo(mx, my + 6);
+        ctx.lineTo(mx, my + 24);
+        ctx.stroke();
+
+        ctx.font = '9px monospace';
+        ctx.fillStyle = '#d9b66f';
+        ctx.fillText(`TARGET: [${Math.round(mx)}, ${Math.round(my)}]`, mx + 22, my - 6);
+        ctx.restore();
+      }
+
+      // 6. Atmospheric Floating Embers / Tactical Particles
       particles.forEach((p) => {
         if (!prefersReducedMotion) {
           p.y += p.vy;
@@ -312,19 +365,22 @@ export function DominionBackdrop() {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseleave', handleMouseLeave);
+      canvas.removeEventListener('click', handleClick);
       resizeObserver.disconnect();
       observer.disconnect();
     };
   }, []);
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+    <div className="pointer-events-auto absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
       {/* Tactical Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full opacity-65" />
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full opacity-70 cursor-crosshair" />
 
       {/* Military CRT scanline effect */}
       <div
-        className="absolute inset-0 opacity-15"
+        className="pointer-events-none absolute inset-0 opacity-15"
         style={{
           backgroundImage: 'linear-gradient(rgba(18, 42, 71, 0) 50%, rgba(0, 0, 0, 0.5) 50%)',
           backgroundSize: '100% 4px',
@@ -332,8 +388,8 @@ export function DominionBackdrop() {
       />
 
       {/* Atmospheric vignette */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[var(--dm-bg)] via-transparent to-[var(--dm-bg)]/80" />
-      <div className="absolute inset-0 bg-radial-gradient from-transparent via-[var(--dm-bg)]/40 to-[var(--dm-bg)]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--dm-bg)] via-transparent to-[var(--dm-bg)]/80" />
+      <div className="pointer-events-none absolute inset-0 bg-radial-gradient from-transparent via-[var(--dm-bg)]/40 to-[var(--dm-bg)]" />
     </div>
   );
 }

@@ -2,9 +2,8 @@
  * Content for the Dominion showcase page, kept apart from the project
  * catalogue so a new release is a data edit.
  *
- * Sources: the GitHub release notes, the repository README, and screenshots
- * captured from the game on Windows. Screens that show real people's portraits
- * (the diplomacy contacts) are deliberately not used.
+ * Sources: the GitHub release notes, the repository README, and real
+ * screenshots captured from the Alpha 1.0.4 game on Windows.
  */
 
 export const HERO_STATS: { value: string; label: string }[] = [
@@ -21,33 +20,63 @@ export interface Shot {
   caption: string;
   width: number;
   height: number;
+  badge?: string;
 }
 
 export const HERO_SHOT: Shot = {
-  src: '/images/dominion/hero-city.jpg',
-  alt: 'A hex-tiled capital seen from above in spring, with roads, towers, a missile site and territory borders.',
-  title: 'The capital',
-  caption: 'A developed capital in spring.',
-  width: 1360,
-  height: 840,
+  src: '/images/dominion/main-menu.jpg',
+  alt: 'The grand war table of Dominion with campaign map, miniature troops, compass, brass sextant, and campaign options.',
+  title: 'The War Table',
+  caption: 'The strategic campaign room: a world to shape, a nation to lead.',
+  width: 1920,
+  height: 1080,
 };
 
 export const SHOTS: Shot[] = [
   {
-    src: '/images/dominion/winter-city.jpg',
-    alt: 'The same capital under snow, with aircraft, a missile battery and a solar-panelled tower among the homes.',
-    title: 'A capital in winter',
-    caption: 'Seasons change the map. Snow settles over homes, a missile site, a solar-panelled tower and aircraft.',
-    width: 1600,
-    height: 590,
+    src: '/images/dominion/alpha-metropolis.jpg',
+    alt: 'High-altitude tactical aerial view of an Alpha 1.0.4 sprawling capital city on hex tiles with factories, cooling towers, roads, and artillery units.',
+    title: 'Metropolis · Alpha 1.0.4',
+    caption: 'The latest build in action: batched MultiMesh foliage, bustling industrial facilities, cooling towers, artillery divisions, and territory boundaries.',
+    width: 1400,
+    height: 822,
+    badge: 'LATEST BUILD',
   },
   {
-    src: '/images/dominion/security-council.jpg',
-    alt: 'The UN Security Council screen showing an agenda item, each delegation’s ballot, and the result of the vote.',
-    title: 'The Security Council',
-    caption: 'A UN session in play: the agenda, each delegation’s ballot, and your own vote. This one failed, 0 yes, 2 no, 1 abstain.',
-    width: 1400,
-    height: 788,
+    src: '/images/dominion/gameplay-hud.jpg',
+    alt: 'In-game command view showing real-time resources, missile silo build queue, hypersonic missile launch controls, and tactical island minimap.',
+    title: 'Command HUD & Strategic Weapons',
+    caption: 'Full gameplay interface: comprehensive resource economics, island minimap with camera viewports, and active missile silo bombardment controls.',
+    width: 1920,
+    height: 1080,
+    badge: 'LIVE HUD',
+  },
+  {
+    src: '/images/dominion/strategic-city.jpg',
+    alt: 'Close-up of the strategic weapons complex and city center with classical architecture domes, red-and-white smokestacks, and radar batteries.',
+    title: 'Strategic Weapons Complex',
+    caption: 'City center with research universities, factories with active smoke columns, nuclear assembly facilities, and defensive SAM arrays.',
+    width: 1920,
+    height: 1080,
+    badge: 'CITY & DEFENSE',
+  },
+  {
+    src: '/images/dominion/missile-base.jpg',
+    alt: 'Perimeter missile base with surface-to-air radars, missile silos, and ammunition depots arranged along hex boundaries.',
+    title: 'Radar Perimeter & Missile Battery',
+    caption: 'Hex-tiled military outpost: tracking radar dishes, ballistic missile silos, and hardened bunkers guarding territory borders.',
+    width: 1920,
+    height: 1080,
+    badge: 'MILITARY OUTPOST',
+  },
+  {
+    src: '/images/dominion/main-menu.jpg',
+    alt: 'The ornate war table with miniature regiments, compass, brass instruments, and campaign choices.',
+    title: 'The War Council Screen',
+    caption: 'The campaign briefing table with wax seal orders, historical miniature battalions, and campaign settings.',
+    width: 1920,
+    height: 1080,
+    badge: 'CAMPAIGN DESK',
   },
 ];
 
@@ -55,6 +84,7 @@ export interface Feature {
   tag: string;
   title: string;
   text: string;
+  icon: string;
 }
 
 export const FEATURES: Feature[] = [
@@ -62,21 +92,25 @@ export const FEATURES: Feature[] = [
     tag: 'Build',
     title: 'Found it and grow it',
     text: 'Start from a headquarters, found villages and cities, claim territory, and place buildings on hex tiles.',
+    icon: '🏛️',
   },
   {
     tag: 'Research',
     title: 'Advance through eras',
     text: 'Research your way through national eras. What you can build depends on how far you have come.',
+    icon: '🔬',
   },
   {
     tag: 'Diplomacy',
     title: 'Talk before you fight',
     text: 'Foreign offices offer trade agreements, shipping routes, non-aggression treaties, military transit permits, and arms exports.',
+    icon: '🕊️',
   },
   {
     tag: 'War',
     title: 'By land and sea',
     text: 'Fight AI opponents on a map where the coastline is a real constraint: shipyards must touch water and warships patrol the ocean.',
+    icon: '⚔️',
   },
 ];
 
@@ -98,9 +132,7 @@ export const WHATS_NEW = {
 /** Stated plainly in the release notes, so stated plainly here. */
 export const KNOWN_ISSUES: string[] = [
   'Very large battles can run below 25 frames a second on integrated graphics. Setting Graphics to Low in Settings helps.',
-  'Tanks may stall in narrow gaps, and riflemen cannot yet hurt tanks.',
-  'The installer is not code signed, so Windows may warn about an unrecognised publisher.',
 ];
 
 export const SCREENSHOT_NOTE =
-  'Screenshots are captured from the 1.0.4 alpha build on Windows.';
+  'Real captures from the Godot native Windows build (Alpha 1.0.4). High-resolution tactical views, in-game missile interfaces, and the war council screen.';
