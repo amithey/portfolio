@@ -1,12 +1,12 @@
 /**
- * Authentic showcase data for Dominion (Alpha 1.0.5)
+ * Showcase data for Dominion (Alpha 1.0.6; the screenshots are from 1.0.5)
  * Built with Godot 4.7 Engine.
  *
  * 100% authentic screenshots generated directly from the current Godot build.
  */
 
 export const HERO_STATS: { value: string; label: string }[] = [
-  { value: '1.0.5', label: 'alpha build' },
+  { value: '1.0.6', label: 'alpha build' },
   { value: '27', label: 'authentic tank models' },
   { value: '69', label: 'armored vehicles' },
   { value: '60 FPS', label: 'MultiMesh engine' },
@@ -32,7 +32,7 @@ export const HERO_SHOT: Shot = {
   category: 'COMBAT',
   width: 1280,
   height: 800,
-  badge: 'ALPHA 1.0.5',
+  badge: 'ALPHA 1.0.6',
 };
 
 export const SHOTS: Shot[] = [
@@ -157,10 +157,14 @@ export const GAMEPLAY_LOOP: GameplayStep[] = [
 ];
 
 export const WHATS_NEW = {
-  version: 'Alpha 1.0.5',
-  intro: 'הגרסה העדכנית ביותר הפועלת במחשב — מנוע Godot 4.7 משודרג:',
+  version: 'Alpha 1.0.6',
+  intro: 'מה חדש בגרסה האחרונה:',
   items: [
-    'שדרוג מודלים מלא ב-Blender: כל המבנים, הדמויות, והרכבים עוצבו מחדש ברמת פירוט גבוהה.',
+    'פיזיקת תנועה: מטוסים פונים בהטיה, מסוקים נושאים תנופה ומרחפים, ספינות נענות להגה לפי אורכן, ורכבי גלגלים פונים בקשת.',
+    'מודל כוח אש לכל נשק: הדף שדועך בהדרגה, רסיסים, הדף שמעיף, הצתה, מכתשים ופגיעה בכבישים, גם לראשי נפץ אסטרטגיים.',
+    'פיצוץ לכל סוג נשק: רימון, פגז טנק, נ״ט, מרגמה, ארטילריה, פצצת מטוס, תרמובארי, נ״מ, טורפדו, מצרר וחודר בונקרים.',
+    'לוגיסטיקה אסטרטגית: דלק וטווח למטוסים, העברת מטוסים בין בסיסים, ומלאי טילים ונשק גרעיני שנשמר ומועבר בין בסיסים, נמלים וספינות.',
+    'מגרסה 1.0.5: כל המבנים, הדמויות והרכבים עוצבו מחדש ב-Blender ברמת פירוט גבוהה.',
     'טופוגרפיה ריאליסטית: גבעות מתונות (Rolling Hills), שבילי עפר בין ערים וצבעי אגמים עמוקים.',
     'מערכת שריון עדכנית: 27 דגמי טנקי מערכה מודרניים עם צריחים עוקבים ומערכת הגנה אקטיבית.',
     'מערכת לוגיסטיקה ואוכלוסייה: ניהול רשת חשמל עם עומסי MW, כבאיות ואמבולנסים פיזיים.',
@@ -174,4 +178,4 @@ export const KNOWN_ISSUES: string[] = [
 ];
 
 export const SCREENSHOT_NOTE =
-  'כל צילומי המסך נלכדו ישירות מתוך הגרסה הנוכחית של המשחק (Alpha 1.0.5) הפועלת ב-Godot Engine במחשב.';
+  'כל צילומי המסך נלכדו ישירות מתוך המשחק בגרסה Alpha 1.0.5, הפועל ב-Godot Engine במחשב.';

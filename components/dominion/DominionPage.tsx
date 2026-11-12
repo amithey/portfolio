@@ -33,7 +33,7 @@ const MENU = [
   { href: '#recon', label: 'צילומי מסך מהמשחק' },
   { href: '#livefeed', label: 'משדר קרב חי' },
   { href: '#factions', label: 'צבאות ושריון' },
-  { href: '#download', label: 'הורדת Alpha 1.0.5' },
+  { href: '#download', label: 'הורדת Alpha 1.0.6' },
 ];
 
 function Head({ tag, title, children }: { tag: string; title: string; children?: React.ReactNode }) {
@@ -118,7 +118,7 @@ export function DominionPage({
               </span>
               <span className="text-[var(--dm-edge)]">·</span>
               <span className="font-mono text-xs uppercase tracking-wider text-[var(--dm-muted)]">
-                Alpha 1.0.5 Windows Build
+                Alpha 1.0.6 Windows Build
               </span>
             </div>
 
@@ -142,7 +142,7 @@ export function DominionPage({
                   onClick={() => soundFX.playLaunchRumble()}
                   className="dm-btn"
                 >
-                  הורד את המשחק ל-Windows (394 MB) <span aria-hidden="true">↓</span>
+                  הורד את המשחק ל-Windows (616 MB) <span aria-hidden="true">↓</span>
                 </a>
               )}
               <a
@@ -218,7 +218,7 @@ export function DominionPage({
         <section id="recon" className="scroll-mt-32">
           <Reveal>
             <Head tag="מוקד צילומים · Tactical Recon" title="צילומי מסך מקוריים מתוך הגרסה הנוכחית">
-              עבור בין 6 מצלמות השטח למטה לצפייה ישירה בצילומים האותנטיים שנלכדו ישירות מתוך גרסה 1.0.5 העדכנית. לחץ על כל תמונה להגדלה מלאה.
+              עבור בין 6 מצלמות השטח למטה לצפייה ישירה בצילומים האותנטיים שנלכדו ישירות מתוך גרסה 1.0.5 של המשחק. לחץ על כל תמונה להגדלה מלאה.
             </Head>
           </Reveal>
 
@@ -266,7 +266,7 @@ export function DominionPage({
             <div className="dm-panel p-8 sm:p-12">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 animate-ping rounded-full bg-[var(--dm-gold)]" />
-                <p className="dm-serif dm-gold text-sm uppercase">התקנה למחשב · Alpha 1.0.5 Windows</p>
+                <p className="dm-serif dm-gold text-sm uppercase">התקנה למחשב · Alpha 1.0.6 Windows</p>
               </div>
               <h2 className="dm-serif dm-title-gold mt-3 text-3xl font-bold uppercase sm:text-5xl">
                 הורד ושחק ב-Dominion
@@ -283,11 +283,11 @@ export function DominionPage({
                     onClick={() => soundFX.playLaunchRumble()}
                     className="dm-btn"
                   >
-                    הורד את קובץ ההתקנה (394 MB) <span aria-hidden="true">↓</span>
+                    הורד את קובץ ההתקנה (616 MB) <span aria-hidden="true">↓</span>
                   </a>
                 )}
                 <a
-                  href="https://github.com/amithey/dominion/releases/tag/v1.0.4-alpha"
+                  href="https://github.com/amithey/dominion/releases/tag/v1.0.6-alpha"
                   target="_blank"
                   rel="noreferrer noopener"
                   onClick={() => soundFX.playTacticalBeep()}

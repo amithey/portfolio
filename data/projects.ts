@@ -164,7 +164,7 @@ export const PROJECTS: Project[] = [
   {
     slug: 'dominion',
     title: 'Dominion',
-    tagline: 'A 3D real time strategy game for Windows, built in Godot. Alpha 1.0.4.',
+    tagline: 'A 3D real time strategy game for Windows, built in Godot. Alpha 1.0.6.',
     description:
       'A 3D real time strategy game in the spirit of Civilization crossed with Command & Conquer. You start from a headquarters, found villages and cities, claim territory, research your way through national eras, and fight AI opponents by land and sea. It began as a Three.js prototype in the browser and has since been rebuilt as a native Windows game in Godot, which is now the only version in active development: the repository has nearly 500 commits and the code is mostly GDScript.',
     category: 'games-and-interactive',
@@ -174,10 +174,10 @@ export const PROJECTS: Project[] = [
     repo: 'https://github.com/amithey/dominion',
     demo: {
       kind: 'download',
-      url: 'https://github.com/amithey/dominion/releases/download/v1.0.4-alpha/DOMINION-Setup.exe',
+      url: 'https://github.com/amithey/dominion/releases/download/v1.0.6-alpha/DOMINION-Setup.exe',
       embeddable: false,
-      label: 'Download Alpha 1.0.4 for Windows (about 395 MB)',
-      note: 'This is a Windows download, not a browser demo. Alpha 1.0.4 is a pre-release build for testers, and Windows may warn about an unrecognised publisher. It is not on Steam, though Steam is the intended release. Release notes are on the GitHub releases page.',
+      label: 'Download Alpha 1.0.6 for Windows (about 616 MB)',
+      note: 'This is a Windows download, not a browser demo. Alpha 1.0.6 is a pre-release build for testers, and Windows may warn about an unrecognised publisher. It is not on Steam, though Steam is the intended release. Release notes are on the GitHub releases page.',
     },
     cover: '/images/projects/dominion.webp',
     highlights: [
