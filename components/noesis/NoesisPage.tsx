@@ -3,6 +3,8 @@ import Link from 'next/link';
 import type { Project } from '@/data/projects';
 import {
   BRAIN_VIDEO,
+  EXPERIMENTS,
+  EXPERIMENTS_VERDICT,
   HERO_STATS,
   LOOP,
   METRICS,
@@ -304,6 +306,35 @@ export function NoesisPage({
               </Reveal>
             ))}
           </div>
+        </section>
+
+        {/* ───────── Latest experiments ───────── */}
+        <section>
+          <Reveal>
+            <SectionHead eyebrow="Latest experiments" title="Where learning stands">
+              The newest work is about whether the fly can learn. These are the results so far,
+              reported as the repository reports them.
+            </SectionHead>
+          </Reveal>
+          <ol className="mt-12 space-y-4">
+            {EXPERIMENTS.map((x, i) => (
+              <Reveal key={x.id} as="li" delay={i * 70}>
+                <div className="nx-card p-5 sm:p-6">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <p className="nx-eyebrow">{x.date}</p>
+                    <p
+                      className={`text-sm font-semibold ${x.tone === 'running' ? 'text-[var(--nx-cyan)]' : 'text-[var(--nx-amber)]'}`}
+                    >
+                      <span aria-hidden="true">●</span> {x.verdict}
+                    </p>
+                  </div>
+                  <h3 className="mt-2 font-display text-xl font-bold tracking-tight">{x.title}</h3>
+                  <p className="nx-muted mt-2 leading-relaxed">{x.text}</p>
+                </div>
+              </Reveal>
+            ))}
+          </ol>
+          <p className="nx-muted mt-6 text-sm">{EXPERIMENTS_VERDICT}</p>
         </section>
 
         {/* ───────── Open problems ───────── */}

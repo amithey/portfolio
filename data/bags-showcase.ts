@@ -43,7 +43,7 @@ export const FLOW: FlowStep[] = [
   { label: 'Store the order', detail: 'Products and orders live in Supabase.' },
   { label: 'Take stock off the shelf', detail: 'Stock is decremented as part of order handling, never trusted from the browser.' },
   { label: 'Tell both people', detail: 'A confirmation email to the customer through Resend, and a WhatsApp message to the owner.' },
-  { label: 'Manage it', detail: 'A protected admin area for stock and order state, behind its own sign in.' },
+  { label: 'Manage it', detail: 'A protected admin area for stock, photos and orders, rebuilt in November to be simple to work with, behind its own sign in.' },
 ];
 
 export interface Screen {

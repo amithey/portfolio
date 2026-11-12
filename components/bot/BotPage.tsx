@@ -10,6 +10,7 @@ import {
   SHOTS,
   STACK,
   TAPE,
+  TREND,
 } from '@/data/bot-showcase';
 import { Reveal } from '@/components/Reveal';
 import { CountUp } from '@/components/noesis/CountUp';
@@ -182,6 +183,26 @@ export function BotPage({
               </Reveal>
             ))}
           </div>
+        </section>
+
+        {/* ───────── Trend scanner ───────── */}
+        <section>
+          <Reveal>
+            <Head eyebrow="Trend scanner" title={TREND.title}>
+              {TREND.intro}
+            </Head>
+          </Reveal>
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+            {TREND.points.map((p, i) => (
+              <Reveal key={p.label} as="li" delay={i * 80} className="h-full">
+                <div className="bt-panel h-full p-5">
+                  <p className="bt-eyebrow">{p.label}</p>
+                  <p className="bt-dim mt-2 leading-relaxed">{p.text}</p>
+                </div>
+              </Reveal>
+            ))}
+          </ul>
+          <p className="bt-dim mt-5 text-sm">{TREND.note}</p>
         </section>
 
         {/* ───────── Pipeline ───────── */}

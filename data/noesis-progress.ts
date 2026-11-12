@@ -137,6 +137,54 @@ export const BRAIN_FRAME = {
     'One frame from the live brain view, five seconds into a run: 13,446 of the 158,262 neurons firing at that moment. Positions are schematic, because the data has no coordinates. The sampled links drawn are real ones.',
 };
 
+export interface Experiment {
+  id: string;
+  date: string;
+  title: string;
+  verdict: string;
+  tone: 'fail' | 'running';
+  text: string;
+}
+
+/** Newest first. Verdicts are the repository's own words, not softened. */
+export const EXPERIMENTS: Experiment[] = [
+  {
+    id: 'mp1',
+    date: '10 Nov 2026',
+    title: 'MP1: a measured neural policy, with matched controls',
+    verdict: 'Running: no claim yet',
+    tone: 'running',
+    text: 'A whole set of neural weights is chosen by measurement, and only accepted with a margin in both training contexts. Acceptance passed in both, but the repository says this is by construction, not independent efficacy. The frozen evaluations and the final audit are still to come.',
+  },
+  {
+    id: 'ew1',
+    date: '10 Nov 2026',
+    title: 'EW1: does a reward-driven update persist?',
+    verdict: 'Update persists, conditions fail',
+    tone: 'fail',
+    text: 'A nonzero update was saved and reloaded correctly through the native neural motor path. It improved training return in only one of two training contexts, and none of the four development contexts met every declared physical direction. No checkpoint was adopted.',
+  },
+  {
+    id: 'ws1',
+    date: '10 Nov 2026',
+    title: 'WS1: do neural weights actually move the body?',
+    verdict: 'Yes, but neither offset holds up',
+    tone: 'fail',
+    text: 'Both constructed weight directions changed the brain’s motor commands and the fly’s real trajectory in every tested case. Both failed the unchanged strict retention test, so no offset was adopted and no learned ability is established.',
+  },
+  {
+    id: 'ed2',
+    date: '7 Nov 2026',
+    title: 'ED2: replicate the learning result, method fixed',
+    verdict: 'Zero of three births pass',
+    tone: 'fail',
+    text: 'With the source, parameters and criteria all fixed in advance, none of three training births met the original physical, anatomical and retention conditions. The original failed birth is kept, and the write up says this is not a proof that learning is impossible.',
+  },
+];
+
+export const EXPERIMENTS_VERDICT =
+  'The project’s standing line across all of them: no model is promoted, and stable standing or walking is not established.';
+
 /** What is still unsolved, from the project's own handoff. */
 export const OPEN_PROBLEMS: string[] = [
   'The awake brain is bistable. Any strong drive ignites one self-sustained state that never returns to rest, which blocks clean walking and learning trials.',

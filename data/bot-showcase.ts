@@ -36,6 +36,25 @@ export const PIPELINE: PipelineStep[] = [
   { label: 'Paper portfolio', detail: 'A virtual account tracks positions and profit. No brokerage is connected anywhere in the code.' },
 ];
 
+export interface TrendPoint {
+  label: string;
+  text: string;
+}
+
+/** The multi asset trend scanner and core and satellite allocation, from the README and its pull requests. */
+export const TREND = {
+  title: 'Beyond a single bar',
+  intro:
+    'A separate scanner follows daily and four hour trends across many assets instead of trading five minute bars. Its own write up is plain that any edge over buy and hold is not established.',
+  points: [
+    { label: 'Trend following', text: 'Daily and four hour breakouts, held with a trailing ATR stop rather than a fixed target, so winners can run and fee churn stops.' },
+    { label: '29 assets', text: 'Broad index ETFs, large cap tech and quality stocks, and liquid crypto, scanned together.' },
+    { label: 'Composite score', text: 'A continuous 0 to 100 setup score replaces a rigid yes or no gate, and sizes each position by conviction.' },
+    { label: 'Core and satellite', text: 'In a bull regime a core of about 45 percent holds the market. Below the 200 day average the core rotates to cash.' },
+  ] as TrendPoint[],
+  note: 'One background loop is the only writer of the scanner’s state; the dashboard page is read only.',
+};
+
 export const TAPE: string[] = [
   'STOP LOSS',
   'TAKE PROFIT',
@@ -51,7 +70,7 @@ export const TAPE: string[] = [
 export const HERO_STATS: { value: number; label: string }[] = [
   { value: 38, label: 'indicators in the committee' },
   { value: 4, label: 'strategy modes' },
-  { value: 1188, label: 'tests passing at the last run' },
+  { value: 1213, label: 'tests passing at the last run' },
 ];
 
 export interface Shot {
