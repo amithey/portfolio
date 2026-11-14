@@ -51,13 +51,28 @@ const INITIAL_LOGS: LogEntry[] = [
 
 const POOL_OF_NEW_EVENTS: Omit<LogEntry, 'id' | 'time'>[] = [
   {
-    unit: 'Artillery Battery B',
-    text: 'סוללת תומ״תים 155 מ״מ הנחיתה מכת אש מרוכזת על מוצב אויב. עשן כבד בשטח.',
+    unit: 'Air Wing Alpha',
+    text: 'מבנה מטוסי קרב השלים גיחת תקיפה וחזר לנחיתה עם חישוב דלק מדויק (Bingo Fuel).',
     type: 'combat',
   },
   {
+    unit: 'Combat Engineers',
+    text: 'הושלמה הקמת שוחות חיל רגלים ומחסומי נ״ט (Dragon Teeth) לבלימת שריון.',
+    type: 'intel',
+  },
+  {
+    unit: 'Artillery Battery B',
+    text: 'סוללת תומ״תים 155 מ״מ הנחיתה מכת אש מרוכזת על מוצב אויב. אפקט הדף ורסיסים מלא.',
+    type: 'combat',
+  },
+  {
+    unit: 'Strategic Logistics',
+    text: 'ראשי נפץ הועברו מסילו הטילים הראשי למחסן הבסיס הימי תחת אבטחה כבדה.',
+    type: 'intel',
+  },
+  {
     unit: 'Research Lab',
-    text: 'הושלם מחקר חומרים מרוכבים. שריון הטנקים שודרג ב-15% עמידות לרתע.',
+    text: 'הושלם מחקר חומרים מרוכבים. שריון 79 היחידות הקרביות כויל מחדש.',
     type: 'intel',
   },
   {
@@ -67,7 +82,7 @@ const POOL_OF_NEW_EVENTS: Omit<LogEntry, 'id' | 'time'>[] = [
   },
   {
     unit: 'Strategic Silo',
-    text: 'מערכת הטילים ההיפרסוניים ביצעה איפוס קואורדינטות טלמטריות תקין.',
+    text: 'מערכת הטילים ההיפרסוניים השלימה איפוס 4 משגרי טילים תקין.',
     type: 'combat',
   },
   {

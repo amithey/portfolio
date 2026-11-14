@@ -118,7 +118,7 @@ export function DominionPage({
               </span>
               <span className="text-[var(--dm-edge)]">·</span>
               <span className="font-mono text-xs uppercase tracking-wider text-[var(--dm-muted)]">
-                Alpha 1.0.6 Windows Build
+                Alpha 1.0.6 Windows Build (Rebuilt 14/11/2026)
               </span>
             </div>
 
@@ -218,7 +218,7 @@ export function DominionPage({
         <section id="recon" className="scroll-mt-32">
           <Reveal>
             <Head tag="מוקד צילומים · Tactical Recon" title="צילומי מסך מקוריים מתוך הגרסה הנוכחית">
-              עבור בין 6 מצלמות השטח למטה לצפייה ישירה בצילומים האותנטיים שנלכדו ישירות מתוך גרסה 1.0.5 של המשחק. לחץ על כל תמונה להגדלה מלאה.
+              עבור בין 6 מצלמות השטח למטה לצפייה ישירה בצילומים האותנטיים שנלכדו ישירות מתוך גרסה 1.0.6 העדכנית של המשחק. לחץ על כל תמונה להגדלה מלאה.
             </Head>
           </Reveal>
 
